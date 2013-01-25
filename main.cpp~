@@ -28,7 +28,10 @@ double last_time;
 
 void update(double deltaTime)
 {
-
+	float axes[4];
+	
+	glfwGetJoystickPos(GLFW_JOYSTICK_1, axes, 4);
+	kart_objects->set_joysticks(axes);
 }
 
 void init_geometry()
