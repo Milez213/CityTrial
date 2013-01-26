@@ -25,15 +25,15 @@ class KPPObject {
 class KPPDrawnObject : public KPPObject {
 	protected:
 	         GLuint meshIndex();
-	         void meshIndex(GLunint i);
+	         void set_meshIndex(GLunint i);
 	         GLuint textureIndex();
-	         void textureIndex(GLuint i);
+	         void set_textureIndex(GLuint i);
 	         glm::vec3 diffColor();
-	         void diffColor(glm::vec3 c);
+	         void set_diffColor(glm::vec3 c);
 	         glm::vec3 specColor();
-	         void specColor(glm::vec3 c);
+	         void set_specColor(glm::vec3 c);
 	         float specularity();
-	         void specularity(float f);
+	         void set_specularity(float f);
 	         void draw();
 	         //Properties??
 		/* Getters and Setters */
@@ -49,7 +49,7 @@ class KPPDrawnObject : public KPPObject {
 class KPPCamera : public KPPObject {
 	protected:
 	        glm::vec3 lookAt();
-	        void lookAt(glm::vec3 l);
+	        void set_lookAt(glm::vec3 l);
 		/* Getters and Setters */
 		/* LookAt - vec3 */	
 };
@@ -57,9 +57,9 @@ class KPPCamera : public KPPObject {
 class KPPLight : public KPPObject {
 	protected:
 	        glm::vec3 color();
-	        void color(glm::vec3 c);
+	        void set_color(glm::vec3 c);
 	        glm::vec3 intensity();
-	        void intensity(glm::vec3 i);
+	        void set_intensity(glm::vec3 i);
 		/* Getters and Setters */
 		/* Color - vec3 
 		 * Intensity - float */	
