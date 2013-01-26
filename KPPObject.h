@@ -10,6 +10,8 @@ class KPPObject {
 		void set_rotation(vec3 r);
 		glm::vec3 scale();
 		void set_scale(vec3 s);
+		bound* bBox();
+		void bBox(bound*);
 		//Bounding Box?
 		//Bounding sphere?
 		/* Getters and Setters */
