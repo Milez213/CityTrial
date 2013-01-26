@@ -49,6 +49,7 @@ void bBox(bound* b){
 * Scale - vec3
 * Bounding Box*
 * Bounding Sphere*
+* MakeSure
 */
 };
 
