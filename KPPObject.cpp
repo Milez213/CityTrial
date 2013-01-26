@@ -5,6 +5,7 @@ glm::vec3 velocity;
 glm::vec3 position;
 glm::vec3 rotation;
 glm::vec3 scale;
+bound* bBox;
 
 glm::vec3 velocity(){
    return velocity;
@@ -29,6 +30,14 @@ glm::vec3 scale(){
 }
 void set_scale(glm::vec3 s){
    scale = s;
+}
+bound* bBox()
+{
+   return bBox:
+}
+
+void bBox(bound* b){
+   bBox = b;
 }
 
 //Bounding Box?
