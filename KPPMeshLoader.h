@@ -34,7 +34,7 @@ public:
 	//  used when drawing a mesh selected by 
 	//  indexing the mesh array.
 	//--------------------------------------------
-	KPPMeshLoader(KPPShader *shd);
+	KPPMeshLoader(KPPShader *shd, RenderingHelper *model);
 	
 	//--------------------------------------------
 	// This function takes in the name of a file 
@@ -68,6 +68,7 @@ public:
 	
 private:
 	KPPShader *shader;
+	RenderingHelper *model_trans;
 
 	vector<mesh> meshes;
 }

@@ -155,7 +155,7 @@ void initialize()
    /* End Shader Initialization */
    
    shader = new PhongShader();
-   mesh_loader = new KPPMeshLoader(shader);
+   mesh_loader = new KPPMeshLoader(shader, model_trans);
    
    initGeometry();
 }

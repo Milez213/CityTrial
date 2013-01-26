@@ -45,11 +45,7 @@
 //  their type for the entire program. When 
 //  initializing other objects please pass a 
 //  pointer to these objects and do NOT create
-//  duplicates. 
-// (With the possible exception of "model_trans" 
-//  as passing a duplicate is functionally the 
-//  same as pushing and popping it immediately 
-//  before and after a draw call)
+//  duplicates.
 //-----------------------------------------------
 KPPPhysics *physics_sim;
 KPPMeshLoader *mesh_loader;
@@ -118,7 +114,7 @@ void initGeometry()
 void draw()
 {
 	for each (KKPDrawnObject object in drawn_objects) {
-		object->draw(*model_trans);
+		object->draw(model_trans);
 	}
 }
 
@@ -155,7 +151,7 @@ void initialize()
    /* End Shader Initialization */
    
    shader = new PhongShader();
-   mesh_loader = new KPPMeshLoader(shader);
+   mesh_loader = new KPPMeshLoader(shader, model_trans);
    
    initGeometry();
 }
