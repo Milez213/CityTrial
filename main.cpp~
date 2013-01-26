@@ -19,31 +19,69 @@
 #include "glm/gtc/type_ptr.hpp" //value_ptr
 #include "MStackHelp.h"
 
-//vector<KPPObject> moving_objects;
-//vector<KPPDrawnObject> drawn_objects;
-//vector<KPPKartObject> kart_objects;
-
-int w_wdth, w_hgt;
-double last_time;
-
+KPPPhysics *physics_sim;
 RenderingHelper model_trans;
+
+vector<KPPObject *> moving_objects;
+vector<KPPDrawnObject *> drawn_objects;
+vector<KPPKartObject *> kart_objects;
+
+int g_w_wdth, g_w_hgt;
+double g_last_time;
 
 void update(double deltaTime)
 {
-
+	for each (KKPKartObject kart in kart_objects) {
+		kart->update();
+	}
 }
 
-void init_geometry()
+//-----------------------------------------------
+// This function initializes geometry from a 
+//  geometry file "geometry_loader", which has 
+//  has the format
+void initGeometry()
 {
+	ifstream in("geometry_loader", ios::in);
+	if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
 	
+	string line;
+   while (getline(in, line)) {
+		istringstream s(line);
+		
+		char type;
+		type << s;
+		
+		string meshFile;
+		meshFile << s;
+		
+		switch (type) {
+			case: "d"
+				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, physics_sim, meshFile.c_str());
+				drawn_objects.push_back(object);
+				moving_objects.push_back(object);
+				break;
+			case: "k"
+				KKPKartObject *object = new KPPKartObject(mesh_loader, physics_sim, meshFile.c_str());
+				kart_objects.push_back(object);
+				drawn_objects.push_back(object);
+				moving_objects.push_back(object);
+				break;
+			default:
+				cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
+				exit(0);
+		}
+	}
 }
 
 void draw()
 {
-	
+	for each (KKPDrawnObject object in drawn_objects) {
+		object->draw();
+	}
 }
 
-void game_loop(double deltaTime)
+void gameLoop(double deltaTime)
 {
 	update(deltaTime);
 	draw();
@@ -64,8 +102,8 @@ void initialize()
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
-   ModelTrans.useModelViewMatrix();
-   ModelTrans.loadIdentity();
+   model_trans.useModelViewMatrix();
+   model_trans.loadIdentity();
    /* End OpenGL Initialization */
    
    /* Start Shader Initialization */
@@ -75,7 +113,7 @@ void initialize()
    }
    /* End Shader Initialization */
    
-   init_geometry();
+   initGeometry();
 	
 	if (glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_PRESENT) == GL_TRUE) {
 		printf("Number of Axes: %d\n", glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_AXES));
@@ -85,14 +123,14 @@ void initialize()
 
 void reshape(int width, int height)
 {
-	w_wdth = width;
-	w_hgt = height;
+	g_w_wdth = width;
+	g_w_hgt = height;
 }
 
 int main(int argc, char** argv) 
 {
-	w_wdth = 640;
-	w_hgt = 480;
+	g_w_wdth = 640;
+	g_w_hgt = 480;
 	
    if (glfwInit() == GL_TRUE) {
     	glfwOpenWindow(w_wdth, w_hgt, 0, 0, 0, 0, 16, 0, GLFW_WINDOW);
@@ -106,7 +144,8 @@ int main(int argc, char** argv)
    while (glfwGetWindowParam(GLFW_OPENED)) {
    		double time = glfwGetTime();
 	
-    	game_loop(time - last_time);   	
+    	gameLoop(time - g_last_time);
+    	g_last_time = time;   	
    }
     
    glfwTerminate();
