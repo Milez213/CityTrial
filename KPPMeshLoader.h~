@@ -27,6 +27,13 @@ typedef struct mesh {
 	int indexBufferLength;
 } mesh;
 
+typedef struct bound {
+	vec3 boundingBoxMin;
+	vec3 boundingBoxMax;
+	vec3 center;
+	float radius;
+} bound;
+
 class KPPMeshLoader {
 public:
 	//--------------------------------------------
@@ -34,7 +41,7 @@ public:
 	//  used when drawing a mesh selected by 
 	//  indexing the mesh array.
 	//--------------------------------------------
-	KPPMeshLoader(KPPShader *shd, RenderingHelper *model_trans);
+	KPPMeshLoader(KPPShader *shd, RenderingHelper *model);
 	
 	//--------------------------------------------
 	// This function takes in the name of a file 
@@ -53,7 +60,7 @@ public:
 	// Returns:
 	// int - number of meshes loaded from .obj file
 	//--------------------------------------------
-	int loadMesh(const char* filename, int *indices, material *mtl);
+	int loadMesh(const char* filename, int *indices, material *mtl, bound *bnd);	
 	
 	//--------------------------------------------
 	// This function draws a mesh given by its

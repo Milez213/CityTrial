@@ -27,6 +27,13 @@ typedef struct mesh {
 	int indexBufferLength;
 } mesh;
 
+typedef struct bound {
+	vec3 boundingBoxMin;
+	vec3 boundingBoxMax;
+	vec3 center;
+	float radius;
+} bound;
+
 class KPPMeshLoader {
 public:
 	//--------------------------------------------
@@ -49,11 +56,14 @@ public:
 	//  created mesh(es) to be stored into.
 	// mtl - storage location of material proporties
 	//  for associated mesh(es).
+	// bnd - storage location of bounding box info
+	//  (This will be the averaged information of
+	//  all the meshes found in the file)
 	//
 	// Returns:
 	// int - number of meshes loaded from .obj file
 	//--------------------------------------------
-	int loadMesh(const char* filename, int *indices, material *mtl);
+	int loadMesh(const char* filename, int *indices, material *mtl, bound *bnd);	
 	
 	//--------------------------------------------
 	// This function draws a mesh given by its
