@@ -56,31 +56,31 @@ float specularity;
 GLuint meshIndex(){
    return meshIndex;
 }
-void meshIndex(GLunint i){
+void set_meshIndex(GLunint i){
    meshIndex = i;
 }
 GLuint textureIndex(){
    return textureIndex;
 }
-void textureIndex(GLuint i){
+void set_textureIndex(GLuint i){
    textureIndex = i;
 }
 glm::vec3 diffColor(){
    return diffColor;
 }
-void diffColor(glm::vec3 c){
+void set_diffColor(glm::vec3 c){
    diffColor = c;
 }
 glm::vec3 specColor(){
    return specColor;
 }
-void specColor(glm::vec3 c){
+void set_specColor(glm::vec3 c){
    specColor = c;
 }
 float specularity(){
    return specularity;
 }
-void specularity(float f){
+void set_specularity(float f){
    specularity = f;
 }
 
@@ -105,7 +105,7 @@ glm::vec3 lookAt;
 glm::vec3 lookAt(){
    return lookAt;
 }
-void lookAt(glm::vec3 l){
+void set_lookAt(glm::vec3 l){
    lookAt = l;
 }
 /* Getters and Setters */
@@ -120,13 +120,13 @@ glm::vec3 intensity;
 glm::vec3 color(){
    return color;
 }
-void color(glm::vec3 c){
+void set_color(glm::vec3 c){
    color = c;
 }
 glm::vec3 intensity(){
    return intensity;
 }
-void intensity(glm::vec3 i){
+void set_intensity(glm::vec3 i){
    intensity = i;
 }
 /* Getters and Setters */
