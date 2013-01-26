@@ -20,6 +20,8 @@
 #include "MStackHelp.h"
 
 KPPPhysics *physics_sim;
+KPPMeshLoader *mesh_loader;
+KPPShader *shader;
 RenderingHelper model_trans;
 
 vector<KPPObject *> moving_objects;
@@ -59,12 +61,17 @@ void initGeometry()
 		
 		switch (type) {
 			case: "d"
-				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, physics_sim, meshFile.c_str());
+				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, shader, physics_sim, meshFile.c_str());
+				//Any initialization from type specific data in file
 				drawn_objects.push_back(object);
 				moving_objects.push_back(object);
 				break;
 			case: "k"
-				KKPKartObject *object = new KPPKartObject(mesh_loader, physics_sim, meshFile.c_str());
+				KKPKartObject *object = new KPPKartObject(mesh_loader, shader, physics_sim, meshFile.c_str());
+				if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
+					printf("Controller Connected for Player %d\n", kart_objects.size());
+				}
+				//Any initialization from type specific data in file
 				kart_objects.push_back(object);
 				drawn_objects.push_back(object);
 				moving_objects.push_back(object);
@@ -108,19 +115,17 @@ void initialize()
    model_trans.loadIdentity();
    /* End OpenGL Initialization */
    
-   /* Start Shader Initialization */
+   /* Start Shader Initialization 
    if (!InstallShader(textFileRead((char *)"tex_vert.glsl"), textFileRead((char *)"tex_frag.glsl"))) {
       printf("Error installing shader!\n");
       return;
    }
    /* End Shader Initialization */
    
+   shader = new PhongShader();
+   mesh_loader = new KPPMeshLoader(shader);
+   
    initGeometry();
-	
-	if (glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_PRESENT) == GL_TRUE) {
-		printf("Number of Axes: %d\n", glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_AXES));
-		printf("Number of Buttons: %d\n", glfwGetJoystickParam(GLFW_JOYSTICK_1, GLFW_BUTTONS));
-	}
 }
 
 void reshape(int width, int height)
