@@ -19,10 +19,42 @@
 #include "glm/gtc/type_ptr.hpp" //value_ptr
 #include "MStackHelp.h"
 
+//-----------------------------------------------
+// These are global state machines: 
+// "physics_sim"-
+//  Controls the movement and collisions of 
+//   objects and as such each object will have a
+//   pointer to an object of class type 
+//   KPPPhysics::Actor which will control various
+//   states of the object such as position
+// "mesh_loader"-
+//  This is a class I will make using my .obj 
+//   loader code. It is passed, along with the
+//   file name of the .obj file, to the 
+//   KPPDrawnObject constructor.
+// "shader"-
+//  Shader object for the entire program. Pointer
+//   is passed to "mesh_loader" and should not be
+//   tampered with after that unless to change 
+//   shader for all objects.
+// "model_trans"-
+//  This is the model-view translation matrix,
+//   we might not need this given objects' 
+//   independence from one another when drawn.
+// NOTE: These objects should be the only of 
+//  their type for the entire program. When 
+//  initializing other objects please pass a 
+//  pointer to these objects and do NOT create
+//  duplicates. 
+// (With the possible exception of "model_trans" 
+//  as passing a duplicate is functionally the 
+//  same as pushing and popping it immediately 
+//  before and after a draw call)
+//-----------------------------------------------
 KPPPhysics *physics_sim;
 KPPMeshLoader *mesh_loader;
 KPPShader *shader;
-RenderingHelper model_trans;
+RenderingHelper *model_trans;
 
 vector<KPPObject *> moving_objects;
 vector<KPPDrawnObject *> drawn_objects;
@@ -61,13 +93,13 @@ void initGeometry()
 		
 		switch (type) {
 			case: "d"
-				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, shader, physics_sim, meshFile.c_str());
+				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, physics_sim, meshFile.c_str());
 				//Any initialization from type specific data in file
 				drawn_objects.push_back(object);
 				moving_objects.push_back(object);
 				break;
 			case: "k"
-				KKPKartObject *object = new KPPKartObject(mesh_loader, shader, physics_sim, meshFile.c_str());
+				KKPKartObject *object = new KPPKartObject(mesh_loader, physics_sim, meshFile.c_str());
 				if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
 					printf("Controller Connected for Player %d\n", kart_objects.size());
 				}
@@ -86,7 +118,7 @@ void initGeometry()
 void draw()
 {
 	for each (KKPDrawnObject object in drawn_objects) {
-		object->draw();
+		object->draw(model_trans);
 	}
 }
 
@@ -123,7 +155,7 @@ void initialize()
    /* End Shader Initialization */
    
    shader = new PhongShader();
-   mesh_loader(shader);
+   mesh_loader = new KPPMeshLoader(shader);
    
    initGeometry();
 }
