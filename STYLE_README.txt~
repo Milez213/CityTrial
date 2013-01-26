@@ -1,0 +1,8 @@
+Style Guidelines
+globals : g_(variable name)
+tab : 3 spaces
+functions : (lowerCamelCase)
+classes : (CapitolCamelCase)
+comments : //---------50 columns-----------------
+           // Description
+           //------------------------------------

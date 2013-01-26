@@ -19,12 +19,14 @@
 #include "glm/gtc/type_ptr.hpp" //value_ptr
 #include "MStackHelp.h"
 
-vector<KPPObject> moving_objects;
-vector<KPPDrawnObject> drawn_objects;
-vector<KPPKartObject> kart_objects;
+//vector<KPPObject> moving_objects;
+//vector<KPPDrawnObject> drawn_objects;
+//vector<KPPKartObject> kart_objects;
 
 int w_wdth, w_hgt;
 double last_time;
+
+RenderingHelper model_trans;
 
 void update(double deltaTime)
 {
@@ -62,8 +64,8 @@ void initialize()
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
-   ModelTrans.useModelViewMatrix();
-   ModelTrans.loadIdentity();
+   model_trans.useModelViewMatrix();
+   model_trans.loadIdentity();
    /* End OpenGL Initialization */
    
    /* Start Shader Initialization */

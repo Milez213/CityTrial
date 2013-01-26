@@ -19,19 +19,18 @@
 #include "glm/gtc/type_ptr.hpp" //value_ptr
 #include "MStackHelp.h"
 
-vector<KPPObject> moving_objects;
-vector<KPPDrawnObject> drawn_objects;
-vector<KPPKartObject> kart_objects;
+//vector<KPPObject> moving_objects;
+//vector<KPPDrawnObject> drawn_objects;
+//vector<KPPKartObject> kart_objects;
 
 int w_wdth, w_hgt;
 double last_time;
 
+RenderingHelper model_trans;
+
 void update(double deltaTime)
 {
-	float axes[4];
-	
-	glfwGetJoystickPos(GLFW_JOYSTICK_1, axes, 4);
-	kart_objects->set_joysticks(axes);
+
 }
 
 void init_geometry()
