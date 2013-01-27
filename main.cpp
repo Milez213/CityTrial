@@ -9,10 +9,12 @@
 
 #include <GL/glfw.h>
 
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
+
 #include "GLSL_helper.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
@@ -56,14 +58,15 @@ vector<KPPObject *> moving_objects;
 vector<KPPDrawnObject *> drawn_objects;
 vector<KPPKartObject *> kart_objects;
 
-int g_w_wdth, g_w_hgt;
+
+int g_win_height, g_win_width;
 double g_last_time;
 
 void update(double deltaTime)
 {
-	for each (KKPKartObject kart in kart_objects) {
-		kart->update();
-	}
+   for each (KKPKartObject kart in kart_objects) {
+      kart->update();
+   }
 }
 
 //-----------------------------------------------
@@ -74,59 +77,59 @@ void update(double deltaTime)
 //-----------------------------------------------
 void initGeometry()
 {
-	ifstream in("geometry_loader", ios::in);
-	if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
-	
-	string line;
+   ifstream in("geometry_loader", ios::in);
+   if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+
+   string line;
    while (getline(in, line)) {
-		istringstream s(line);
-		
-		char type;
-		type << s;
-		
-		string meshFile;
-		meshFile << s;
-		
-		switch (type) {
-			case: "d"
-				KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
-				//Any initialization from type specific data in file
-				drawn_objects.push_back(object);
-				moving_objects.push_back(object);
-				break;
-			case: "k"
-				KKPKartObject *object = new KPPKartObject(meshFile.c_str());
-				if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
-					printf("Controller Connected for Player %d\n", kart_objects.size());
-				}
-				//Any initialization from type specific data in file
-				kart_objects.push_back(object);
-				drawn_objects.push_back(object);
-				moving_objects.push_back(object);
-				break;
-			default:
-				cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
-				exit(0);
-		}
-	}
+      istringstream s(line);
+
+      char type;
+      type << s;
+
+      string meshFile;
+      meshFile << s;
+
+      switch (type) {
+case: "d"
+      KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
+      //Any initialization from type specific data in file
+      drawn_objects.push_back(object);
+      moving_objects.push_back(object);
+      break;
+case: "k"
+      KKPKartObject *object = new KPPKartObject(meshFile.c_str());
+      if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
+         printf("Controller Connected for Player %d\n", kart_objects.size());
+      }
+      //Any initialization from type specific data in file
+      kart_objects.push_back(object);
+      drawn_objects.push_back(object);
+      moving_objects.push_back(object);
+      break;
+default:
+      cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
+      exit(0);
+      }
+   }
 }
 
 void draw()
 {
-	for each (KKPDrawnObject object in drawn_objects) {
-		object->draw(model_trans);
-	}
+   for each (KKPDrawnObject object in drawn_objects) {
+      object->draw(model_trans);
+   }
 }
 
 void gameLoop(double deltaTime)
 {
-	update(deltaTime);
-	draw();
+   update(deltaTime);
+   draw();
 }
 
 void initialize()
 {
-	/* Start OpenGL Initialization */
+   /* Start OpenGL Initialization */
    glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
    // Black Background
    glClearDepth (1.0f);    // Depth Buffer Setup
@@ -138,50 +141,58 @@ void initialize()
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   
+
    model_trans.useModelViewMatrix();
    model_trans.loadIdentity();
    /* End OpenGL Initialization */
-   
-   /* Start Shader Initialization 
-   if (!InstallShader(textFileRead((char *)"tex_vert.glsl"), textFileRead((char *)"tex_frag.glsl"))) {
-      printf("Error installing shader!\n");
-      return;
-   }
-   /* End Shader Initialization */
-   
+
    shader = new PhongShader();
    mesh_loader = new KPPMeshLoader(shader, model_trans);
-   
+
    initGeometry();
 }
 
 void reshape(int width, int height)
 {
-	g_w_wdth = width;
-	g_w_hgt = height;
+   g_w_wdth = width;
+   g_w_hgt = height;
 }
 
 int main(int argc, char** argv) 
 {
-	g_w_wdth = 640;
-	g_w_hgt = 480;
-	
-   if (glfwInit() == GL_TRUE) {
-    	glfwOpenWindow(w_wdth, w_hgt, 0, 0, 0, 0, 16, 0, GLFW_WINDOW);
-    	glfwSetWindowSizeCallback( reshape );
-    }
-    	
-   initialize();
-   
-   glfwSetTime(0.0);
-    	
-   while (glfwGetWindowParam(GLFW_OPENED)) {
-   		double time = glfwGetTime();
-	
-    	gameLoop(time - g_last_time);
-    	g_last_time = time;   	
+   g_win_width = 640;
+   g_win_height = 480;
+
+   // can't do anything if this fails
+   if (!glfwInit()) {
+      fprintf( stderr, "Failed to initialize GLFW\n" );
+      exit( EXIT_FAILURE );
    }
-    
+
+   if (!glfwOpenWindow(g_win_width, g_win_height, 0, 0, 0, 0, 16, 0, GLFW_WINDOW)) {
+      fprintf( stderr, "Failed to open GLFW window\n" );
+      glfwTerminate();
+      exit( EXIT_FAILURE );
+   }
+
+
+   glfwSetWindowSizeCallback( reshape );
+
+   initialize();
+
+   glfwSetTime(0.0);
+
+   while (glfwGetWindowParam(GLFW_OPENED)) {
+      double time = glfwGetTime();
+
+      gameLoop(time - g_last_time);
+      g_last_time = time;   	
+   }
+
    glfwTerminate();
 }
+
+
+// vim modeline
+// vim: set sw=3 ts=3 :
+
