@@ -3,8 +3,14 @@ globals : g_(variable name)
 tab : 3 spaces
 functions : (lowerCamelCase)
 classes : KPP(CapitolCamelCase)
-function comments : //---------50 columns-----------------
-                    // Description
-                    //------------------------------------
+function comments :
+
+//--------- N columns-----------------
+// Oneline description at least, if it's not obvious.
+//------------------------------------
+void foo(int i) {
+..
+}
+
 in-function comments : // one line
 
