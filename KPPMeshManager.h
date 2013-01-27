@@ -57,6 +57,6 @@ public:
 	mesh getMesh(const char* filename);
 	
 private:
-	void loadMesh(const char* filename)
+	void loadMesh(const char* filename);
 	vector<mesh> meshes;
 }

@@ -48,7 +48,7 @@
 //  duplicates.
 //-----------------------------------------------
 KPPPhysics *physics_sim;
-KPPMeshLoader *mesh_loader;
+KPPMeshManager *mesh_manager;
 KPPShader *shader;
 RenderingHelper *model_trans;
 
@@ -89,13 +89,13 @@ void initGeometry()
 		
 		switch (type) {
 			case: "d"
-				KPPDrawnObject *object = new KPPDrawnObject(mesh_loader, physics_sim, meshFile.c_str());
+				KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
 				//Any initialization from type specific data in file
 				drawn_objects.push_back(object);
 				moving_objects.push_back(object);
 				break;
 			case: "k"
-				KKPKartObject *object = new KPPKartObject(mesh_loader, physics_sim, meshFile.c_str());
+				KKPKartObject *object = new KPPKartObject(meshFile.c_str());
 				if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
 					printf("Controller Connected for Player %d\n", kart_objects.size());
 				}

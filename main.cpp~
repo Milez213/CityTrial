@@ -45,14 +45,10 @@
 //  their type for the entire program. When 
 //  initializing other objects please pass a 
 //  pointer to these objects and do NOT create
-//  duplicates. 
-// (With the possible exception of "model_trans" 
-//  as passing a duplicate is functionally the 
-//  same as pushing and popping it immediately 
-//  before and after a draw call)
+//  duplicates.
 //-----------------------------------------------
 KPPPhysics *physics_sim;
-KPPMeshLoader *mesh_loader;
+KPPMeshManager *mesh_manager;
 KPPShader *shader;
 RenderingHelper *model_trans;
 
@@ -99,7 +95,7 @@ void initGeometry()
 				moving_objects.push_back(object);
 				break;
 			case: "k"
-				KKPKartObject *object = new KPPKartObject(mesh_loader, physics_sim, meshFile.c_str());
+				KKPKartObject *object = new KPPKartObject(meshFile.c_str());
 				if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
 					printf("Controller Connected for Player %d\n", kart_objects.size());
 				}
