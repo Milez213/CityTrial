@@ -25,7 +25,8 @@ class KPPObject {
 };
 
 class KPPDrawnObject : public KPPObject {
-	protected:
+         public KPPDrawnObject(KPPPhysics *physics,const char *meshFile);
+         protected:
 	         GLuint meshIndex();
 	         void set_meshIndex(GLunint i);
 	         GLuint textureIndex();
