@@ -2,7 +2,7 @@
 
 CFLAGS=-Wall
 LDFLAGS=-DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -DCSL -lfreetype
-IFLAGS=-I./lib
+IFLAGS=-I../
 
 FT2=-I/usr/include/freetype2
 
