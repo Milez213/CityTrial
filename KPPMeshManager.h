@@ -11,7 +11,7 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
-typedef struct mesh {
+struct mesh {
 	string name;
 	
 	vector<GLuint> vertexBuffer;
@@ -23,16 +23,17 @@ typedef struct mesh {
 	
 	vector<vec3> diffuseColor;
 	vector<float> specularity;
-} mesh;
+};
 
-typedef struct bound {
+struct bound {
 	vec3 boundingBoxMin;
 	vec3 boundingBoxMax;
 	vec3 center;
 	float radius;
-} bound;
+};
 
 class KPPMeshManager {
+
 public:
 	//--------------------------------------------
 	// Initialized with a reference to the shader
@@ -42,11 +43,11 @@ public:
 	KPPMeshManager();
 	
 	//--------------------------------------------
-	// This function takes in the name of a file 
-	//  as well as storage locations for the indicies
-	//  of the created mesh(es) and an array of 
-	//  created materials which are associated with
-	//  the given mesh(es)
+	// This function takes in the name of a file
+	// of a mesh.
+	// 
+	// If a mesh is already loaded, it will return
+	// the loaded mesh.
 	// 
 	// Parameters:
 	// filename - name of the .obj file to load
