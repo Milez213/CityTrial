@@ -11,6 +11,8 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
+
+
 struct mesh {
 	string name;
 	
