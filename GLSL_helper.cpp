@@ -194,12 +194,12 @@ void getGLversion() {
     const GLubyte *vendor = glGetString( GL_VENDOR );
     const GLubyte *version = glGetString( GL_VERSION );
     const GLubyte *glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
+    //glGetIntegerv(GL_MAJOR_VERSION, &major);
+    //glGetIntegerv(GL_MINOR_VERSION, &minor);
     printf("GL Vendor: %s\n", vendor);
     printf("GL Renderer: %s\n", renderer);
     printf("GL Version (string): %s\n", version);
-    printf("GL Version (integer): %d.%d\n", major, minor);
+    //printf("GL Version (integer): %d.%d\n", major, minor);
     printf("GLSL Version: %s\n", glslVersion);
 
 

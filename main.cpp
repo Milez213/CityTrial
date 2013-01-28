@@ -304,6 +304,11 @@ int main(int argc, char** argv)
 {
    g_win_width = 640;
    g_win_height = 480;
+   
+   glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
+	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
    // can't do anything if this fails
    if (!glfwInit()) {
@@ -315,7 +320,11 @@ int main(int argc, char** argv)
       fprintf( stderr, "Failed to open GLFW window\n" );
       glfwTerminate();
       exit( EXIT_FAILURE );
-   }
+   } else {
+   		int major, minor, rev;
+		glfwGetGLVersion(&major, &minor, &rev);
+ 		fprintf(stderr, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
+	}
 
 
    glfwSetWindowSizeCallback( reshape );
