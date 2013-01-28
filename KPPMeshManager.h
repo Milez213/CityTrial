@@ -11,7 +11,12 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
-
+struct bound {
+	vec3 boundingBoxMin;
+	vec3 boundingBoxMax;
+	vec3 center;
+	float radius;
+};
 
 struct mesh {
 	string name;
@@ -25,13 +30,8 @@ struct mesh {
 	
 	vector<vec3> diffuseColor;
 	vector<float> specularity;
-};
-
-struct bound {
-	vec3 boundingBoxMin;
-	vec3 boundingBoxMax;
-	vec3 center;
-	float radius;
+	
+	bound boundingBox;
 };
 
 class KPPMeshManager {
