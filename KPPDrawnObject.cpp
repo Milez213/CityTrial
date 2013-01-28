@@ -8,7 +8,7 @@ KPPDrawnObject(KPPPhysics *physics,const char *meshFile){
 }
 
 protected:
-
+Mesh *m;
 /*GLuint meshIndex;
 GLunint textureIndex;
 glm::vec3 diffColor;
