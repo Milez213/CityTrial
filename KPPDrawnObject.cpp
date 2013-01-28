@@ -7,6 +7,7 @@ KPPDrawnObject(KPPPhysics *physics,const char *meshFile){
    
 }
 
+
 protected:
 Mesh *m;
 /*GLuint meshIndex;
@@ -17,7 +18,12 @@ float specularity;
 KPPPhysics *p;
 */
 
-void draw(/*shaders*/){
+void draw(Mesh *mesh,FlatShader *meshShader){
+   
+    meshShader->use();
+    meshShader->setModelMatrix(position * scale * rotation);
+    mesh->render(meshShader);
+
 }
 
 };
