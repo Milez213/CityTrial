@@ -1,5 +1,5 @@
 /* PhysX Object */
-
+#include "glm/glm.hpp"
 class KPPObject {
 	protected:
 		glm::vec3 velocity();
