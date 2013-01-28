@@ -18,11 +18,11 @@ float specularity;
 KPPPhysics *p;
 */
 
-void draw(Mesh *mesh,FlatShader *meshShader){
+void draw(FlatShader *meshShader){
    
     meshShader->use();
     meshShader->setModelMatrix(position * scale * rotation);
-    mesh->render(meshShader);
+    m->render(meshShader);
 
 }
 
