@@ -8,6 +8,7 @@ function comments :
 //--------- N columns-----------------
 // Oneline description at least, if it's not obvious.
 //------------------------------------
+//edit
 void foo(int i) {
 ..
 }
