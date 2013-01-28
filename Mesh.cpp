@@ -4,9 +4,11 @@
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #include <OpenGL/gl3.h>
-#else
+#endif
+
+
+#ifdef __unix__
 #include <GL/glu.h>
-#include <GL/gl3.h>
 #endif
 
 #include "CMeshLoaderSimple.h"
