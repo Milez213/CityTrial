@@ -10,6 +10,8 @@
 #include "BBCollectObject.h"
 #include <cstdlib>
 
+#include <time.h>
+
 BBCollectObject::BBCollectObject()
 {
 	timeSinceCaptured = -1.0;

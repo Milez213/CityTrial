@@ -5,12 +5,22 @@
 // Created by Bryan Bell on 1/12/13
 // For CSC 476 - Real Time 3D Graphics
 
+
+#ifdef __APPLE__
 #include <GL/glfw.h>
+#endif
+
+#ifdef __unix__
+#include "GL/glfw.h"
+#endif
+
+
 
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
+
 #include "GLSL_helper.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
