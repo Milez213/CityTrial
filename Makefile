@@ -16,7 +16,7 @@ UNAME := $(shell uname)
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
 LIB=./glfw/lib/x11/libglfw.a
-LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm 
+LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm -lXrandr
 endif
 
 

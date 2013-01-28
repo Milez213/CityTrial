@@ -7,7 +7,7 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
-#include <GL/glfw.h>
+#include "GL/glfw.h"
 
 #include <iostream>
 using namespace std;

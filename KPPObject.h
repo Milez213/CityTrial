@@ -1,5 +1,8 @@
 /* PhysX Object */
+
 #include "glm/glm.hpp"
+#include "KPPMeshManager.h"
+
 class KPPObject {
 	protected:
 	
@@ -9,7 +12,7 @@ glm::vec3 rotation;
 glm::vec3 scale;
 bound* bBox;
 	
-		glm::vec3 velocity();
+        	glm::vec3 velocity();
 		void set_velocity(vec3 vel);
 		glm::vec3 position();
 		void set_position(vec3 p);
