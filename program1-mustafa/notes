@@ -1,0 +1,20 @@
+
+
+
+
+instancing rockets.
+
+- one rocket model.
+
+- list of current fired rockets.
+  each entry:
+    - position
+    - velocity (direction)
+    - particle system
+
+
+
+TODO:
+ - separate color for sparks and smoke. could also add flame.
+ 
+

@@ -13,7 +13,15 @@
 #endif
 
 #include <vector>
-#include <OpenGL/gl.h>
+
+#ifdef __APPLE__
+#include <Opengl/gl.h>
+#endif
+
+#ifdef __unix__
+#include <GL/gl.h>
+#endif
+
 
 using namespace std;
 using namespace glm;

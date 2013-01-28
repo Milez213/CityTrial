@@ -1,16 +1,45 @@
 OFILES=main.o GLSL_helper.o MStackHelp.o BBObject.o BBMatObject.o BBCamera.o BBPlayerObject.o BBLight.o BBAvoidObject.o BBCollectObject.o
+
 CFILES=main.cpp GLSL_helper.cpp MStackHelp.cpp BBObject.cpp BBMatObject.cpp BBCamera.cpp BBPlayerObject.cpp BBLight.cpp BBAvoidObject.cpp BBCollectObject.cpp
-FRAMEWORKS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+
+# where to find .h files
+IFLAGS=-I../ -I../glfw/include
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall
+
+# detect os and set flags accordingly
+UNAME := $(shell uname)
+
+# For linux. Uses local glfw for now
+ifeq ($(UNAME), Linux)
+LIB=../glfw/lib/x11/libglfw.a
+LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm 
+endif
+
+
+# For OS X
+ifeq ($(UNAME), Darwin)
+LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+endif
+
 
 all: $(OFILES)
-	g++ $(OFILES) $(FRAMEWORKS) -o Program01
+	g++ $(OFILES) -o Program01 $(LDFLAGS) 
 	
+
+%.o: %.cpp
+	g++ -c $(CFLAGS) $(IFLAGS) -o $@ $<
+
+
+
+
+# Comment this out
+ifeq ("x", "y")
 main.o: main.cpp
 	g++ -c main.cpp
-	
+
 GLSL_helper.o: GLSL_helper.cpp
 	g++ -c GLSL_helper.cpp
-
+	
 MStackHelp.o: MStackHelp.cpp
 	g++ -c MStackHelp.cpp
 	
@@ -34,3 +63,5 @@ BBCollectObject.o: BBCollectObject.cpp
 	
 BBLight.o: BBLight.cpp
 	g++ -c BBLight.cpp
+
+endif

@@ -9,6 +9,7 @@
 
 #include "BBAvoidObject.h"
 #include <cstdlib>
+#include <time.h>
 
 BBAvoidObject::BBAvoidObject()
 {

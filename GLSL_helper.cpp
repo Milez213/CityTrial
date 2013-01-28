@@ -15,6 +15,83 @@
 
 using namespace std;
 
+
+/*function to help load the shaders (both vertex and fragment */
+bool installShader(const char *vShaderFName, const char *fShaderFName,
+                   GLuint &ShadeProg) {
+
+    const GLchar *vShaderStr = textFileRead((char*) vShaderFName);
+    const GLchar *fShaderStr = textFileRead((char*) fShaderFName);
+
+    if (vShaderStr == NULL || fShaderStr == NULL) {
+        return false;
+    }
+
+
+    GLuint VS; //handles to shader object
+    GLuint FS; //handles to frag shader object
+    GLint vCompiled, fCompiled, linked; //status of shader
+
+    VS = glCreateShader(GL_VERTEX_SHADER);
+    FS = glCreateShader(GL_FRAGMENT_SHADER);
+
+    //load the source
+    glShaderSource(VS, 1, &vShaderStr, NULL);
+    glShaderSource(FS, 1, &fShaderStr, NULL);
+
+    //compile vertex shader and print log
+    glCompileShader(VS);
+    /* check shader status requires helper functions */
+    printOpenGLError();
+    glGetShaderiv(VS, GL_COMPILE_STATUS, &vCompiled);
+
+    cout << "Vertex ";
+    printShaderInfoLog(VS);
+
+    if (!vCompiled) {
+        printf("Error compiling vertex shader '%s'\n", vShaderFName);
+    }
+
+    //compile frag shader and print log
+    glCompileShader(FS);
+    /* check shader status requires helper functions */
+    printOpenGLError();
+    glGetShaderiv(FS, GL_COMPILE_STATUS, &fCompiled);
+
+    cout << "Frag ";
+    printShaderInfoLog(FS);
+
+    if (!vCompiled) {
+        printf("Error compiling fragment shader '%s'\n", fShaderFName);
+    }
+
+    if (!vCompiled || !fCompiled) {
+        return false;
+    }
+
+    //create a program object and attach the compiled shader
+    ShadeProg = glCreateProgram();
+    glAttachShader(ShadeProg, VS);
+    glAttachShader(ShadeProg, FS);
+
+
+    glLinkProgram(ShadeProg);
+    /* check shader status requires helper functions */
+
+    printOpenGLError();
+    glGetProgramiv(ShadeProg, GL_LINK_STATUS, &linked);
+    printProgramInfoLog(ShadeProg);
+
+    glUseProgram(ShadeProg);
+    
+    // TODO - check linked status
+
+    printf("sucessfully installed shaders '%s' and '%s'\n=================\n",
+            vShaderFName, fShaderFName);
+    return true;
+}
+
+
 void checkGlErrors() {
   const GLenum errCode = glGetError();
 
@@ -61,7 +138,7 @@ void printShaderInfoLog (GLuint shader)
 			exit (1);
         }
 		glGetShaderInfoLog (shader, infologLength, &charsWritten, infoLog);
-		printf ("Shader InfoLog:\n%s\n\n", infoLog);
+		printf ("Shader InfoLog:\n%s----\n", infoLog);
 		free (infoLog);
     }
 	printOpenGLError();  // Check for OpenGL errors
@@ -87,7 +164,7 @@ void printProgramInfoLog (GLuint program)
 			exit (1);
         	}
 		glGetProgramInfoLog (program, infologLength, &charsWritten, infoLog);
-		printf ("Program InfoLog:\n%s\n\n", infoLog);
+		printf ("Program InfoLog:\n%s----\n", infoLog);
 		free (infoLog);
     	}
 	printOpenGLError ();  // Check for OpenGL errors
@@ -108,18 +185,28 @@ GLint getUniLoc(GLuint program, const GLchar *name) {
 }
 
 void getGLversion() {
-	int major, minor;
-	
-	major = minor =0;
-	const char *verstr = (const char *)glGetString(GL_VERSION);
-	
-	if ((verstr == NULL) || (sscanf(verstr, "%d.%d", &major, &minor) !=2)) {
-		printf("Invalid GL_VERSION format %d %d\n", major, minor);
-	}
-	if( major <2) {
-		printf("This shader example will not work due to opengl version, which is %d %d\n", major, minor);
-		exit(0);
-	}
+    GLint major, minor;
+
+    major = minor = 0;
+
+    // From GLSL 4.0 Cookbook
+    const GLubyte *renderer = glGetString( GL_RENDERER );
+    const GLubyte *vendor = glGetString( GL_VENDOR );
+    const GLubyte *version = glGetString( GL_VERSION );
+    const GLubyte *glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
+    //glGetIntegerv(GL_MAJOR_VERSION, &major);
+    //glGetIntegerv(GL_MINOR_VERSION, &minor);
+    printf("GL Vendor: %s\n", vendor);
+    printf("GL Renderer: %s\n", renderer);
+    printf("GL Version (string): %s\n", version);
+    //printf("GL Version (integer): %d.%d\n", major, minor);
+    printf("GLSL Version: %s\n", glslVersion);
+
+
+    if (major < 3) {
+        printf("This program requires at least GLSL 3.3\n");
+      //  exit(0);
+    }
 }
 
 // textfile.cpp
@@ -134,8 +221,6 @@ void getGLversion() {
 //////////////////////////////////////////////////////////////////////
 
 char *textFileRead(char *fn) {
-	
-	
 	FILE *fp;
 	char *content = NULL;
 	
@@ -177,5 +262,58 @@ int textFileWrite(char *fn, char *s) {
 		}
 	}
 	return(status);
+}
+
+
+
+// from stackoverflow.com. Only works when there's no frag shader
+void usePointSprites() {
+    const GLint texWidth = 256;
+    const GLint texHeight = 256;
+    const float texHalfWidth = texWidth/2.0;
+    const float texHalfHeight = texHeight/2.0;
+
+    unsigned char* pData = new unsigned char[texWidth*texHeight*4];
+    for(int y=0; y<texHeight; ++y){
+        for(int x=0; x<texWidth; ++x){
+            int offs = (x + y*texWidth) * 4;
+            float xoffs = ((float)x - texHalfWidth) / texHalfWidth;
+            float yoffs = ((float)y - texHalfWidth) / texHalfHeight;
+            float alpha = 1.0f - std::sqrt(xoffs*xoffs + yoffs*yoffs);
+            if(alpha < 0.0f)
+                alpha = 0.0f;
+            pData[offs + 0] = 255; //r
+            pData[offs + 1] = 0; //g
+            pData[offs + 2] = 0; //b
+            pData[offs + 3] = 255.0f * alpha; // * 
+            //printf("alpha: %f\n", pData[x + y*texWidth + 3]);
+        }
+    }
+
+    GLuint texture_name;
+
+    glGenTextures(1, &texture_name);
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_name);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+    glEnable(GL_POINT_SPRITE);
+    glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glPointSize(32.0f);
+
+
+    /*
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_DST_COLOR);
+    // glDisable(GL_DEPTH_TEST);
+    */
+
+    glEnable(GL_POINT_SMOOTH);
 }
 

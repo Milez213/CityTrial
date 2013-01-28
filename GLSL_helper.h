@@ -7,12 +7,15 @@
  *
  */
 
+#ifndef GLSL_HELPER_H
+#define GLSL_HELPER_H
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #include <OPENGL/gl.h>
 #endif
 #ifdef __unix__
-#include <GL/glut.h>
+#include <GL/glu.h>
 #endif
 
 #include <stdlib.h>
@@ -20,6 +23,11 @@
 #include <string.h>
 #include <iostream>
 #include <stdexcept>
+
+#include "glm/glm.hpp"
+
+bool installShader(const GLchar *vShaderStr, const GLchar *fShaderStr,
+                  GLuint &ShadeProg);
 
 int printOglError (const char *file, int line);
 
@@ -38,14 +46,14 @@ void getGLversion();
 int textFileWrite(char *fn, char *s);
 char *textFileRead(char *fn);
 
-inline GLint safe_glGetAttribLocation(const GLuint program, const char varname[]) {
+inline GLint safe_glGetAttribLocation(const GLint program, const char varname[]) {
   GLint r = glGetAttribLocation(program, varname);
   if (r < 0)
     std::cerr << "WARN: "<< varname << " cannot be bound (it either doesn't exist or has been optimized away). safe_glAttrib calls will silently ignore it.\n" << std::endl;
   return r;
 }
 
-inline GLint safe_glGetUniformLocation(const GLuint program, const char varname[]) {
+inline GLint safe_glGetUniformLocation(const GLint program, const char varname[]) {
   GLint r = glGetUniformLocation(program, varname);
   if (r < 0)
     std::cerr << "WARN: "<< varname << " cannot be bound (it either doesn't exist or has been optimized away). safe_glUniform calls will silently ignore it.\n" << std::endl;
@@ -98,6 +106,15 @@ inline void safe_glUniform1f(const GLint handle, const GLfloat a) {
     glUniform1f(handle, a);
 }
 
+inline void safe_glUniform3f(const GLint handle, const GLfloat a, const GLfloat b, const GLfloat c) {
+  if (handle >= 0)
+    glUniform3f(handle, a, b, c);
+}
+
+inline void safe_glUniform3f(const GLint handle, glm::vec3 v) {
+    if (handle >= 0)
+        safe_glUniform3f(handle, v.x, v.y, v.z);
+}
 
 
 // Check if there has been an error inside OpenGL and if yes, print the error and
@@ -126,3 +143,6 @@ public:
   }
 };
 
+void usePointSprites();
+
+#endif /* GLSL_HELPER_H */
