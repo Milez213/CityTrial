@@ -9,17 +9,31 @@
 
 #include <GL/glfw.h>
 
+#include <iostream>
+using namespace std;
 
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
 
+// === helpful libraries ===
 #include "GLSL_helper.h"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
 #include "glm/gtc/type_ptr.hpp" //value_ptr
+using  glm::mat4;
+using  glm::vec3;
+using  glm::vec4;
+
+
 #include "MStackHelp.h"
+
+
+#include "Bunnie.h"
+#include "FlatShader.h"
+
 
 //-----------------------------------------------
 // These are global state machines: 
@@ -49,25 +63,135 @@
 //  pointer to these objects and do NOT create
 //  duplicates.
 //-----------------------------------------------
+
+
+
+// === Globals =================================
+
+/*
+// TODO
 KPPPhysics *physics_sim;
 KPPMeshManager *mesh_manager;
 KPPShader *shader;
-RenderingHelper *model_trans;
 
 vector<KPPObject *> moving_objects;
 vector<KPPDrawnObject *> drawn_objects;
 vector<KPPKartObject *> kart_objects;
+*/
 
 
+// test one object for now
+FlatShader *flatShader;
+Bunnie *bunnie;
+
+
+RenderingHelper g_model_trans;
+
+// GLFW Window
 int g_win_height, g_win_width;
+
+double g_time;
 double g_last_time;
 
-void update(double deltaTime)
-{
+mat4 g_proj;
+mat4 g_view;
+mat4 g_model;
+vec3 g_lookAt;
+
+
+
+// === end Globals ==============================
+
+
+/* projection matrix */
+void setProjectionMatrix() {
+   g_proj = glm::perspective(90.0f, (float)g_win_width/g_win_height, 0.1f, 100.f);
+}
+
+
+/* camera controls */
+void setView() {
+   // TODO
+   g_view = mat4(1.0);
+}
+
+
+void update(double dt) {
+   /* psuedocode
    for each (KKPKartObject kart in kart_objects) {
       kart->update();
    }
+   */
+
+   bunnie->update(dt);
 }
+
+
+
+
+void draw() {
+
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+   setProjectionMatrix();
+   setView();
+
+   // set once for this shader
+   flatShader->use();
+   flatShader->setProjMatrix(g_proj);
+   flatShader->setViewMatrix(g_view);
+
+
+   bunnie->render();
+
+   /* psuedocode
+   for each (KKPDrawnObject object in drawn_objects) {
+      object->draw(model_trans);
+   }
+   */
+
+   glfwSwapBuffers();
+}
+
+
+
+
+void gameLoop()
+{
+   double dt;
+
+   g_time = glfwGetTime();
+
+   dt = g_time - g_last_time;
+
+   update(dt);
+
+   draw();
+
+   g_last_time = g_time;   	
+}
+
+
+
+
+void initObjects() {
+    cout << "Initializing game objects\n";
+
+    // TODO - test for return values (but we usually know if they work or not)
+
+    flatShader = new FlatShader();
+
+    // Bunnie 
+    vec3 pos(0,0,-5);
+    vec3 vel(0, 0, 0.1);
+    Mesh *bunnie_mesh = new Mesh("models/bunny500.m");
+    bunnie = new Bunnie(pos, vel, bunnie_mesh, flatShader);
+
+}
+
+
+
 
 //-----------------------------------------------
 // This function initializes geometry from a 
@@ -75,6 +199,7 @@ void update(double deltaTime)
 //  has the format:
 //  (type) (.obj file) (type specific data) ...
 //-----------------------------------------------
+/*
 void initGeometry()
 {
    ifstream in("geometry_loader", ios::in);
@@ -91,45 +216,35 @@ void initGeometry()
       meshFile << s;
 
       switch (type) {
-case: "d"
-      KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
-      //Any initialization from type specific data in file
-      drawn_objects.push_back(object);
-      moving_objects.push_back(object);
-      break;
-case: "k"
-      KKPKartObject *object = new KPPKartObject(meshFile.c_str());
-      if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
-         printf("Controller Connected for Player %d\n", kart_objects.size());
-      }
-      //Any initialization from type specific data in file
-      kart_objects.push_back(object);
-      drawn_objects.push_back(object);
-      moving_objects.push_back(object);
-      break;
-default:
-      cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
-      exit(0);
+      case: "d"
+         KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
+         //Any initialization from type specific data in file
+         drawn_objects.push_back(object);
+         moving_objects.push_back(object);
+         break;
+      case: "k"
+         KKPKartObject *object = new KPPKartObject(meshFile.c_str());
+         if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
+            printf("Controller Connected for Player %d\n", kart_objects.size());
+         }
+         //Any initialization from type specific data in file
+         kart_objects.push_back(object);
+         drawn_objects.push_back(object);
+         moving_objects.push_back(object);
+         break;
+      default:
+         cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
+         exit(0);
       }
    }
 }
+*/
 
-void draw()
-{
-   for each (KKPDrawnObject object in drawn_objects) {
-      object->draw(model_trans);
-   }
-}
 
-void gameLoop(double deltaTime)
-{
-   update(deltaTime);
-   draw();
-}
 
 void initialize()
 {
-   /* Start OpenGL Initialization */
+   /* === Start OpenGL Initialization === */
    glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
    // Black Background
    glClearDepth (1.0f);    // Depth Buffer Setup
@@ -141,22 +256,49 @@ void initialize()
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   /* === End OpenGL Initialization === */
 
-   model_trans.useModelViewMatrix();
-   model_trans.loadIdentity();
-   /* End OpenGL Initialization */
+   g_model_trans.useModelViewMatrix();
+   g_model_trans.loadIdentity();
 
-   shader = new PhongShader();
-   mesh_loader = new KPPMeshLoader(shader, model_trans);
 
-   initGeometry();
+   // initGeometry();
+
+   initObjects();
 }
 
+
+// For GLFW
 void reshape(int width, int height)
 {
-   g_w_wdth = width;
-   g_w_hgt = height;
+   g_win_width = width;
+   g_win_height = height;
 }
+
+
+// Keyboard callback
+
+void GLFWCALL keyboard_callback_key(int key, int action) {
+   // only gives upercase
+   switch (key) {
+   case 'Q':
+   case GLFW_KEY_ESC:
+      printf("Bye :)\n");
+      exit(0);
+      break;
+   }
+
+   /*
+   switch (action) {
+   case GLFW_PRESS:
+      break;
+
+   case GLFW_RELEASE:
+      break;
+   }
+   */
+}
+
 
 int main(int argc, char** argv) 
 {
@@ -177,19 +319,18 @@ int main(int argc, char** argv)
 
 
    glfwSetWindowSizeCallback( reshape );
+   glfwSetKeyCallback( keyboard_callback_key );
 
    initialize();
 
    glfwSetTime(0.0);
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
-      double time = glfwGetTime();
-
-      gameLoop(time - g_last_time);
-      g_last_time = time;   	
+      gameLoop();
    }
 
    glfwTerminate();
+   return 0;
 }
 
 
