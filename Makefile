@@ -1,16 +1,21 @@
-OFILES=main.o 
+
+
+
+OFILES=main.o MStackHelp.o Mesh.o Bunnie.o GLSL_helper.o Shader.o \
+        CMeshLoaderSimple.o 
 
 
 # where to find .h files
-IFLAGS=-I../ -I../glfw/include
-CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall
+IFLAGS=-I./glfw/include
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g
 
 # detect os and set flags accordingly
 UNAME := $(shell uname)
 
+
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
-LIB=../glfw/lib/x11/libglfw.a
+LIB=./glfw/lib/x11/libglfw.a
 LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm 
 endif
 
@@ -22,7 +27,7 @@ endif
 
 
 all: $(OFILES)
-	g++ $(OFILES) -o kpp $(LDFLAGS) 
+	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS) 
 	
 
 %.o: %.cpp

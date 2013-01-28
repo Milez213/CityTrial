@@ -11,7 +11,7 @@
 #endif
 
 #ifdef __unix__
-#include "GL/glfw.h"
+#include <GL/glfw.h>
 #endif
 
 
