@@ -24,46 +24,4 @@ class KPPObject {
 		 */
 };
 
-class KPPDrawnObject : public KPPObject {
-         public KPPDrawnObject(KPPPhysics *physics,const char *meshFile);
-         protected:
-	         GLuint meshIndex();
-	         void set_meshIndex(GLunint i);
-	         GLuint textureIndex();
-	         void set_textureIndex(GLuint i);
-	         glm::vec3 diffColor();
-	         void set_diffColor(glm::vec3 c);
-	         glm::vec3 specColor();
-	         void set_specColor(glm::vec3 c);
-	         float specularity();
-	         void set_specularity(float f);
-	         void draw();
-	         //Properties??
-		/* Getters and Setters */
-		/* MeshIndex - GLuint
-		 * TextureIndex - GLuint
-		 * DiffColor - vec3
-		 * SpecColor - vec3
-		 * Specularity - float
-		 * properties - struct
-		 */
-};
 
-class KPPCamera : public KPPObject {
-	protected:
-	        glm::vec3 lookAt();
-	        void set_lookAt(glm::vec3 l);
-		/* Getters and Setters */
-		/* LookAt - vec3 */	
-};
-
-class KPPLight : public KPPObject {
-	protected:
-	        glm::vec3 color();
-	        void set_color(glm::vec3 c);
-	        glm::vec3 intensity();
-	        void set_intensity(glm::vec3 i);
-		/* Getters and Setters */
-		/* Color - vec3 
-		 * Intensity - float */	
-};
