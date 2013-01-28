@@ -4,7 +4,12 @@
 
 
 #include <iostream>
+
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>
+#endif
 
 #include "Drawable.h"
 #include "Mesh.h"

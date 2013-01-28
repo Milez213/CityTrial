@@ -1,6 +1,13 @@
  
 #include <stdio.h>
+
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#include <OpenGL/gl.h>
+#else
 #include <GL/glu.h>
+#include <GL/gl.h>
+#endif
 
 #include "CMeshLoaderSimple.h"
 
