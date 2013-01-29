@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <list>
-#include "glm.h"
+#include "glm/glm.hpp"
 
 class KPPPhysics
 {
@@ -22,7 +22,7 @@ public:
       const glm::vec3 &getPosition();
       const glm::vec3 &getDirection();
    protected:
-      Agent(glm::vec3 position, glm::vec3 direction);
+      Actor(glm::vec3 position, glm::vec3 direction);
       void update();
       
    private:

@@ -33,6 +33,7 @@ using  glm::vec4;
 
 #include "Bunnie.h"
 #include "FlatShader.h"
+#include "KPPPhysics.h"
 
 
 //-----------------------------------------------
