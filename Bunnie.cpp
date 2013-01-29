@@ -51,7 +51,7 @@ vec3 Bunnie::getPos() {
     return pos;
 }
 
-void Bunnie::render() {
+void Bunnie::draw() {
     mat4 t = translate(mat4(1.0f), pos);
 
     switch (stage) {
@@ -76,7 +76,7 @@ void Bunnie::render() {
     meshShader->use();
     meshShader->setModelMatrix(t * s * r);
 
-    mesh->render(meshShader);
+    mesh->draw(meshShader);
 }
 
 void Bunnie::update(double dt) {

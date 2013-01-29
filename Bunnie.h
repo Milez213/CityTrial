@@ -5,21 +5,15 @@
 
 #include <iostream>
 
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
+#include "include_glu.h"
+
 
 #include "Drawable.h"
 #include "Mesh.h"
 #include "FlatShader.h"
 #include "defines.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
-
-
+#include "include_glm.h"
 
 // global variables
 
@@ -44,7 +38,7 @@ public:
 
     vec3 getPos();
 
-    void render();
+    void draw();
 
     bool collide(vec3 pos, float r);
 

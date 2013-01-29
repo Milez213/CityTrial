@@ -57,16 +57,17 @@ bool Mesh::init(std::string fname) {
     return true;
 }
 
+// assumes M V P matrices are set
 // Renders using Vertex Array Object
-void Mesh::render() {
+void Mesh::draw() {
     glBindVertexArray(meshVAO);
     glDrawArrays(GL_TRIANGLES, 0, m_TriangleCount * 3);
     glBindVertexArray(0);
 }
 
-
+// assumes M V P matrices are set
 // render using a given shader's Attribute Position (gets h_aPosition)
-void Mesh::render(FlatShader *flatShader) {
+void Mesh::draw(FlatShader *flatShader) {
 
    GLint h_aPos = flatShader->getPosLocation();
 

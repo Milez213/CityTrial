@@ -14,8 +14,9 @@ public:
 
     bool init(std::string);
 
-    void render();
-    void render(FlatShader *);
+	// assumes M V P matrices are set
+    void draw();
+    void draw(FlatShader *);
 
     int getTriangleCount() {
         return m_TriangleCount;

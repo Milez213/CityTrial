@@ -7,7 +7,7 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
-#include "GL/glfw.h"
+#include <GL/glfw.h>
 
 #include <iostream>
 using namespace std;
@@ -143,7 +143,7 @@ void draw() {
    flatShader->setViewMatrix(g_view);
 
 
-   bunnie->render();
+   bunnie->draw();
 
    /* psuedocode
    for each (KKPDrawnObject object in drawn_objects) {
