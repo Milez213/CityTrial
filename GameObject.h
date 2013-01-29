@@ -14,6 +14,8 @@
 /* PhysX Object */
 #include "glm/glm.hpp"
 
+using namespace glm;
+
 class GameObject {
 public:
 	GameObject();

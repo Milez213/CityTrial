@@ -30,10 +30,11 @@ using  glm::vec4;
 
 #include "MStackHelp.h"
 
-
 #include "Bunnie.h"
 #include "FlatShader.h"
+#include "ModelManager.h"
 
+#include "GameDrawableObject.h"
 
 //-----------------------------------------------
 // These are global state machines: 
@@ -79,10 +80,12 @@ vector<KPPDrawnObject *> drawn_objects;
 vector<KPPKartObject *> kart_objects;
 */
 
+ModelManager *g_model_manager;
 
 // test one object for now
 FlatShader *flatShader;
 Bunnie *bunnie;
+vector<GameDrawableObject> drawable_objects;
 
 
 RenderingHelper g_model_trans;
@@ -111,8 +114,9 @@ void setProjectionMatrix() {
 
 /* camera controls */
 void setView() {
-   // TODO
-   g_view = mat4(1.0);
+   vec3 up = glm::vec3(0.0, 1.0, 0.0);
+   glm::mat4 lookAt = glm::lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), up);
+   g_view = lookAt;
 }
 
 
@@ -141,8 +145,9 @@ void draw() {
    flatShader->use();
    flatShader->setProjMatrix(g_proj);
    flatShader->setViewMatrix(g_view);
-
-
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      drawable_objects[i].draw(flatShader, g_model_trans);
+   }
    bunnie->render();
 
    /* psuedocode
@@ -176,18 +181,25 @@ void gameLoop()
 
 
 void initObjects() {
-    cout << "Initializing game objects\n";
+   cout << "Initializing game objects\n";
+   
+   // TODO - test for return values (but we usually know if they work or not)
 
-    // TODO - test for return values (but we usually know if they work or not)
+   flatShader = new FlatShader();
 
-    flatShader = new FlatShader();
-
-    // Bunnie 
-    vec3 pos(0,0,-5);
-    vec3 vel(0, 0, 0.1);
-    Mesh *bunnie_mesh = new Mesh("models/bunny500.m");
-    bunnie = new Bunnie(pos, vel, bunnie_mesh, flatShader);
-
+   // Bunnie
+   vec3 pos(0,0,5);
+   vec3 vel(0, 0, 0.1);
+   Mesh *bunnie_mesh = new Mesh("models/bunny500.m");
+   bunnie = new Bunnie(pos, vel, bunnie_mesh, flatShader);
+   for (int i = -10; i < 11; i++) {
+      for (int j = -10; j < 11; j++) {
+         GameDrawableObject *object = new GameDrawableObject("Stuff");
+         object->setPosition(vec3(i, j, 5.0));
+         object->setScale(vec3(0.1, 0.1, 0.1));
+         drawable_objects.push_back(*object);
+      }
+   }
 }
 
 
@@ -261,7 +273,7 @@ void initialize()
    g_model_trans.useModelViewMatrix();
    g_model_trans.loadIdentity();
 
-
+   g_model_manager = new ModelManager();
    // initGeometry();
 
    initObjects();

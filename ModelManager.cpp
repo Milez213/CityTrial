@@ -11,172 +11,57 @@
 //
 // For CSC476 - Real Time 3D Rendering
 
-#include "KPPMeshManager.h"
+#include "ModelManager.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
-#include "glm/gtc/type_ptr.hpp" //value_ptr
-
-KPPMeshManager::KPPMeshManager(){
-	//meshes = new vector<vector<meshes>>;
-	//bounds = new vector<bounds>;
+ModelManager::ModelManager()
+{
+   
 }
 
-vector<Mesh> KPPMeshManager::getObj(const char *filename, vector<Mesh> **models, bound **boundingBox)
+ModelManager::~ModelManager()
 {
-#if 0 
-/*	vector<glm::vec3> vertices;
-   vector<glm::vec3> normals;
-   vector<glm::vec2> textures;
-   vector<glm::vec2> texturesTemp;
-   vector<vector<GLushort>> elements;
-    
-   bool objectStarted = false, useMtl = false;
-   int numMeshes;
-   mesh newMesh;
-   ifstream in(filename, ios::in);
-   if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
-    
-   string line;
-   while (getline(in, line)) {
-      if (line.substr(0,2) == "o ") {
-      		newMesh.name = line.substr(2);
-      		
-         /*if (objectStarted == true) {
-            normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-            
-            for (int i = 0; i < elements.size(); i+=3) {
-               GLushort ia = elements[i];
-               GLushort ib = elements[i+1];
-               GLushort ic = elements[i+2];
-               glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-                                                                glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-               normals[ia] += normal;
-               normals[ib] += normal;
-               normals[ic] += normal;
-            }
-               
-            newObject->BBBindBuffers(vertices, normals, elements, textures);
-            newObjects->push_back(*newObject);
-            normals.clear();
-            elements.clear();
-            textures.clear();
-            newObject = new BBMatObject;
-         }*/    
-         //istringstream s(line.substr(2));
-         //objectStarted = 1;
-      }
-      else if (line.substr(0,2) == "v ") {
-         istringstream s(line.substr(2));
-         glm::vec3 v; s >> v.x; s >> v.y; s >> v.z;
-         vertices.push_back(v);
-      } else if (line.substr(0,2) == "f ") {
-         if (useMtl == true) {
-            string s = line.substr(2);
-            string n;
-            int txtCrd = 0;
-            GLushort a;
-            
-            for (int i = 0; i <= s.length(); i++) {
-               if (s[i] != 47 && s[i] != 32 && i != s.length()) {
-                  n += s[i];
-               } else {
-                  istringstream str(n);
-                  if (txtCrd == false) {
-                     str >> a;
-                     elements.push_back(--a);
-                     txtCrd = true;
-                  } else {
-                     int t;
-                     str >> t;
-                     
-                     textures.at(a).x = texturesTemp.at(t-1).x;
-                     textures.at(a).y = texturesTemp.at(t-1).y;
-                     
-                     txtCrd = false;
-                  }
-                  n.clear();
-               }
-            }
-         } else {
-            istringstream s(line.substr(2));
-            GLushort a,b,c;
-            s >> a; s >> b; s >> c;
-            a--; b--; c--;
-            elements.push_back(a); elements.push_back(b); elements.push_back(c);
-         }
-      } else if (line.substr(0,3) == "vt ") {
-         istringstream s(line.substr(3));
-         glm::vec2 v; s >> v.x; s >> v.y;
-         texturesTemp.push_back(v);
-      } else if (line.substr(0,7) == "usemtl ") {
-         if (useMtl == true)
-            textures.resize(vertices.size(), vec2(0.0, 0.0));
-      } else if (line.substr(0,7) == "mtllib ") {
-         string mtl = "models/";
-         mtl += line.substr(7);
-         if (newObject->BBLoadMaterial(mtl.c_str()) == 1) {
-            useMtl = 1;
-         } else {
-        	   useMtl = 0;	
-         }
-//      } else if (line[0] == '#') { /* ignoring this line */ }
-//      else { /* ignoring this line */ }
-
-
-
-/*   }
-    
-   normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-   for (int i = 0; i < elements.size(); i+=3) {
-  	   //printf("Face %d: (%d, %d, %d)\n", i / 3, elements[i], elements[i+1], elements[i+2]);
-      GLushort ia = elements[i];
-      GLushort ib = elements[i+1];
-      GLushort ic = elements[i+2];
-      glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-                                                     glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-      normals[ia] += normal;
-      normals[ib] += normal;
-      normals[ic] += normal;
+   for (int i = 0; i < (int)storage.size(); i++) {
+      delete[] storage[i].indexBuffer;
+      delete[] storage[i].indexBufferLength;
    }
-   newObject->BBBindBuffers(vertices, normals, elements, textures);
-   //printf("%d\n", newObject->IndexBufferLength());
-   newObjects->push_back(*newObject);
-    
-   return 0;*/
+}
+
+bool ModelManager::getObject(const char *fileName, GLuint *vertexBuffer, GLuint *textureBuffer,
+                             GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength)
+{
+   if (storage.empty()) {
+      loadObject("Hello!");
+   }
+   	
+   *vertexBuffer = storage[0].vertexBuffer;
+   *normalBuffer = storage[0].normalBuffer;
+   *textureBuffer = storage[0].textureBuffer;
+   
+   int size = sizeof(storage[0].indexBuffer) / sizeof(GLuint*);
+   *indexBuffer = new GLuint[size];
+   *indexBufferLength = new int[size];
+   
+   for (int i = 0; i < size; i++) {
+      (*indexBuffer)[i] = storage[0].indexBuffer[i];
+      (*indexBufferLength)[i] = storage[0].indexBufferLength[i];
+   }
+#ifdef DEBUG_VBO   
+   printf("VBO Transfered to Given Pointer Location: %d\n", (int)*vertexBuffer);
 #endif
-   	
-	if (modelList.empty()) {   	
-   		loadObj("Hello!");
-   		printf("Start-up mesh being loaded!\n");
-   	}
-   	
-   	//models = 
-   	
-   	//bound = &bounds[0];
-   	
-   return modelList[0];   	
+   return true;
 }
 
-void KPPMeshManager::loadObj(const char *filename)
+void ModelManager::loadObject(const char *filename)
 {
-	vector<Mesh> newMeshes;
-	newMeshes.push_back(cubeMesh());
-
-	modelList.push_back(newMeshes);
-	
-	bound newBound;
-	newBound.boundingBoxMax = vec3(1.0, 1.0, 1.0);
-	newBound.boundingBoxMin = vec3(-1.0, -1.0, -1.0);
-	newBound.center = vec3(0.0, 0.0, 0.0);
-	newBound.radius = sqrt(3);
-	
-	bounds.push_back(newBound);
+	storage.push_back(cubeMesh());
+#ifdef DEBUG_VBO
+   printf("VBO Transfered to Object Memory: %d\n", (int)storage[0].vertexBuffer);
+#endif
 }
 
-Mesh KPPMeshManager::cubeMesh()
+bufferStore ModelManager::cubeMesh()
 {
-	Mesh *newMesh = new Mesh();
+	bufferStore store;
 	
    float vertecies[24] = {
 		-1.0, -1.0, -1.0,
@@ -189,7 +74,7 @@ Mesh KPPMeshManager::cubeMesh()
 		1.0, -1.0, 1.0
    	};
    	
-   	float normals[24] = {
+   float normals[24] = {
 		-1.0, -1.0, -1.0,
 		-1.0, 1.0, -1.0,
 		1.0, 1.0, -1.0,
@@ -200,28 +85,30 @@ Mesh KPPMeshManager::cubeMesh()
 		1.0, -1.0, 1.0
    	};
    	
-   float faces[36] = {
-		0, 3, 1,
-		2, 1, 3,
-		0, 5, 4,
-		0, 1, 5,
-		2, 3, 6,
+   GLuint faces[36] = {
+		1, 3, 0,
+		1, 2, 3,
+		5, 1, 0,
+		5, 0, 4,
+		6, 2, 3,
 		6, 3, 7,
 		5, 6, 7, 
 		5, 7, 4,
 		1, 2, 6,
 		1, 6, 5,
-		4, 7, 0,
-		7, 0, 3   	
+		0, 3, 7,
+		0, 7, 4
    	};
   
-   vec3 diff = vec3(1.0, 0.0, 0.0);
-   float spec = 0.3;
+   //vec3 diff = vec3(1.0, 0.0, 0.0);
+   //float spec = 0.3;
    
    GLuint vbo, ibo, nbo;
 
-   int ibl = 12;
-   
+   int ibl = 36;
+#ifdef DEBUG_VBO   
+   printf("VBO Pre-Initialization: %d\n", (int)vbo);
+#endif   
    glGenBuffers(1, &vbo);
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
    glBufferData(GL_ARRAY_BUFFER, sizeof(vertecies), vertecies, GL_STATIC_DRAW);
@@ -233,8 +120,20 @@ Mesh KPPMeshManager::cubeMesh()
    glGenBuffers(1, &nbo);
    glBindBuffer(GL_ARRAY_BUFFER, nbo);
    glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+#ifdef DEBUG_VBO   
+   printf("VBO Post-Initialization: %d\n", (int)vbo);
+#endif   
+   store.vertexBuffer = vbo;
+   store.normalBuffer = nbo;
+   store.textureBuffer = 0;
    
-   newMesh->init(vbo, nbo, ibo, ibl, diff, spec);
+   store.indexBuffer = new GLuint[1];
+   store.indexBufferLength = new int[1];
    
-   return *newMesh;
+   store.indexBuffer[0] = ibo;
+   store.indexBufferLength[0] = ibl;
+#ifdef DEBUG_VBO   
+   printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
+#endif   
+   return store;
 }

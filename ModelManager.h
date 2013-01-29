@@ -1,40 +1,45 @@
-//
-// KPPMeshManager.cpp
-// Final Project - Kart Part Park
-// 
-// Created by Bryan Bell
-// Date Created: 1/25/13
-//
-// The KPPMeshManager class is directly responsible
-//  for managing meshes needed in runtime for 
-//  drawing.
-//
-// For CSC476 - Real Time 3D Rendering
+/*
+ * ModelManager.h
+ * Final Project - Kart Part Park
+ *
+ * Created by Bryan Bell
+ * Date Created: 1/25/13
+ *
+ * The ModelManager class is directly responsible
+ *  for managing meshes needed in runtime for
+ *  drawing.
+ */
 
-struct bound {
-	vec3 boundingBoxMin;
-	vec3 boundingBoxMax;
-	vec3 center;
-	float radius;
-};
+#ifndef MODEL_MANAGER
+#define MODEL_MANAGER
 
-struct mesh {
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl.h>
+#endif
+
+#include <string>
+#include <vector>
+#include "glm/glm.hpp"
+
+using namespace glm;
+using namespace std;
+
+struct bufferStore {
 	string name;
 	
-	vector<GLuint> vertexBuffer;
-	vector<GLuint> normalBuffer;
-	vector<GLuint> indexBuffer;
-	vector<GLuint> textureBuffer;
-	vector<GLuint> textureImageBuffer;
-	vector<int> indexBufferLength;
+	GLuint vertexBuffer;
+	GLuint normalBuffer;
+	GLuint textureBuffer;   
+	GLuint *indexBuffer;
+	int *indexBufferLength;
 	
-	vector<vec3> diffuseColor;
-	vector<float> specularity;
-	
-	bound boundingBox;
+	vec3 *diffuseColor;
+	float *specularity;
 };
 
-class KPPMeshManager {
+class ModelManager {
 
 public:
 	//--------------------------------------------
@@ -42,7 +47,8 @@ public:
 	//  used when drawing a mesh selected by 
 	//  indexing the mesh array.
 	//--------------------------------------------
-	KPPMeshManager();
+	ModelManager();
+   ~ModelManager();
 	
 	//--------------------------------------------
 	// This function takes in the name of a file
@@ -53,13 +59,22 @@ public:
 	// 
 	// Parameters:
 	// filename - name of the .obj file to load
+   // vertexBuffer - vertexBuffer to fill
+   // textureBuffer - textureBuffer to fill
+   // normalBuffer - normalBuffer to fill
+   // indexBuffer - indexBuffer to fill
+   // indexBufferLength - indexBufferLength to fill
 	//
 	// Returns:
-	// mesh - mesh loaded from manager
+	// true if successfull, false if unsuccessful
 	//--------------------------------------------
-	mesh getMesh(const char* filename);
+	bool getObject(const char *fileName, GLuint *vertexBuffer, GLuint *textureBuffer,
+                  GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength);
 	
 private:
-	void loadMesh(const char* filename);
-	vector<mesh> meshes;
-}
+	void loadObject(const char* filename);
+   bufferStore cubeMesh();
+	vector<bufferStore> storage;
+};
+
+#endif
