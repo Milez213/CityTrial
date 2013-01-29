@@ -1,13 +1,19 @@
+/*
+ * GameObject.cpp
+ * Author: Chris Pauley & Bryan Bell
+ * 
+ * Date: 1/28/2013
+ * This class defines the most basic game object
+ *  object has position, orientation, scale, and
+ *  velocity
+ */
+ 
 #include "KPPObject.h"
 
-class KPPObject {
-protected:
-
-glm::vec3 velocity;
-glm::vec3 position;
-glm::vec3 rotation;
-glm::vec3 scale;
-bound* bBox;
+GameObject::GameObject()
+{
+	
+}
 
 glm::vec3 velocity(){
    return velocity;
