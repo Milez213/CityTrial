@@ -28,6 +28,11 @@ GameKartObject - Chris
 Shaders - Mustafa
    -Implement Phong Shading
       -Allow objects access to normal and texture handlers
+
+Lighting/Camera - Mustafa
+   -One Light "Sun"
+   -Initialize camera object
+      -LookAt KartObject
    
 
 More in https://github.com/Milez213/CityTrial/wiki/What-we-need-for-25%25
