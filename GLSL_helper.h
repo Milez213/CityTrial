@@ -11,13 +11,8 @@
 #define GLSL_HELPER_H
 
 #ifdef __APPLE__
-<<<<<<< HEAD
 //#include <GLUT/glut.h>
 #include <OPENGL/gl3.h>
-=======
-#include <GLUT/glu.h>
-#include <OPENGL/gl.h>
->>>>>>> 75ec9e50ab5b7c173c709096bb10b03c2532aea9
 #endif
 #ifdef __unix__
 #include <GL/glu.h>

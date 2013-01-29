@@ -30,13 +30,9 @@ using  glm::vec4;
 
 #include "MStackHelp.h"
 
-#include "Bunnie.h"
 #include "FlatShader.h"
-<<<<<<< HEAD
 #include "ModelManager.h"
-=======
 #include "KPPPhysics.h"
->>>>>>> 75ec9e50ab5b7c173c709096bb10b03c2532aea9
 
 #include "GameDrawableObject.h"
 
@@ -88,7 +84,6 @@ ModelManager *g_model_manager;
 
 // test one object for now
 FlatShader *flatShader;
-Bunnie *bunnie;
 vector<GameDrawableObject> drawable_objects;
 
 
@@ -131,7 +126,6 @@ void update(double dt) {
    }
    */
 
-   bunnie->update(dt);
 }
 
 
@@ -149,16 +143,11 @@ void draw() {
    flatShader->use();
    flatShader->setProjMatrix(g_proj);
    flatShader->setViewMatrix(g_view);
-<<<<<<< HEAD
+   
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       drawable_objects[i].draw(flatShader, g_model_trans);
    }
-   bunnie->render();
-=======
 
-
-   bunnie->draw();
->>>>>>> 75ec9e50ab5b7c173c709096bb10b03c2532aea9
 
    /* psuedocode
    for each (KKPDrawnObject object in drawn_objects) {
@@ -200,8 +189,6 @@ void initObjects() {
    // Bunnie
    vec3 pos(0,0,5);
    vec3 vel(0, 0, 0.1);
-   Mesh *bunnie_mesh = new Mesh("models/bunny500.m");
-   bunnie = new Bunnie(pos, vel, bunnie_mesh, flatShader);
    for (int i = -10; i < 11; i++) {
       for (int j = -10; j < 11; j++) {
          GameDrawableObject *object = new GameDrawableObject("Stuff");

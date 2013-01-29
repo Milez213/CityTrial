@@ -1,8 +1,8 @@
 
 
 
-OFILES=main.o MStackHelp.o Mesh.o Bunnie.o GLSL_helper.o Shader.o \
-        CMeshLoaderSimple.o ModelManager.o GameObject.o GameDrawableObject.o
+OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
+      ModelManager.o GameObject.o GameDrawableObject.o
 
 
 # where to find .h files
