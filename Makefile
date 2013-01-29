@@ -15,11 +15,16 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
-LIB=./glfw/lib/x11/libglfw.a
+	LIB=./glfw/lib/x11/libglfw.a
 
-XRANDR=-Xrandr
-# add -Xrandr on the csl
-LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm
+	# -lXrandr for csl
+	ifeq ($(shell uname -n), pack-nasa)
+		XRANDR=
+	else
+		XRANDR=-lXrandr
+	endif
+
+LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)
 endif
 
 
