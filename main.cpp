@@ -150,6 +150,7 @@ void update(double dt)
    */
    
    getInputState();
+   g_physics->simulate(dt);
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
