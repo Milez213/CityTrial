@@ -10,14 +10,13 @@
  */
 
 #include "GameDrawableObject.h"
-#include "ModelManager.h"
 
 extern ModelManager *g_model_manager;
 
 GameDrawableObject::GameDrawableObject(const char *objFile)
 {
    g_model_manager->getObject(objFile, &vertexBuffer, &textureBuffer,
-                              &normalBuffer, &indexBuffer, &indexBufferLength);
+                              &normalBuffer, &indexBuffer, &indexBufferLength, &diffuseColor, &specularity);
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
 #endif

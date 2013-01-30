@@ -23,11 +23,14 @@ ModelManager::~ModelManager()
    for (int i = 0; i < (int)storage.size(); i++) {
       delete[] storage[i].indexBuffer;
       delete[] storage[i].indexBufferLength;
+      delete[] storage[i].diffuseColor;
+      delete[] storage[i].specularity;
    }
 }
 
 bool ModelManager::getObject(const char *fileName, GLuint *vertexBuffer, GLuint *textureBuffer,
-                             GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength)
+                             GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength,
+                             vec3 **diffuseColor, float **specularity)
 {
    if (storage.empty()) {
       loadObject("Hello!");
@@ -40,10 +43,14 @@ bool ModelManager::getObject(const char *fileName, GLuint *vertexBuffer, GLuint 
    int size = sizeof(storage[0].indexBuffer) / sizeof(GLuint*);
    *indexBuffer = new GLuint[size];
    *indexBufferLength = new int[size];
+   *diffuseColor = new vec3[size];
+   *specularity = new float[size];
    
    for (int i = 0; i < size; i++) {
       (*indexBuffer)[i] = storage[0].indexBuffer[i];
       (*indexBufferLength)[i] = storage[0].indexBufferLength[i];
+      (*diffuseColor)[i] = storage[0].diffuseColor[i];
+      (*specularity)[i] = storage[0].specularity[i];
    }
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Given Pointer Location: %d\n", (int)*vertexBuffer);
@@ -99,9 +106,6 @@ bufferStore ModelManager::cubeMesh()
 		0, 3, 7,
 		0, 7, 4
    	};
-  
-   //vec3 diff = vec3(1.0, 0.0, 0.0);
-   //float spec = 0.3;
    
    GLuint vbo, ibo, nbo;
 
@@ -129,9 +133,13 @@ bufferStore ModelManager::cubeMesh()
    
    store.indexBuffer = new GLuint[1];
    store.indexBufferLength = new int[1];
+   store.diffuseColor = new vec3[1];
+   store.specularity = new float[1];
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
+   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
+   store.specularity[0] = 0.4;
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
 #endif   

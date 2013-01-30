@@ -18,10 +18,12 @@
 #include <GL/gl.h>
 #endif
 
-#include "GameObject.h"
-#include "FlatShader.h"
-
 #include "MStackHelp.h"
+#include "ModelManager.h"
+#include "FlatShader.h"
+#include "GamePhysics.h"
+
+#include "GameObject.h"
 
 using namespace glm;
 
@@ -36,6 +38,13 @@ protected:
    GLuint vertexBuffer, textureBuffer, normalBuffer;
    GLuint *indexBuffer;
    int *indexBufferLength;
+   
+   vec3 *diffuseColor;
+	float *specularity;
+   
+   bound boundInfo;
+   
+   GamePhysics::Actor *actor;
 };
 
 #endif

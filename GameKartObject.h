@@ -2,25 +2,16 @@
 #ifndef GAME_KART_H
 #define GAME_KART_H
 
+#include "defines.h"
 
 #include <iostream>
 #include <vector>
-
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "include_glu.h"
-
-
-;
-#include "GameDrawableObject.h"
-#include "GameObject.h"
-
-
 #include "FlatShader.h"
-#include "defines.h"
-
-#include "include_glm.h"
+#include "GamePhysics.h"
+#include "GameDrawableObject.h"
 
 // global variables
 using std::vector;
@@ -29,53 +20,24 @@ using glm::scale;
 using glm::rotate;
 
 
-class GameKartObject : GameObject {
-    static const float KART_SPEED = 0.5f;
-
-    enum Stage {MOVING, STILL, DONE};
-
-
-
+class GameKartObject : public GameDrawableObject {
+   
 public:
+   GameKartObject(const char *fileName);
+   ~GameKartObject();
 
-        GameDrawableObject *wheel[4];
-    GameDrawableObject *chassis;
+   void update(double dt);
+   void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
 
-    GameKartObject(glm::vec3 p, FlatShader* inmeshShader);
-
-    ~GameKartObject();
-
-    vec3 getPos();
-
-    void draw();
-
-    bool collide(vec3 pos, float r);
-
-    void update(double dt);
+   bool collide(GamePhysics::Actor *collide);
     
-    void stop();
-    
-    void done() {
-     
-    }
-    
-
+   void stop();
+   void done();
+   
 private:
-
-    FlatShader *meshShader;
- 
-
-
-    mat4 s;
-    mat4 r;
-    Stage stage;
-    int id;
-
-
+   FlatShader *meshShader;
+   
+   vector<GameDrawableObject *> wheels;
 };
-
-
-
-
 
 #endif

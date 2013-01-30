@@ -69,7 +69,8 @@ public:
 	// true if successfull, false if unsuccessful
 	//--------------------------------------------
 	bool getObject(const char *fileName, GLuint *vertexBuffer, GLuint *textureBuffer,
-                  GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength);
+                  GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength,
+                  vec3 **diffuseColor, float **specularity);
 	
 private:
 	void loadObject(const char* filename);

@@ -32,7 +32,7 @@ using  glm::vec4;
 
 #include "FlatShader.h"
 #include "ModelManager.h"
-#include "KPPPhysics.h"
+#include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
 
