@@ -22,6 +22,13 @@ public:
    GamePhysicsActor *makeActor(glm::vec3 position, glm::vec3 direction);
    
 private:
+   physx::PxFoundation *mFoundation;
+   physx::PxProfileZoneManager *mProfileZoneManager;
+   physx::PxPhysics *mPhysics;
+   physx::PxScene *mScene;
+   physx::pxtask::CpuDispatcher *mCpuDispatcher;
+   int mNbThreads = 1;
+   
    std::list<GamePhysicsActor> actors;
 };
 
