@@ -29,7 +29,7 @@ public:
    void update(double dt);
    void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
 
-   bool collide(GamePhysics::Actor *collide);
+   bool collide(GamePhysicsActor *collide);
     
    void stop();
    void done();

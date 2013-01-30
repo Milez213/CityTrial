@@ -30,7 +30,7 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chass
 
 }
 
-bool GameKartObject::collide(GamePhysics::Actor *collide)
+bool GameKartObject::collide(GamePhysicsActor *collide)
 {
    return true;
 }

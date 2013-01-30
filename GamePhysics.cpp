@@ -8,6 +8,12 @@
 
 #include "GamePhysics.h"
 
+void fatalError(std::string message)
+{
+   std::cerr << message << std::endl;
+   exit ( EXIT_FAILURE );
+}
+
 GamePhysics::GamePhysics()
 {
    static physx::PxDefaultErrorCallback gDefaultErrorCallback;
@@ -51,6 +57,9 @@ GamePhysics::GamePhysics()
    mScene = mPhysics->createScene(sceneDesc);
    if (!mScene)
       fatalError("createScene failed!");
+   
+   
+   std::cout << "PhysX successfully initialized\n";
 }
 
 GamePhysicsActor *GamePhysics::makeActor(glm::vec3 position, glm::vec3 direction)

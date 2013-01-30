@@ -10,7 +10,6 @@
 #include <GL/glfw.h>
 
 #include <iostream>
-using namespace std;
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -35,6 +34,8 @@ using  glm::vec4;
 #include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
+
+using namespace std;
 
 //-----------------------------------------------
 // These are global state machines: 
@@ -272,6 +273,7 @@ void initialize()
    g_model_trans.loadIdentity();
 
    g_model_manager = new ModelManager();
+   g_physics = new GamePhysics();
    // initGeometry();
 
    initObjects();

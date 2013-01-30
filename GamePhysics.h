@@ -11,8 +11,8 @@
 
 #include <iostream>
 #include <list>
-#include "GamePhysicsActor.h"
 #include "PxPhysicsAPI.h"
+#include "GamePhysicsActor.h"
 
 class GamePhysics
 {
@@ -27,7 +27,7 @@ private:
    physx::PxPhysics *mPhysics;
    physx::PxScene *mScene;
    physx::pxtask::CpuDispatcher *mCpuDispatcher;
-   int mNbThreads = 1;
+   static const int mNbThreads = 1;
    
    std::list<GamePhysicsActor> actors;
 };

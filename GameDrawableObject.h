@@ -38,7 +38,7 @@ protected:
    
    bound boundInfo;
    
-   GamePhysics::Actor *actor;
+   GamePhysicsActor *actor;
 };
 
 #endif
