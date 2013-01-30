@@ -8,22 +8,27 @@
 
 #include "KPPPhysics.h"
 
-KPPPhysics::Actor(glm::vec3 position, glm::vec3 direction) :
-   position(position), direction(direction) {}
+KPPPhysics::Actor::Actor(glm::vec3 position, glm::vec3 velocity) :
+   position(position), velocity(velocity) {}
 
-void KPPPhysics::Actor::update()
+void KPPPhysics::Actor::update(float dt)
 {
-   position += direction;
+   position += velocity * dt;
 }
 
-KPPPhysics::Actor *KPPPhysics::makeActor(const glm::vec3 &position, const glm::vec3 &direction)
+glm::vec3 KPPPhysics::Actor::get_position() {return position;}
+glm::vec3 KPPPhysics::Actor::get_velocity() {return velocity;}
+void KPPPhysics::Actor::set_position(glm::vec3 pos) {position = pos;}
+void KPPPhysics::Actor::set_velocity(glm::vec3 vel) {velocity = vel;}
+
+KPPPhysics::Actor *KPPPhysics::makeActor(glm::vec3 position, glm::vec3 direction)
 {
    actors.push_back(Actor(position, direction));
    return &actors.back();
 }
 
-void KPPPhysics::simulate()
+void KPPPhysics::simulate(double dt)
 {
    for (std::list<Actor>::iterator itr = actors.begin(); itr != actors.end(); itr++)
-      itr->update();
+      itr->update(dt);
 }

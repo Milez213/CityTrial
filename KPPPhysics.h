@@ -18,19 +18,23 @@ class KPPPhysics
 public:
    class Actor
    {
+      friend class KPPPhysics;
+      
    public:
-      const glm::vec3 &getPosition();
-      const glm::vec3 &getDirection();
+      glm::vec3 get_position();
+      glm::vec3 get_velocity();
+      void set_position(glm::vec3 pos);
+      void set_velocity(glm::vec3 vel);
    protected:
-      Actor(glm::vec3 position, glm::vec3 direction);
-      void update();
+      Actor(glm::vec3 position, glm::vec3 velocity);
+      void update(float dt);
       
    private:
       glm::vec3 position;
-      glm::vec3 direction;
+      glm::vec3 velocity;
    };
    
-   void simulate();
+   void simulate(double dt);
    Actor *makeActor(glm::vec3 position, glm::vec3 direction);
    
 private:
