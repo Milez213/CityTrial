@@ -50,7 +50,7 @@ endif
 # For OS X
 ifeq ($(UNAME), Darwin)
 
-PHYSXLFLAG=-Lphysx/Lib/osx64
+PHYSXLFLAG=-L./physx/Lib/osx64
 PHYSXLIBS=\
 -lLowLevelCHECKED \
 -lLowLevelClothCHECKED \

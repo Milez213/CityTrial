@@ -88,18 +88,14 @@ namespace physx
 	//! \brief platform-specific finiteness check (not INF or NAN)
 	PX_FORCE_INLINE bool isFinite(float a)
 	{
-#if defined PX_LINUX || defined PX_APPLE
 		using namespace std;
-#endif
 		return isfinite(a);
 	}
 
 	//! \brief platform-specific finiteness check (not INF or NAN)
 	PX_FORCE_INLINE bool isFinite(double a)
 	{
-#if defined PX_LINUX || defined PX_APPLE
 		using namespace std;
-#endif
 		return isfinite(a);
 	}
 } // namespace intrinsics
