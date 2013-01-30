@@ -53,7 +53,7 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
 
 void GameKartObject::update(double dt)
 {
-    
+    // Update Actor parameters based on current input from joystickState and buttonState
 }
 
 
