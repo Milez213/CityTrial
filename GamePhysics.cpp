@@ -62,9 +62,20 @@ GamePhysics::GamePhysics()
    std::cout << "PhysX successfully initialized\n";
 }
 
-GamePhysicsActor *GamePhysics::makeActor(glm::vec3 position, glm::vec3 direction)
+GamePhysicsActor *GamePhysics::makeStaticActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat)
 {
-   actors.push_back(GamePhysicsActor(position, direction));
+   physx::PxRigidStatic *actor = PxCreateStatic(*mPhysics, pose, geom, *mat);
+   mScene->addActor(*actor);
+   
+   actors.push_back(GamePhysicsActor(actor));
+   return &actors.back();
+}
+GamePhysicsActor *GamePhysics::makeDynamicActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat, double density)
+{
+   physx::PxRigidDynamic *actor = PxCreateDynamic(*mPhysics, pose, geom, *mat, density);
+   mScene->addActor(*actor);   
+   
+   actors.push_back(GamePhysicsActor(actor));
    return &actors.back();
 }
 
