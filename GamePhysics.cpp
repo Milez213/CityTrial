@@ -8,6 +8,11 @@
 
 #include "GamePhysics.h"
 
+GamePhysics::GamePhysics()
+{
+   
+}
+
 GamePhysicsActor *GamePhysics::makeActor(glm::vec3 position, glm::vec3 direction)
 {
    actors.push_back(GamePhysicsActor(position, direction));
