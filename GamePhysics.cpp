@@ -68,8 +68,8 @@ GamePhysicsActor *GamePhysics::makeActor(glm::vec3 position, glm::vec3 direction
    return &actors.back();
 }
 
-void GamePhysics::simulate()
+void GamePhysics::simulate(double dt)
 {
-   for (std::list<GamePhysicsActor>::iterator itr = actors.begin(); itr != actors.end(); itr++)
-      itr->update();
+   mScene->simulate(dt);
+   mScene->fetchResults(true);
 }

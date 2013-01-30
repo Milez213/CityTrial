@@ -18,7 +18,7 @@ class GamePhysics
 {
 public:
    GamePhysics();
-   void simulate();
+   void simulate(double dt);
    GamePhysicsActor *makeActor(glm::vec3 position, glm::vec3 direction);
    
 private:
@@ -28,6 +28,7 @@ private:
    physx::PxScene *mScene;
    physx::pxtask::CpuDispatcher *mCpuDispatcher;
    static const int mNbThreads = 1;
+   static const float mStepSize = 1.0f/60.0f;
    
    std::list<GamePhysicsActor> actors;
 };

@@ -31,7 +31,7 @@ public:
 
    bool collide(GamePhysicsActor *collide);
    
-   bool usingController() { return usingController };
+   bool isUsingController() { return usingController; };
    void setUsingController(bool cont) { usingController = cont; };
    
    //void setJoystickState(float joyState[]) { memCpy(joyState, joystickState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating

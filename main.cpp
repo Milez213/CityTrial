@@ -22,9 +22,6 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp" //perspective, trans etc
 #include "glm/gtc/type_ptr.hpp" //value_ptr
-using  glm::mat4;
-using  glm::vec3;
-using  glm::vec4;
 
 
 #include "MStackHelp.h"
@@ -34,11 +31,15 @@ using  glm::vec4;
 #include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
+#include "GameKartObject.h"
 
 using namespace std;
+using  glm::mat4;
+using  glm::vec3;
+using  glm::vec4;
 
 //-----------------------------------------------
-// These are global state machines: 
+// These are global state machines:
 // "physics_sim"-
 //  Controls the movement and collisions of 
 //   objects and as such each object will have a
@@ -123,11 +124,11 @@ void setView() {
 
 void getInputState()
 {
-   for (int i = 0; i < kart_objects.size(); i++) {
+   for (unsigned int i = 0; i < kart_objects.size(); i++) {
       float joy[4]; //should vary from -1.0 to 1.0
-      char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
+      unsigned char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
       
-      if (kart_objects[i]->usingController()) {
+      if (kart_objects[i]->isUsingController()) {
          glfwGetJoystickPos(i, joy, 4);
          glfwGetJoystickButtons(i, button, 32);
       } else {
