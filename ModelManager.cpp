@@ -107,7 +107,7 @@ bufferStore ModelManager::cubeMesh()
    
    GLuint faces1[6] = {
 		1, 3, 0,
-		3, 1, 2
+		1, 3, 2
    };
    GLuint faces2[6] = {
 		5, 6, 7,

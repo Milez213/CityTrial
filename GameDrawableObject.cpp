@@ -66,7 +66,7 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
       
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
    
-      glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+      glDrawElements(GL_TRIANGLES, (GLuint)meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
    safe_glDisableVertexAttribArray(h_aPos);
