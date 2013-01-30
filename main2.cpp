@@ -35,7 +35,7 @@ using glm::vec4;
 #include "KPPPhysics.h"
 
 #include "GameDrawableObject.h"
-
+#include "GameKartObject.h"
 //-----------------------------------------------
 // These are global state machines:
 // "physics_sim"-
@@ -99,7 +99,7 @@ mat4 g_proj;
 mat4 g_view;
 mat4 g_model;
 vec3 g_lookAt;
-
+GameKartObject *ob;
 
 
 // === end Globals ==============================
@@ -148,7 +148,6 @@ void draw() {
       drawable_objects[i].draw(flatShader, g_model_trans);
    }
 
-
    /* psuedocode
 for each (KKPDrawnObject object in drawn_objects) {
 object->draw(model_trans);
@@ -189,14 +188,13 @@ void initObjects() {
    // Bunnie
    vec3 pos(0,0,5);
    vec3 vel(0, 0, 0.1);
-   for (int i = -10; i < 11; i++) {
-      for (int j = -10; j < 11; j++) {
-         GameDrawableObject *object = new GameDrawableObject("Stuff");
-         object->setPosition(vec3(i, j, 5.0));
-         object->setScale(vec3(0.1, 0.1, 0.1));
-         drawable_objects.push_back(*object);
-      }
-   }
+   ob = new GameKartObject(pos,flatShader);
+   drawable_objects.push_back(*(ob->chassis));
+   drawable_objects.push_back(*(ob->wheel[0]));
+   drawable_objects.push_back(*(ob->wheel[1]));
+   drawable_objects.push_back(*(ob->wheel[2]));
+   drawable_objects.push_back(*(ob->wheel[3]));
+
 }
 
 

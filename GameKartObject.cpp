@@ -3,6 +3,7 @@
 
 #include "GameKartObject.h"
 
+
 #include <iostream>
 using namespace std;
 
@@ -11,12 +12,11 @@ float randFloat() {
     return ((float) rand() / RAND_MAX);
 }
 
-
-GameKartObject::GameKartObject(glm::vec3 p, glm::vec3 v, Mesh* rmesh, FlatShader* inmeshShader) {
+GameKartObject::GameKartObject(glm::vec3 p, FlatShader* inmeshShader) {
     pos = p;
     //vel = glm::vec3(1.0,0.0,0.0);
 
-    mesh = rmesh;
+    //mesh = rmesh;
 
     stage = MOVING;
     meshShader = inmeshShader;
@@ -25,6 +25,30 @@ GameKartObject::GameKartObject(glm::vec3 p, glm::vec3 v, Mesh* rmesh, FlatShader
     //s = scale(mat4(1.0f), vec3(2));
     r = rotate(mat4(1.0f), randFloat() * 360, vec3(0, 1, 0));
     
+    
+
+   
+    chassis = new GameDrawableObject("Stuff");
+ wheel[0] = new GameDrawableObject("Stuff2");
+ wheel[1] = new GameDrawableObject("Stuff3");
+ wheel[2] = new GameDrawableObject("Stuff4");
+ wheel[3] = new GameDrawableObject("Stuff5");
+    
+    wheel[0]->setPosition(vec3(pos.x-5.0,pos.y-5.0,pos.z));
+    wheel[1]->setPosition(vec3(pos.x - 5.0,pos.y + 5.0,pos.z)); 
+    wheel[2]->setPosition(vec3(pos.x + 5.0,pos.y - 5.0,pos.z));
+    wheel[3]->setPosition(vec3(pos.x + 5.0,pos.y + 5.0,pos.z));
+    chassis->setPosition(vec3(pos.x,pos.y,pos.z));
+    
+
+    
+        //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
+   
+    /*&drawable_objects->push_back(wheel[1]);
+    &drawable_objects->push_back(wheel[2]);
+    &drawable_objects->push_back(wheel[3]);
+    &drawable_objects->push_back(chassis);  
+    */
 
 }
 
@@ -54,7 +78,9 @@ vec3 GameKartObject::getPos() {
 }
 
 void GameKartObject::draw() {
-    mat4 t = translate(mat4(1.0f), pos);
+
+
+
 
     switch (stage) {
 
@@ -74,20 +100,26 @@ void GameKartObject::draw() {
 
         break;
     }
-    // render mesh
-    meshShader->use();
-    meshShader->setModelMatrix(t * s * r);
+    
 
-    mesh->draw(meshShader);
+
+
+    // render mesh
+    //meshShader->use();
+    //meshShader->setModelMatrix(t * s * r);
+
+    //mesh->draw(meshShader);
 }
 
 void GameKartObject::update(double dt) {
     switch (stage) {
 
     case MOVING:
+           
         // pos += vel * (BUNNIE_SPEED * dt * MS_2_S);
         r = rotate(r,  10 * (float) dt  , vec3(1, 0, 0));
-        
+            meshShader->use();
+    meshShader->setModelMatrix( r);
         break;
 
     case STILL:

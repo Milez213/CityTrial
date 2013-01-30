@@ -4,22 +4,26 @@
 
 
 #include <iostream>
+#include <vector>
+
+#include <stdlib.h>
+#include <stdarg.h>
 
 #include "include_glu.h"
 
 
-#include "Drawable.h"
+;
 #include "GameDrawableObject.h"
 #include "GameObject.h"
 
-#include "Mesh.h"
+
 #include "FlatShader.h"
 #include "defines.h"
 
 #include "include_glm.h"
 
 // global variables
-
+using std::vector;
 using glm::translate;
 using glm::scale;
 using glm::rotate;
@@ -30,10 +34,14 @@ class GameKartObject : GameObject {
 
     enum Stage {MOVING, STILL, DONE};
 
+
+
 public:
 
+        GameDrawableObject *wheel[4];
+    GameDrawableObject *chassis;
 
-    GameKartObject(glm::vec3 p, glm::vec3 v,Mesh *rmesh, FlatShader* inmeshShader);
+    GameKartObject(glm::vec3 p, FlatShader* inmeshShader);
 
     ~GameKartObject();
 
@@ -53,11 +61,10 @@ public:
     
 
 private:
-    Mesh *mesh;
+
     FlatShader *meshShader;
  
-    GameDrawableObject *wheel[4];
-    GameDrawableObject *chassis;
+
 
     mat4 s;
     mat4 r;
