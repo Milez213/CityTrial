@@ -87,6 +87,7 @@ GamePhysics *g_physics;
 // test one object for now
 FlatShader *flatShader;
 vector<GameDrawableObject> drawable_objects;
+vector<GameKartObject> kart_objects;
 
 
 RenderingHelper g_model_trans;
@@ -127,7 +128,10 @@ void update(double dt) {
       kart->update();
    }
    */
-
+   
+   /*for (int i = 0; i < kart_objects.size(); i++) {
+      kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
+   }*/
 }
 
 
@@ -199,6 +203,13 @@ void initObjects() {
          drawable_objects.push_back(*object);
       }
    }
+   
+   /*GameKartObject *kart = new GameKartObject("Kart");
+   if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
+      printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
+      kart->setUsingController(true);
+   }
+   kart_objects.push_back(kart);*/
 }
 
 

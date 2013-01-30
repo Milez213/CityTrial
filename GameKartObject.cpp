@@ -18,7 +18,7 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chass
    wheels[2]->setPosition(vec3(pos.x + 5.0,pos.y - 5.0,pos.z));
    wheels[3]->setPosition(vec3(pos.x + 5.0,pos.y + 5.0,pos.z));
     
-
+   usingController = false;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    

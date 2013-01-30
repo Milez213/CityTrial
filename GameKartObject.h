@@ -30,6 +30,9 @@ public:
    void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
 
    bool collide(GamePhysicsActor *collide);
+   
+   bool usingController() { return usingController };
+   void setUsingController(bool cont) { usingController = cont; };
     
    void stop();
    void done();
@@ -38,6 +41,8 @@ private:
    FlatShader *meshShader;
    
    vector<GameDrawableObject *> wheels;
+   
+   bool usingController;
 };
 
 #endif
