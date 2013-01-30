@@ -75,15 +75,18 @@ $(PHYSXLFLAG) $(PHYSXLIBS)
 endif
 
 
-all: $(OFILES)
-	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS)
 
+all: build
+
+build: $(OFILES)
+	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS)
 
 %.o: %.cpp
 	g++ -c $(CFLAGS) $(PHYSXFLAGS) $(IFLAGS) -o $@ $<
 
 clean:
 	rm -rf *.o kpp
+
 
 
 # Comment this out
