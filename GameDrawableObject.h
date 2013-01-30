@@ -34,13 +34,7 @@ public:
    void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
     
 protected:
-   GLuint vertexArray;
-   GLuint vertexBuffer, textureBuffer, normalBuffer;
-   GLuint *indexBuffer;
-   int *indexBufferLength;
-   
-   vec3 *diffuseColor;
-	float *specularity;
+   bufferStore meshStorage;
    
    bound boundInfo;
    

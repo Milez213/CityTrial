@@ -28,29 +28,27 @@ ModelManager::~ModelManager()
    }
 }
 
-bool ModelManager::getObject(const char *fileName, GLuint *vertexBuffer, GLuint *textureBuffer,
-                             GLuint *normalBuffer, GLuint **indexBuffer, int **indexBufferLength,
-                             vec3 **diffuseColor, float **specularity)
+bool ModelManager::getObject(const char *fileName, bufferStore *meshes)
 {
    if (storage.empty()) {
       loadObject("Hello!");
    }
    	
-   *vertexBuffer = storage[0].vertexBuffer;
-   *normalBuffer = storage[0].normalBuffer;
-   *textureBuffer = storage[0].textureBuffer;
+   meshes->vertexBuffer = storage[0].vertexBuffer;
+   meshes->normalBuffer = storage[0].normalBuffer;
+   meshes->textureBuffer = storage[0].textureBuffer;
    
    int size = sizeof(storage[0].indexBuffer) / sizeof(GLuint*);
-   *indexBuffer = new GLuint[size];
-   *indexBufferLength = new int[size];
-   *diffuseColor = new vec3[size];
-   *specularity = new float[size];
+   meshes->indexBuffer = new GLuint[size];
+   meshes->indexBufferLength = new int[size];
+   meshes->diffuseColor = new vec3[size];
+   meshes->specularity = new float[size];
    
    for (int i = 0; i < size; i++) {
-      (*indexBuffer)[i] = storage[0].indexBuffer[i];
-      (*indexBufferLength)[i] = storage[0].indexBufferLength[i];
-      (*diffuseColor)[i] = storage[0].diffuseColor[i];
-      (*specularity)[i] = storage[0].specularity[i];
+      meshes->indexBuffer[i] = storage[0].indexBuffer[i];
+      meshes->indexBufferLength[i] = storage[0].indexBufferLength[i];
+      meshes->diffuseColor[i] = storage[0].diffuseColor[i];
+      meshes->specularity[i] = storage[0].specularity[i];
    }
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Given Pointer Location: %d\n", (int)*vertexBuffer);
