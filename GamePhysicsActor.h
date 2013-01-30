@@ -11,15 +11,16 @@
 
 #include <iostream>
 #include "glm/glm.hpp"
+#include "PxRigidActor.h"
 
-using namespace glm;
+/*using namespace glm;
 
 struct bound {
    vec3 boundingBoxMin;
    vec3 boundingBoxMax;
    vec3 center;
    float radius;
-};
+};*/
 
 class GamePhysicsActor
 {
@@ -32,13 +33,12 @@ public:
    void set_velocity(glm::vec3 vel);
    
 protected:
-   GamePhysicsActor(glm::vec3 position, glm::vec3 velocity);
-   void update();
+   GamePhysicsActor(physx::PxRigidActor *actor) : mActor(actor) {}
+   //void update();
    
 private:
-   glm::vec3 position;
-   glm::vec3 velocity;
-   glm::vec3 boundingInfo;
+   physx::PxRigidActor *mActor;
+   
 };
 
 #endif /* defined(____GamePhysicsActor__) */

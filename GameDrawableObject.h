@@ -36,7 +36,7 @@ public:
 protected:
    bufferStore meshStorage;
    
-   bound boundInfo;
+   //bound boundInfo;
    
    GamePhysicsActor *actor;
 };

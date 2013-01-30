@@ -18,8 +18,9 @@ class GamePhysics
 {
 public:
    GamePhysics();
-   void simulate();
-   GamePhysicsActor *makeActor(glm::vec3 position, glm::vec3 direction);
+   void simulate(double dt);
+   GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat);
+   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat, double density);
    
 private:
    physx::PxFoundation *mFoundation;
