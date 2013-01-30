@@ -2,7 +2,7 @@
 .DS_Store
 
 # ignore compiled code
-*.[oa]
+*.[o]
 
 # backup files created by editors (gedit, etc.)
 *~
