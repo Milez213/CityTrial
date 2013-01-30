@@ -31,8 +31,13 @@ public:
 
    bool collide(GamePhysicsActor *collide);
    
-   bool usingController() { return usingController };
-   void setUsingController(bool cont) { usingController = cont; };
+   bool isUsingController() {
+       return usingController;
+   }
+
+   void setUsingController(bool cont) {
+       usingController = cont;
+   }
    
    //void setJoystickState(float joyState[]) { memCpy(joyState, joystickState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
    //void setButtonState(char butState[]) { memCpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "

@@ -1,7 +1,7 @@
 
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
-ModelManager.o GameObject.o GameDrawableObject.o \
-GameKartObject.o GamePhysics.o GamePhysicsActor.o
+	ModelManager.o GameObject.o GameDrawableObject.o \
+	GameKartObject.o GamePhysics.o GamePhysicsActor.o
 
 
 # where to find .h files
@@ -16,22 +16,22 @@ UNAME := $(shell uname)
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
 	PHYSXLFLAG=-Lphysx/Lib/linux64
-	PHYSXLIBS=
- -lLowLevelCHECKED/
- -lLowLevelClothCHECKED/
- -lPhysX3CHECKED/
- -lPhysX3CharacterKinematicCHECKED/
- -lPhysX3CommonCHECKED/
- -lPhysX3CookingCHECKED/
- -lPhysX3ExtensionsCHECKED/
- -lPhysX3VehicleCHECKED/
- -lPhysXProfileSDKCHECKED/
- -lPhysXVisualDebuggerSDKCHECKED/
- -lPvdRuntimeCHECKED/
- -lPxTaskCHECKED/
- -lRepX3CHECKED/
- -lRepXUpgrader3CHECKED/
- -lSceneQueryCHECKED/
+	PHYSXLIBS= \
+ -lLowLevelCHECKED \
+ -lLowLevelClothCHECKED \
+ -lPhysX3CHECKED \
+ -lPhysX3CharacterKinematicCHECKED \
+ -lPhysX3CommonCHECKED \
+ -lPhysX3CookingCHECKED \
+ -lPhysX3ExtensionsCHECKED \
+ -lPhysX3VehicleCHECKED \
+ -lPhysXProfileSDKCHECKED \
+ -lPhysXVisualDebuggerSDKCHECKED \
+ -lPvdRuntimeCHECKED \
+ -lPxTaskCHECKED \
+ -lRepX3CHECKED \
+ -lRepXUpgrader3CHECKED \
+ -lSceneQueryCHECKED \
  -lSimulationControllerCHECKED
 
 	LIB=./glfw/lib/x11/libglfw.a
