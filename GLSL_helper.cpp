@@ -97,7 +97,7 @@ void checkGlErrors() {
 
   if (errCode != GL_NO_ERROR) {
     string error("GL Error: ");
-    error += reinterpret_cast<const char*>(gluErrorString(errCode));
+    //error += reinterpret_cast<const char*>(gluErrorString(errCode));
     cerr << error << endl;
     throw runtime_error(error);
   }
@@ -112,7 +112,7 @@ int printOglError (const char *file, int line) {
 	glErr = glGetError ();
 	while (glErr != GL_NO_ERROR)
     {
-		printf ("glError in file %s @ line %d: %s\n", file, line, gluErrorString (glErr));
+		//printf ("glError in file %s @ line %d: %s\n", file, line, gluErrorString (glErr));
 		retCode = 1;
 		glErr = glGetError ();
     }
@@ -265,7 +265,7 @@ int textFileWrite(char *fn, char *s) {
 }
 
 
-
+#ifdef DO_NOT_DEFINE
 // from stackoverflow.com. Only works when there's no frag shader
 void usePointSprites() {
     const GLint texWidth = 256;
@@ -316,4 +316,4 @@ void usePointSprites() {
 
     glEnable(GL_POINT_SMOOTH);
 }
-
+#endif

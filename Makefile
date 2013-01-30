@@ -1,8 +1,8 @@
 
 
 
-OFILES=main.o MStackHelp.o Mesh.o Bunnie.o GLSL_helper.o Shader.o \
-        CMeshLoaderSimple.o 
+OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
+      ModelManager.o GameObject.o GameDrawableObject.o
 
 
 # where to find .h files
@@ -35,8 +35,8 @@ endif
 
 
 all: $(OFILES)
-	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS) 
-	
+	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS) 	
+
 
 %.o: %.cpp
 	g++ -c $(CFLAGS) $(IFLAGS) -o $@ $<
