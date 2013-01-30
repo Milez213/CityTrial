@@ -77,7 +77,7 @@ bufferStore ModelManager::cubeMesh()
 		-1.0, 1.0, 1.0,
 		1.0, 1.0, 1.0,
 		1.0, -1.0, 1.0
-   	};
+   };
    	
    float normals[24] = {
 		-1.0, -1.0, -1.0,
@@ -88,9 +88,9 @@ bufferStore ModelManager::cubeMesh()
 		-1.0, 1.0, 1.0,
 		1.0, 1.0, 1.0,
 		1.0, -1.0, 1.0
-   	};
+   };
    	
-   GLuint faces[36] = {
+   /*GLuint faces[36] = {
 		1, 3, 0,
 		1, 2, 3,
 		5, 1, 0,
@@ -103,11 +103,20 @@ bufferStore ModelManager::cubeMesh()
 		1, 6, 5,
 		0, 3, 7,
 		0, 7, 4
-   	};
+   	};*/
    
-   GLuint vbo, ibo, nbo;
+   GLuint faces1[6] = {
+		1, 3, 0,
+		3, 1, 2
+   };
+   GLuint faces2[6] = {
+		5, 6, 7,
+		4, 5, 7
+   };
+   
+   GLuint vbo, ibo, ibo2, nbo;
 
-   int ibl = 36;
+   int ibl = 6;
 #ifdef DEBUG_VBO   
    printf("VBO Pre-Initialization: %d\n", (int)vbo);
 #endif   
@@ -117,7 +126,11 @@ bufferStore ModelManager::cubeMesh()
    
    glGenBuffers(1, &ibo);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces1), faces1, GL_STATIC_DRAW);
+   
+   glGenBuffers(1, &ibo2);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo2);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces2), faces2, GL_STATIC_DRAW);
    
    glGenBuffers(1, &nbo);
    glBindBuffer(GL_ARRAY_BUFFER, nbo);
@@ -129,15 +142,20 @@ bufferStore ModelManager::cubeMesh()
    store.normalBuffer = nbo;
    store.textureBuffer = 0;
    
-   store.indexBuffer = new GLuint[1];
-   store.indexBufferLength = new int[1];
-   store.diffuseColor = new vec3[1];
-   store.specularity = new float[1];
+   store.indexBuffer = new GLuint[2];
+   store.indexBufferLength = new int[2];
+   store.diffuseColor = new vec3[2];
+   store.specularity = new float[2];
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
    store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
    store.specularity[0] = 0.4;
+   
+   store.indexBuffer[1] = ibo2;
+   store.indexBufferLength[1] = ibl;
+   store.diffuseColor[1] = vec3(0.5, 0.0, 0.0);
+   store.specularity[1] = 0.4;
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
 #endif   

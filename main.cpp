@@ -81,6 +81,7 @@ vector<KPPKartObject *> kart_objects;
 */
 
 ModelManager *g_model_manager;
+GamePhysics *g_physics;
 
 // test one object for now
 FlatShader *flatShader;
