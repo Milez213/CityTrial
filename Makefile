@@ -15,7 +15,7 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
-	PHYSXLFLAG=-Lphysx/Lib/linux64
+	PHYSXLFLAG=-L./physx/Lib/linux64
 	PHYSXLIBS=
  -lLowLevelCHECKED/
  -lLowLevelClothCHECKED/
