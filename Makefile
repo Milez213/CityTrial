@@ -6,7 +6,7 @@ OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 
 # where to find .h files
 IFLAGS=-I./glfw/include -I./physx/Include
-CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g -Wno-unknown-pragmas
 PHYSXFLAGS=-g -D_DEBUG
 
 # detect os and set flags accordingly
