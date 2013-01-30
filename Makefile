@@ -87,35 +87,4 @@ clean:
 
 
 # Comment this out
-ifeq ("x", "y")
-main.o: main.cpp
-	g++ -c main.cpp
-
-GLSL_helper.o: GLSL_helper.cpp
-	g++ -c GLSL_helper.cpp
-	
-MStackHelp.o: MStackHelp.cpp
-	g++ -c MStackHelp.cpp
-	
-BBObject.o: BBObject.cpp
-	g++ -c BBObject.cpp
-	
-BBMatObject.o: BBMatObject.cpp
-	g++ -c BBMatObject.cpp
-	
-BBCamera.o: BBCamera.cpp
-	g++ -c BBCamera.cpp
-	
-BBPlayerObject.o: BBPlayerObject.cpp
-	g++ -c BBPlayerObject.cpp
-	
-BBAvoidObject.o: BBAvoidObject.cpp
-	g++ -c BBAvoidObject.cpp
-	
-BBCollectObject.o: BBCollectObject.cpp
-	g++ -c BBCollectObject.cpp
-	
-BBLight.o: BBLight.cpp
-	g++ -c BBLight.cpp
-
-endif
+# that stuff is still in makefile2
