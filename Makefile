@@ -1,14 +1,13 @@
 
-
-
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
-      ModelManager.o GameObject.o GameDrawableObject.o \
-      GameKartObject.o GamePhysics.o
+ModelManager.o GameObject.o GameDrawableObject.o \
+GameKartObject.o GamePhysics.o GamePhysicsActor.o
 
 
 # where to find .h files
-IFLAGS=-I./glfw/include
+IFLAGS=-I./glfw/include -I./physx/Include
 CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g
+PHYSXFLAGS=-g -D_DEBUG
 
 # detect os and set flags accordingly
 UNAME := $(shell uname)
@@ -16,6 +15,25 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
+	PHYSXLFLAG=-Lphysx/Lib/linux64
+	PHYSXLIBS=
+ -lLowLevelCHECKED/
+ -lLowLevelClothCHECKED/
+ -lPhysX3CHECKED/
+ -lPhysX3CharacterKinematicCHECKED/
+ -lPhysX3CommonCHECKED/
+ -lPhysX3CookingCHECKED/
+ -lPhysX3ExtensionsCHECKED/
+ -lPhysX3VehicleCHECKED/
+ -lPhysXProfileSDKCHECKED/
+ -lPhysXVisualDebuggerSDKCHECKED/
+ -lPvdRuntimeCHECKED/
+ -lPxTaskCHECKED/
+ -lRepX3CHECKED/
+ -lRepXUpgrader3CHECKED/
+ -lSceneQueryCHECKED/
+ -lSimulationControllerCHECKED
+
 	LIB=./glfw/lib/x11/libglfw.a
 
 	# -lXrandr for csl
@@ -31,18 +49,41 @@ endif
 
 # For OS X
 ifeq ($(UNAME), Darwin)
-LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+
+PHYSXLFLAG=-Lphysx/Lib/osx64
+PHYSXLIBS=\
+-lLowLevelCHECKED \
+-lLowLevelClothCHECKED \
+-lPhysX3CHECKED \
+-lPhysX3CharacterKinematicCHECKED \
+-lPhysX3CommonCHECKED \
+-lPhysX3CookingCHECKED \
+-lPhysX3ExtensionsCHECKED \
+-lPhysX3VehicleCHECKED \
+-lPhysXProfileSDKCHECKED \
+-lPhysXVisualDebuggerSDKCHECKED \
+-lPvdRuntimeCHECKED \
+-lPxTaskCHECKED \
+-lRepX3CHECKED \
+-lRepXUpgrader3CHECKED \
+-lSceneQueryCHECKED \
+-lSimulationControllerCHECKED
+
+LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit \
+$(PHYSXLFLAG) $(PHYSXLIBS)
+
 endif
 
 
 all: $(OFILES)
-	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS) 	
+	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS)
 
 
 %.o: %.cpp
-	g++ -c $(CFLAGS) $(IFLAGS) -o $@ $<
+	g++ -c $(CFLAGS) $(PHYSXFLAGS) $(IFLAGS) -o $@ $<
 
-
+clean:
+	rm -rf *.o kpp
 
 
 # Comment this out
