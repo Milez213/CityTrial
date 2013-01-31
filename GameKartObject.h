@@ -52,6 +52,7 @@ private:
    static GamePhysicsActor *makeKartActor();
    static GamePhysicsActor *makeTireActor();
    vector<GameDrawableObject *> wheels;
+   vector <GameDrawableObject *> upgrades;
    
    bool usingController;
    float joystickState[4];

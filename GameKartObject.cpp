@@ -45,6 +45,16 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKa
 
 bool GameKartObject::collide(GamePhysicsActor *collide)
 {
+   //Need some way of telling if PhysicsActor came from upgrade
+   
+   if (true /*collide == GameUpgradeObject enum*/) {
+      GameDrawableObject *upgrade = new GameDrawableObject(makeTireActor(), "wings");
+      upgrade->setPosition(0.0, 0.0, 0.0);
+      upgrade->setSpeed(0.0);
+      upgrade->setDirection(vec3(0.0, 0.0, 0.0));
+      upgrades.push_back(upgrade);
+   }
+   
    return true;
 }
 
@@ -97,9 +107,8 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
    //glBindVertexArray(0);
    modelViewMatrix.popMatrix();
 
-   modelViewMatrix.pushMatrix();
+   /*modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
-   
    wheels[0]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
@@ -115,6 +124,19 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.popMatrix();*/
+   
+   //Draws Wheels and Upgrades More efficiently *****
+   /*for (int i = 0; i < (int)wheels.size(); i++) {
+      modelViewMatrix.pushMatrix();
+      wheels[i]->draw(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }
+   
+   for (int i = 0; i < (int)upgrades.size(); i++) {
+      modelViewMatrix.pushMatrix();
+      upgrades[i]->draw(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }*/
 }
 
 void GameKartObject::update(double dt)
