@@ -14,6 +14,7 @@
 
 float GamePhysicsActor::speed()
 {
+   std::cerr << "gettingSpeed\n";
    return glm::length(velocity());
 }
 void GamePhysicsActor::setSpeed(float s)
@@ -24,11 +25,14 @@ void GamePhysicsActor::setSpeed(float s)
 }
 glm::vec3 GamePhysicsActor::direction()
 {
+   std::cerr << "gettingDirection\n";
    return glm::normalize(velocity());
 }
 void GamePhysicsActor::setDirection(glm::vec3 vel)
 {
+   std::cerr << "setDirectionBegin\n";
    setVelocity(glm::normalize(vel) * speed());
+   std::cerr << "setDirectionEnd\n";
 }
 
 glm::vec3 GamePhysicsActor::position() {
@@ -42,9 +46,19 @@ void GamePhysicsActor::setPosition(glm::vec3 pos)
 }
 glm::vec3 GamePhysicsActor::velocity()
 {
-   return convert((dynamic_cast<physx::PxRigidBody *>(mActor))->getLinearVelocity());
+   std::cerr << "velocity start\n";
+   physx::PxRigidBody *body = static_cast<physx::PxRigidBody *>(mActor);
+   std::cerr << "velocity cast\n";
+   physx::PxVec3 vel = body->getLinearVelocity();
+   std::cerr << "velocity get\n";
+   glm::vec3 rtn = convert(vel);
+   std::cerr << "velocity convert\n";
+   
+   return rtn;
 }
 void GamePhysicsActor::setVelocity(glm::vec3 spd)
 {
-   (dynamic_cast<physx::PxRigidBody *>(mActor))->setLinearVelocity(convert(spd));
+   std::cerr << "setVelocityBegin\n";
+   (static_cast<physx::PxRigidBody *>(mActor))->setLinearVelocity(convert(spd));
+   std::cerr << "setVelocityEnd\n";
 }
