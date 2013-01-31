@@ -45,7 +45,7 @@ public:
 	void setPosition(glm::vec3 p);
    
 protected:
-   GamePhysicsActor(physx::PxRigidActor *actor) : mActor(actor) {astDir = glm::vec3(0,0,1); lastSpeed = 0}
+   GamePhysicsActor(physx::PxRigidActor *actor) : mActor(actor) {lastDir = glm::vec3(0,0,1); lastSpeed = 0;}
    
    void addForce(glm::vec3 f);
    void clearForce();
