@@ -27,9 +27,6 @@ class GamePhysicsActor
    friend class GamePhysics;
    
 public:
-   void link(void *obj) { mActor->userData = obj; }
-   
-   
    void push(float force);
    
    glm::vec3 direction();

@@ -15,19 +15,11 @@
 #include "PxPhysicsAPI.h"
 #include "GamePhysicsActor.h"
 
-class GamePhysics : physx::PxSimulationEventCallback
+class GamePhysics
 {
 public:
    GamePhysics();
-   
    void simulate(double dt);
-   void onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs);
-   //ignores these callbacks but has to define them not pure
-   void onConstraintBreak (physx::PxConstraintInfo *constraints, physx::PxU32 count) {}
-   void onWake (physx::PxActor **actors, physx::PxU32 count) {}
-   void onSleep (physx::PxActor **actors, physx::PxU32 count) {}
-   void onTrigger (physx::PxTriggerPair *pairs, physx::PxU32 count) {}
-   
    GamePhysicsActor *makeActor(physx::PxRigidActor *actor);
    physx::PxRigidDynamic *makeBlankDynamic(physx::PxTransform pose);
    GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat);

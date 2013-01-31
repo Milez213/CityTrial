@@ -21,8 +21,6 @@ class GameObject {
 public:
 	GameObject(GamePhysicsActor *actor);
 	
-   virtual void collide(GameObject *other);
-   
    glm::vec3 velocity();
 	glm::vec3 direction();// { return vec3(dir.x, dir.y, dir.z); };
 	void setDirection(vec3 d);// { dir = vec3(d.x, d.y, d.z); };
