@@ -68,12 +68,12 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     //modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
     //Draw itself
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(-2.0,-2.0,0.0));
     
     wheels[0]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(-2.0,2.0,0.0));
     wheels[1]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
