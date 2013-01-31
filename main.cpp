@@ -29,7 +29,7 @@ using  glm::vec4;
 
 #include "MStackHelp.h"
 
-#include "FlatShader.h"
+#include "PhongShader.h"
 #include "ModelManager.h"
 #include "GamePhysics.h"
 
@@ -89,7 +89,7 @@ ModelManager *g_model_manager;
 GamePhysics *g_physics;
 
 // test one object for now
-FlatShader *flatShader;
+PhongShader *meshShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
@@ -191,12 +191,12 @@ void draw()
    setView();
 
    // set once for this shader
-   flatShader->use();
-   flatShader->setProjMatrix(g_proj);
-   flatShader->setViewMatrix(g_view);
+   meshShader->use();
+   meshShader->setProjMatrix(g_proj);
+   meshShader->setViewMatrix(g_view);
    
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      drawable_objects[i]->draw(flatShader, g_model_trans);
+      drawable_objects[i]->draw(meshShader, g_model_trans);
    }
 
 
@@ -235,7 +235,7 @@ void initObjects() {
    
    // TODO - test for return values (but we usually know if they work or not)
 
-   flatShader = new FlatShader();
+   meshShader = new PhongShader();
 
    // Bunnie
    GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, -0.1, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(25.0, 0.1, 25.0))), g_physics->makeMaterial());

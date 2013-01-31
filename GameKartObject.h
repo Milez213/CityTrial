@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "FlatShader.h"
 #include "GamePhysics.h"
 #include "GameDrawableObject.h"
 
@@ -28,7 +27,7 @@ public:
    ~GameKartObject();
 
    void update(double dt);
-   void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
+   void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
    bool collide(GamePhysicsActor *collide);
    
@@ -47,7 +46,7 @@ public:
    void done();
    
 private:
-   FlatShader *meshShader;
+   PhongShader *meshShader;
    
    static GamePhysicsActor *makeKartActor();
    static GamePhysicsActor *makeTireActor();

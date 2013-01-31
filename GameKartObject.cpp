@@ -72,7 +72,7 @@ void GameKartObject::stop()
    //stage = STILL;
 }
 
-void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
+void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    GameDrawableObject::draw(meshShader, modelViewMatrix);
    
