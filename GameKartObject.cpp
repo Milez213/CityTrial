@@ -59,6 +59,7 @@ void GameKartObject::stop()
 
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
+
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(position());
    modelViewMatrix.pushMatrix();
