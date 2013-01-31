@@ -1,4 +1,3 @@
-
 #include "GameKartObject.h"
 #include "GameUtilities.h"
 
@@ -66,7 +65,7 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
     modelViewMatrix.rotate(rot.x, glm::vec3(1.0,0.0,0.0));
-    modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
+    //modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
     //Draw itself
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
