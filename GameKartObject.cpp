@@ -145,10 +145,12 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
 void GameKartObject::update(double dt)
 {
    glm::vec3 dir = direction();
+   glm::vec3 vel = velocity();
    glm::vec3 pos = position();
    
    printf("\nbefore\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
+   printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
    printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
    printf(" speed: %f\n", speed());
    
@@ -179,9 +181,12 @@ void GameKartObject::update(double dt)
    //}
    
    dir = direction();
+   vel = velocity();
    pos = position();
+   
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
+   printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
    printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
    printf(" speed: %f\n", speed());
    

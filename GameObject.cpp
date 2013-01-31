@@ -20,6 +20,7 @@ GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
    scl = vec3(0.0, 0.0, 0.0);
 }
 
+glm::vec3 GameObject::velocity() { return mActor->velocity(); }
 glm::vec3 GameObject::direction() { return mActor->direction(); }
 void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
 //float GameObject::direction() { return mActor->direction(); }
