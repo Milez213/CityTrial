@@ -333,7 +333,7 @@ General defines
 
 struct PxPackValidation { char _; long long a; };
 
-#if !defined(PX_APPLE_IOS)
+#if !(defined(PX_APPLE_IOS) || defined PX_LINUX )
 PX_COMPILE_TIME_ASSERT(PX_OFFSET_OF(PxPackValidation, a) == 8);
 #endif
 
