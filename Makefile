@@ -60,7 +60,8 @@ ifeq ($(UNAME), Linux)
 		XRANDR=-lXrandr
 	endif
 
-LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)
+LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR) \
+$(PHYSXLFLAG) $(PHYSXLIBS)
 endif
 
 
