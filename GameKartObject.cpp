@@ -9,7 +9,7 @@ extern GamePhysics *g_physics;
 
 GamePhysicsActor *GameKartObject::makeKartActor()
 {
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 0, -5)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 0, 5)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
 }
 GamePhysicsActor *GameKartObject::makeTireActor()
 {
