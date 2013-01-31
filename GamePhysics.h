@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <list>
+#include "glm/glm.hpp"
 #include "PxPhysicsAPI.h"
 #include "GamePhysicsActor.h"
 
@@ -19,8 +20,9 @@ class GamePhysics
 public:
    GamePhysics();
    void simulate(double dt);
-   GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat);
-   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat, double density);
+   GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat);
+   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat, double density);
+   physx::PxMaterial *makeMaterial() { return mPhysics->createMaterial(0.5f, 0.5f, 0.1f); }
    
 private:
    physx::PxFoundation *mFoundation;

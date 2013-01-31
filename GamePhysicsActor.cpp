@@ -8,9 +8,17 @@
 
 #include "GamePhysicsActor.h"
 
+#include "GameUtilities.h"
+#include "foundation/PxTransform.h"
 
-
-glm::vec3 GamePhysicsActor::get_position() {return glm::vec3();}
-glm::vec3 GamePhysicsActor::get_velocity() {return glm::vec3();}
-void GamePhysicsActor::set_position(glm::vec3 pos) {}
-void GamePhysicsActor::set_velocity(glm::vec3 vel) {}
+glm::vec3 GamePhysicsActor::position() {
+   return convert(mActor->getGlobalPose().p);
+}
+void GamePhysicsActor::setPosition(glm::vec3 pos)
+{
+   mActor->setGlobalPose();
+}
+glm::vec3 GamePhysicsActor::direction() {return glm::vec3();}
+void GamePhysicsActor::setDirection(glm::vec3 vel) {}
+float GamePhysicsActor::speed() {return 0;}
+void GamePhysicsActor::setSpeed(float spd) {}

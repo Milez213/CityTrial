@@ -29,7 +29,7 @@ using namespace glm;
 
 class GameDrawableObject : public GameObject {
 public:
-   GameDrawableObject(const char *objFile);
+   GameDrawableObject(GamePhysicsActor *actor, const char *objFile);
    
    void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
     

@@ -36,6 +36,8 @@ using  glm::vec4;
 #include "GameDrawableObject.h"
 #include "GameKartObject.h"
 
+#include "GameUtilities.h"
+
 using namespace std;
 
 //-----------------------------------------------
@@ -124,7 +126,11 @@ void setView() {
 
 void getInputState()
 {
+<<<<<<< HEAD
    for (int i = 0; i < (int)kart_objects.size(); i++) {
+=======
+   for (unsigned int i = 0; i < kart_objects.size(); i++) {
+>>>>>>> physxIntegration
       float joy[4]; //should vary from -1.0 to 1.0
       unsigned char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
       
@@ -218,7 +224,8 @@ void initObjects() {
    // Bunnie
    for (int i = -10; i < 11; i++) {
       for (int j = -10; j < 11; j++) {
-         GameDrawableObject *object = new GameDrawableObject("Stuff");
+         GamePhysicsActor *actor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(i, j, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
+         GameDrawableObject *object = new GameDrawableObject(actor, "Stuff");
          object->setPosition(vec3(i, j, 5.0));
          object->setScale(vec3(0.1, 0.1, 0.1));
          drawable_objects.push_back(object);
