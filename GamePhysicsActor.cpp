@@ -11,13 +11,25 @@
 #include "GameUtilities.h"
 #include "foundation/PxTransform.h"
 
+float GamePhysicsActor::speed() { return 0.0; }
+void GamePhysicsActor::setSpeed(float s) {}
+glm::vec3 GamePhysicsActor::direction() {return glm::vec3();}
+void GamePhysicsActor::setDirection(glm::vec3 vel) {}
+
 glm::vec3 GamePhysicsActor::position() {
    return convert(mActor->getGlobalPose().p);
 }
 void GamePhysicsActor::setPosition(glm::vec3 pos)
 {
+   physx::PxTransform trans = mActor->getGlobalPose();
+   trans.p = convert(pos);
+   mActor->setGlobalPose(trans);
 }
-glm::vec3 GamePhysicsActor::direction() {return glm::vec3();}
-void GamePhysicsActor::setDirection(glm::vec3 vel) {}
-float GamePhysicsActor::speed() {return 0;}
-void GamePhysicsActor::setSpeed(float spd) {}
+glm::vec3 GamePhysicsActor::velocity()
+{
+   return convert(dynamic_cast<physx::PxRigidBody *>(mActor)->getLinearVelocity());
+}
+void GamePhysicsActor::setVelocity(glm::vec3 spd)
+{
+   dynamic_cast<physx::PxRigidBody *>(mActor)->setLinearVelocity(convert(spd));
+}

@@ -29,6 +29,8 @@ class GamePhysicsActor
 public:
    glm::vec3 direction();
 	void setDirection(glm::vec3 d);
+   glm::vec3 velocity();
+	void setVelocity(glm::vec3 d);
 	float speed();
 	void setSpeed(float s);
 	glm::vec3 position();
