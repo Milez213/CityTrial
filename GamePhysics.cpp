@@ -7,6 +7,9 @@
 //
 
 #include "GamePhysics.h"
+#include "GameObject.h"
+
+using namespace physx;
 
 void fatalError(std::string message)
 {
@@ -91,6 +94,39 @@ GamePhysicsActor *GamePhysics::makeDynamicActor(physx::PxTransform pose, physx::
    //physx::PxRigidDynamic *actor = PxCreateDynamic(*mPhysics, pose, *geom, *mat, density);
    
    return makeActor(actor);
+}
+
+
+
+
+void GamePhysics::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
+{
+   for(PxU32 i=0; i < nbPairs; i++)
+   {
+      const PxContactPair& cp = pairs[i];
+      
+      if(cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+      {
+         GameObject *objs[2];
+         objs[0] = reinterpret_cast<GameObject *>(pairHeader.actors[0]->userData);
+         objs[1] = reinterpret_cast<GameObject *>(pairHeader.actors[1]->userData);
+         
+         objs[0]->collide(objs[1]);
+         objs[1]->collide(objs[0]);
+         
+         /*if((pairHeader.actors[0] == mSubmarineActor) || (pairHeader.actors[1] == mSubmarineActor))
+         {
+            PxActor* otherActor = (mSubmarineActor == pairHeader.actors[0]) ?
+            pairHeader.actors[1] : pairHeader.actors[0];
+            Seamine* mine =  reinterpret_cast<Seamine*>(otherActor->userData);
+            // insert only once
+            if(std::find(mMinesToExplode.begin(), mMinesToExplode.end(), mine) == mMinesToExplode.end())
+               mMinesToExplode.push_back(mine);
+            
+            break;
+         }*/
+      }
+   }
 }
 
 void GamePhysics::simulate(double dt)
