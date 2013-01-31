@@ -8,7 +8,14 @@
 
 #include "GameRamp.h"
 
-GameRamp::GameRamp() : GameDrawableObject("ramp")
+#include "GameUtilities.h"
+
+static GamePhysicsActor *makeRampActor(GamePhysics *physics)
+{
+   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), physics->makeMaterial(), 5.0);
+}
+
+GameRamp::GameRamp(GamePhysics *physics) : GameDrawableObject(makeRampActor(physics) ,"ramp")
 {
    
 }
@@ -16,7 +23,7 @@ GameRamp::GameRamp() : GameDrawableObject("ramp")
 float GameRamp::getHeightAt(float x, float z)
 {
    //float xMod = (x - pos.x) / scl.x;
-   float zMod = (z - pos.z) / scl.z;
+   float zMod = (z - position().z) / scl.z;
    
    zMod += 1.0;
    

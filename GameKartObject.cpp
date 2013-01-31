@@ -62,6 +62,7 @@ void GameKartObject::stop()
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
    
+   glm::vec3 pos = position();
  
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));

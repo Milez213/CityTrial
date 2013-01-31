@@ -16,7 +16,6 @@ glm::vec3 GamePhysicsActor::position() {
 }
 void GamePhysicsActor::setPosition(glm::vec3 pos)
 {
-   mActor->setGlobalPose();
 }
 glm::vec3 GamePhysicsActor::direction() {return glm::vec3();}
 void GamePhysicsActor::setDirection(glm::vec3 vel) {}

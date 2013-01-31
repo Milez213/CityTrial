@@ -126,11 +126,7 @@ void setView() {
 
 void getInputState()
 {
-<<<<<<< HEAD
    for (int i = 0; i < (int)kart_objects.size(); i++) {
-=======
-   for (unsigned int i = 0; i < kart_objects.size(); i++) {
->>>>>>> physxIntegration
       float joy[4]; //should vary from -1.0 to 1.0
       unsigned char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
       
