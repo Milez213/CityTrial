@@ -63,11 +63,11 @@ void GamePhysicsActor::setDirection(glm::vec3 d)
 {
    glm::vec3 vel = velocity();
    float s = speed();
-   glm::vec3 dir;
+   glm::vec3 dir = d;
    d.y = 0;
    
    //if (dir.x || dir.z) {
-      dir = glm::normalize(d);
+      //dir = glm::normalize(d);
       lastDir = dir;
 
       vel.x = s * dir.x;
