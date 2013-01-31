@@ -15,4 +15,11 @@
     printf("%s: %f %f %f\n", name, v.x, v.y, v.z);
 
 
+// get components of Hex color
+#define H2R(c)   (((c) >> 16) & 0xFF)/255.0
+#define H2G(c)   (((c) >> 8) & 0xFF)/255.0
+#define H2B(c)   ((c) & 0xFF)/255.0
+#define H2_3f(c) H2R(c), H2G(c), H2B(c)
+
+
 #endif // DEFINES_H

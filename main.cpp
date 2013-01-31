@@ -109,6 +109,43 @@ mat4 g_model;
 vec3 g_lookAt;
 
 
+// *** lights ***
+
+LightInfo g_lightInfo;
+
+#define NUM_MATERIALS 4
+
+PhongMaterial g_materials[NUM_MATERIALS] = {
+                  {vec3(0.2, 0.2, 0.2), // amb
+                   vec3(0.7, 0.4, 0.4), // diff
+                   vec3(1, 1, 1),       // spec
+                   20.0},               // shine
+
+                  {vec3(0.0, 0.0, 0.0),
+                   vec3(H2_3f(0xfff852)), //Hex color to rgb
+                   vec3(1, 1, 1),
+                   10.0},
+
+                  {vec3(0.1, 0.1, 0.3),
+                   vec3(0.6, 0.1, 0.1),
+                   vec3(0.1, 0.1, 0.7),
+                   20.0},
+                  {vec3(0, 1, 1),  // for drawing light
+                   vec3(0.0),
+                   vec3(0),
+                   0.0},
+};
+
+/* helper function to set up material for shading */
+
+void setPhongMaterial(int i) {
+    if ((i >= 0) && i < NUM_MATERIALS) {
+        meshShader->setMaterial(g_materials[i]);
+    }
+}
+
+
+// *** end lights ***
 
 // === end Globals ==============================
 
@@ -194,6 +231,9 @@ void draw()
    meshShader->use();
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
+
+   // choose from materials
+   setPhongMaterial(0);
    
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       drawable_objects[i]->draw(meshShader, g_model_trans);
@@ -236,6 +276,11 @@ void initObjects() {
    // TODO - test for return values (but we usually know if they work or not)
 
    meshShader = new PhongShader();
+   // Light 
+   g_lightInfo.pos = vec3(1, 0, 1);
+   g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
+
+
 
    // Bunnie
    GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, -0.1, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(25.0, 0.1, 25.0))), g_physics->makeMaterial());
