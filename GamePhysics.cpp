@@ -62,21 +62,35 @@ GamePhysics::GamePhysics()
    std::cout << "PhysX successfully initialized\n";
 }
 
-GamePhysicsActor *GamePhysics::makeStaticActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat)
+
+GamePhysicsActor *GamePhysics::makeActor(physx::PxRigidActor *actor)
 {
-   physx::PxRigidStatic *actor = PxCreateStatic(*mPhysics, pose, *geom, *mat);
    mScene->addActor(*actor);
-   
    actors.push_back(GamePhysicsActor(actor));
    return &actors.back();
 }
-GamePhysicsActor *GamePhysics::makeDynamicActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat, double density)
+
+physx::PxRigidDynamic *GamePhysics::makeBlankDynamic(physx::PxTransform pose)
 {
-   physx::PxRigidDynamic *actor = PxCreateDynamic(*mPhysics, pose, *geom, *mat, density);
-   mScene->addActor(*actor);   
+   return mPhysics->createRigidDynamic(pose);
+}
+
+GamePhysicsActor *GamePhysics::makeStaticActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat)
+{
+   physx::PxRigidStatic *actor = PxCreateStatic(*mPhysics, pose, *geom, *mat);
    
-   actors.push_back(GamePhysicsActor(actor));
-   return &actors.back();
+   return makeActor(actor);
+}
+GamePhysicsActor *GamePhysics::makeDynamicActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat, double mass)
+{
+   physx::PxRigidDynamic *actor = makeBlankDynamic(pose);
+   
+   actor->createShape(*geom, *mat);
+   actor->setMass(mass);
+   
+   //physx::PxRigidDynamic *actor = PxCreateDynamic(*mPhysics, pose, *geom, *mat, density);
+   
+   return makeActor(actor);
 }
 
 void GamePhysics::simulate(double dt)

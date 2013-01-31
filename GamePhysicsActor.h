@@ -27,10 +27,12 @@ class GamePhysicsActor
    friend class GamePhysics;
    
 public:
+   void push(float force);
+   
    glm::vec3 direction();
 	void setDirection(glm::vec3 d);
    glm::vec3 velocity();
-	void setVelocity(glm::vec3 d);
+	void setVelocity(glm::vec3 v);
 	float speed();
 	void setSpeed(float s);
 	glm::vec3 position();
@@ -39,6 +41,9 @@ public:
 protected:
    GamePhysicsActor(physx::PxRigidActor *actor) : mActor(actor) {}
    //void update();
+   
+   void addForce(glm::vec3 f);
+   void clearForce();
    
 private:
    physx::PxRigidActor *mActor;

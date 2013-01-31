@@ -20,8 +20,10 @@ class GamePhysics
 public:
    GamePhysics();
    void simulate(double dt);
+   GamePhysicsActor *makeActor(physx::PxRigidActor *actor);
+   physx::PxRigidDynamic *makeBlankDynamic(physx::PxTransform pose);
    GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat);
-   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat, double density);
+   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry *geom, physx::PxMaterial *mat, double mass);
    physx::PxMaterial *makeMaterial() { return mPhysics->createMaterial(0.5f, 0.5f, 0.1f); }
    
 private:
