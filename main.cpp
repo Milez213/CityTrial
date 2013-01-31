@@ -228,15 +228,15 @@ void initObjects() {
    flatShader = new FlatShader();
 
    // Bunnie
-   GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, 0.0, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial());
+   GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, 0.0, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(25.0, 0.1, 25.0))), g_physics->makeMaterial());
    GameDrawableObject *floor = new GameDrawableObject(fActor, "floor");
    floor->setScale(vec3(25.0, 0.0, 25.0));
    drawable_objects.push_back(floor);
    for (int i = -10; i < 11; i++) {
       for (int j = 5; j < 11; j++) {
-         GamePhysicsActor *actor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(i, 1.0, j)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial());
+         GamePhysicsActor *actor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(i, 1.0, j)), new physx::PxBoxGeometry(convert(glm::vec3(0.1, 0.1, 0.1))), g_physics->makeMaterial());
          GameDrawableObject *object = new GameDrawableObject(actor, "cube");
-         object->setPosition(vec3(i, 1.0, j));
+         //object->setPosition(vec3(i, 1.0, j));
          object->setScale(vec3(0.1, 0.1, 0.1));
          drawable_objects.push_back(object);
       }
