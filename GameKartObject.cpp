@@ -8,19 +8,21 @@
 #include <iostream>
 using namespace std;
 
-GamePhysicsActor *GameKartObject::makeKartActor(GamePhysics *physics)
+extern GamePhysics *g_physics;
+
+GamePhysicsActor *GameKartObject::makeKartActor()
 {
-   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), physics->makeMaterial(), 5.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
 }
-GamePhysicsActor *GameKartObject::makeTireActor(GamePhysics *physics)
+GamePhysicsActor *GameKartObject::makeTireActor()
 {
-   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), physics->makeMaterial(), 1.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
 }
 
-GameKartObject::GameKartObject(GamePhysics *physics, const char *fileName) : GameDrawableObject(makeKartActor(physics), "chassis") {
+GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKartActor(), "chassis") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject(makeTireActor(physics), "tire");
+      GameDrawableObject *tire = new GameDrawableObject(makeTireActor(), "tire");
       wheels.push_back(tire);
    }
    
