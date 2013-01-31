@@ -16,7 +16,7 @@
 void GamePhysicsActor::push(float force)
 {
    clearForce();
-   //addForce(force * direction());
+   addForce(force * direction());
 }
 
 float GamePhysicsActor::speed()
@@ -24,8 +24,6 @@ float GamePhysicsActor::speed()
    glm::vec3 vel = velocity();
    vel.y = 0;
    return glm::length(vel);
-   
-   
    //return glm::length(velocity());
 }
 void GamePhysicsActor::setSpeed(float s)
@@ -37,8 +35,6 @@ void GamePhysicsActor::setSpeed(float s)
    vel.z = s * dir.z;
    
    setVelocity(vel);
-   
-   
    //setVelocity(direction() * s);
 }
 /*float GamePhysicsActor::direction()
@@ -59,8 +55,6 @@ glm::vec3 GamePhysicsActor::direction()
       return glm::normalize(vel);
    else*/
       return lastDir;
-   
-   
    //return glm::normalize(velocity());
 }
 void GamePhysicsActor::setDirection(glm::vec3 d)
@@ -70,14 +64,14 @@ void GamePhysicsActor::setDirection(glm::vec3 d)
    glm::vec3 dir;
    d.y = 0;
    
-   if (d.x || d.z) {
+   if (dir.x || dir.z) {
       dir = glm::normalize(d);
-      lastDir = dir;
 
       vel.x = s * dir.x;
       vel.z = s * dir.z;
    
       setVelocity(vel);
+      lastDir = dir;
    }
    
       
