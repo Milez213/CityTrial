@@ -2,7 +2,7 @@
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 	ModelManager.o GameObject.o GameDrawableObject.o \
 	GameKartObject.o GamePhysics.o GamePhysicsActor.o \
-   	GameRamp.o GameUtilities.o
+   	GameRamp.o GameUtilities.o GameUpgradeObject.o
 
 
 # where to find .h files
