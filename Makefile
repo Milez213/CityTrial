@@ -33,6 +33,22 @@ ifeq ($(UNAME), Linux)
  -lRepX3CHECKED \
  -lRepXUpgrader3CHECKED \
  -lSceneQueryCHECKED \
+ -lSimulationControllerCHECKED \
+ -lLowLevelCHECKED \
+ -lLowLevelClothCHECKED \
+ -lPhysX3CHECKED \
+ -lPhysX3CharacterKinematicCHECKED \
+ -lPhysX3CommonCHECKED \
+ -lPhysX3CookingCHECKED \
+ -lPhysX3ExtensionsCHECKED \
+ -lPhysX3VehicleCHECKED \
+ -lPhysXProfileSDKCHECKED \
+ -lPhysXVisualDebuggerSDKCHECKED \
+ -lPvdRuntimeCHECKED \
+ -lPxTaskCHECKED \
+ -lRepX3CHECKED \
+ -lRepXUpgrader3CHECKED \
+ -lSceneQueryCHECKED \
  -lSimulationControllerCHECKED
 
 	LIB=./glfw/lib/x11/libglfw.a
@@ -44,7 +60,8 @@ ifeq ($(UNAME), Linux)
 		XRANDR=-lXrandr
 	endif
 
-LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)
+LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR) \
+$(PHYSXLFLAG) $(PHYSXLIBS)
 endif
 
 
