@@ -122,7 +122,8 @@ void setProjectionMatrix() {
 /* camera controls */
 void setView() {
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
-   glm::mat4 lookAt = glm::lookAt(vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 1.0), up);
+   vec3 kartPos = kart_objects[0]->position();
+   glm::mat4 lookAt = glm::lookAt(vec3(kartPos.x, kartPos.y + 2.0, kartPos.z - 3.0), kartPos, up);
    g_view = lookAt;
 }
 

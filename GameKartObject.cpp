@@ -49,7 +49,7 @@ bool GameKartObject::collide(GamePhysicsActor *collide)
    
    if (true /*collide == GameUpgradeObject enum*/) {
       GameDrawableObject *upgrade = new GameDrawableObject(makeTireActor(), "wings");
-      upgrade->setPosition(0.0, 0.0, 0.0);
+      upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrade->setSpeed(0.0);
       upgrade->setDirection(vec3(0.0, 0.0, 0.0));
       upgrades.push_back(upgrade);
