@@ -29,7 +29,7 @@ class PhongShader : public Shader {
 
 public:
 
-    PhongShader::PhongShader() : Shader("shaders/mesh_vert.glsl", "shaders/mesh_frag.glsl") {
+    PhongShader() : Shader("shaders/mesh_vert.glsl", "shaders/mesh_frag.glsl") {
         if (m_installed) {
             // matrices
             h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
@@ -64,10 +64,6 @@ public:
 
     GLuint getNormLocation() {
         return h_aNormal;
-    }
-
-    GLuint getPosLocation() {
-        return h_aPosition;
     }
 
     GLuint getPosLocation() {
