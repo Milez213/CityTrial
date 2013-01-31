@@ -53,7 +53,7 @@ public:
             h_uShowNormals = safe_glGetUniformLocation(m_shaderProg, "uShowNormals");
             h_uCamPos = safe_glGetUniformLocation(m_shaderProg, "uCamPos");
         } else {
-            fprintf(stderr, "FlatShader(): Couldn't install shaders\n");
+            fprintf(stderr, "PhongShader(): Couldn't install shaders\n");
             exit(1);
         }
     }
