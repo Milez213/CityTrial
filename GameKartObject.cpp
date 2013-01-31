@@ -61,6 +61,7 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
 {
    glm::vec3 pos = position();
  
+<<<<<<< HEAD
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
     //modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
@@ -85,36 +86,83 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     modelViewMatrix.popMatrix();  
  
 
+=======
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
+   modelViewMatrix.pushMatrix();
+   meshShader->use();
+   
+   modelViewMatrix.translate(position());
+   modelViewMatrix.scale(scl.x, scl.y, scl.z);
+   modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
+   modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
+   modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
+   meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   
+   //glBindVertexArray(vertexArray);
+   
+   GLuint h_aPos = meshShader->getPosLocation();
+   
+   safe_glEnableVertexAttribArray(h_aPos);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
+   safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+   
+   for (int i = 0; i < meshStorage.numMeshes; i++) {
+      //printf("We are drawing, right? %d\n", indexBufferLength[i]);
+      
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
+      
+      glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+   }
+   
+   safe_glDisableVertexAttribArray(h_aPos);
+   
+   //glBindVertexArray(0);
+   modelViewMatrix.popMatrix();
+>>>>>>> Kart Movement
 
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+   
+   wheels[0]->draw(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
+   wheels[1]->draw(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
+   wheels[2]->draw(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
+   wheels[3]->draw(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+   modelViewMatrix.popMatrix();
 }
 
 void GameKartObject::update(double dt)
 {
     // Update Actor parameters based on current input from joystickState and buttonState
-   if(usingController == true){
-    if (joystickState[0] < 0.0)
-    {
-    glm::vec3 oldDir = direction();
-    setDirection(glm::vec3(oldDir.x-(0.5 * dt),oldDir.y,oldDir.z));
-    }  
-
-    if(joystickState[0] > 0.0)
-    {
-    glm::vec3 oldDir = direction();
-    setDirection(glm::vec3(oldDir.x+(0.5 * dt),oldDir.y,oldDir.z));   
-    }
- 
-    if(joystickState[3] > 0.0)
-    {
-    float oldSpeed = speed();    
-    setSpeed(oldSpeed + (0.5 * dt));
-    }
-    if(joystickState[3]<0.0)
-    {
-    float oldSpeed = speed();    
-    setSpeed(oldSpeed - (0.5 * dt));    
-    }
+   //if(usingController == true){
+   if (joystickState[0] < 0.0) {
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x-(0.5 * dt),oldDir.y,oldDir.z));
    }
+   if(joystickState[0] > 0.0) {
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x+(0.5 * dt),oldDir.y,oldDir.z));
+   }
+ 
+   if(joystickState[3] > 0.0) {
+      float oldSpeed = speed();
+      setSpeed(oldSpeed + (0.5 * dt));
+   }
+   if(joystickState[3] < 0.0) {
+      float oldSpeed = speed();
+      setSpeed(oldSpeed - (0.5 * dt));
+   }
+   //}
    
 
 }
