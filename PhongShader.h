@@ -29,7 +29,7 @@ class PhongShader : public Shader {
 
 public:
 
-    PhongShader() : Shader("shaders/mesh_vert.glsl", "shaders/mesh_frag.glsl") {
+    PhongShader() : Shader("shaders/phong_vert.glsl", "shaders/phong_frag.glsl") {
         if (m_installed) {
             // matrices
             h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
