@@ -228,7 +228,7 @@ void initObjects() {
       }
    }
    
-   drawable_objects.push_back(new GameKartObject());
+   drawable_objects.push_back(new GameKartObject("kart stuff"));
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
