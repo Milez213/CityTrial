@@ -237,6 +237,7 @@ void draw()
    // get camera position
    vec3 kartPos = kart_objects[0]->position();
    vec3 kartDir = normalize(kart_objects[0]->direction());
+   kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 
    // choose from materials
