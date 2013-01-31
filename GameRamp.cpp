@@ -10,12 +10,14 @@
 
 #include "GameUtilities.h"
 
-static GamePhysicsActor *makeRampActor(GamePhysics *physics)
+extern GamePhysics *g_physics;
+
+static GamePhysicsActor *makeRampActor()
 {
-   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), physics->makeMaterial(), 5.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
 }
 
-GameRamp::GameRamp(GamePhysics *physics) : GameDrawableObject(makeRampActor(physics) ,"ramp")
+GameRamp::GameRamp() : GameDrawableObject(makeRampActor() ,"ramp")
 {
    
 }

@@ -16,7 +16,7 @@
 
 class GameRamp : public GameDrawableObject {
 public:
-   GameRamp(GamePhysics *physics);
+   GameRamp();
    
    float getHeightAt(float x, float z);
 };
