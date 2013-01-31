@@ -1,6 +1,7 @@
 
 
 
+
 #include "GameKartObject.h"
 
 #include <iostream>
@@ -49,21 +50,57 @@ void GameKartObject::stop()
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
    
+ 
+    modelViewMatrix.useMatrix();
+    modelViewMatrix.pushMatrix();
+    modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
+    modelViewMatrix.rotate(glm::vec3(rot.x,rot.y,rot.z));
+    chassis.draw(meshShader,modelViewMatrix);
+    modelViewMatrix.pushMatrix();
+    modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+    wheel[0].draw(meshShader,modelViewMatrix);
+    modelViewmatrix.popMatrix();
+    modelViewMatrix.pushMatrix();
+    modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
+    wheel[1].draw(meshShader,modelViewMatrix);
+    modelViewmatrix.popMatrix();
+    modelViewMatrix.pushMatrix();
+    modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
+    wheel[2].draw(meshShader,modelViewMatrix);
+    modelViewmatrix.popMatrix();
+    modelViewMatrix.pushMatrix();
+    modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
+    wheel[3].draw(meshShader,modelViewMatrix);
+    modelViewmatrix.popMatrix();  
+    modelViewMatrix.popMatrix();  
+ 
+
+
 }
 
 void GameKartObject::update(double dt)
 {
     // Update Actor parameters based on current input from joystickState and buttonState
-}
+   if(usingController == true){
+    if (joystickState[0] < 0.0)
+    {
+       //rotate actor left
+    }  
 
-
-/*
-void Bunnie::stop() {
-    if (stage == FLYING) {
-        stage = TRAIL;
-        // TODO - make black
-        smoke = new TFBParticles(g_time * MS_2_S);
-        smoke->init(pos);
+    if(joystickState[0] > 0.0)
+    {
+       //rotate actor right
     }
+ 
+    if(joystickState[3] > 0.0)
+    {
+    //accelerate
+    }
+    if(joystickState[3]<0.0)
+    {
+    //decelerate 
+    }
+   }
+   
+
 }
-*/
