@@ -158,6 +158,8 @@ void setProjectionMatrix() {
 
 /* camera controls */
 void setView() {
+   // TODO - make a Camera object
+
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
    vec3 kartPos = kart_objects[0]->position();
    vec3 kartDir = normalize(kart_objects[0]->direction());
@@ -232,7 +234,9 @@ void draw()
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
 
-   // camera position
+   // get camera position
+   vec3 kartPos = kart_objects[0]->position();
+   vec3 kartDir = normalize(kart_objects[0]->direction());
    meshShader->setCamPos(kartPos - kartDir);
 
    // choose from materials
