@@ -216,8 +216,6 @@ void initObjects() {
    flatShader = new FlatShader();
 
    // Bunnie
-   vec3 pos(0,0,5);
-   vec3 vel(0, 0, 0.1);
    for (int i = -10; i < 11; i++) {
       for (int j = -10; j < 11; j++) {
          GameDrawableObject *object = new GameDrawableObject("Stuff");
