@@ -163,7 +163,7 @@ void setView() {
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
    vec3 kartPos = kart_objects[0]->position();
    vec3 kartDir = normalize(kart_objects[0]->direction());
-   kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
+   kartDir = vec3(kartDir.x * 6.0, kartDir.y * 6.0 - 2.0, kartDir.z * 6.0);
    glm::mat4 lookAt = glm::lookAt(kartPos - kartDir, kartPos, up);
    g_view = lookAt;
 }
@@ -241,10 +241,12 @@ void draw()
    meshShader->setCamPos(kartPos - kartDir);
 
    // choose from materials
-   setPhongMaterial(0);
    
+      setPhongMaterial(0);
+
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       drawable_objects[i]->draw(meshShader, g_model_trans);
+      setPhongMaterial(1);
    }
 
 

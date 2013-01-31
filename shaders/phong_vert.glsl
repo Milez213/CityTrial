@@ -1,14 +1,15 @@
-#version 330
+// #version 320
 
-layout (location = 0) in vec3 aPosition;
-layout (location = 1) in vec3 aNormal;
+attribute vec3 aPosition;
+attribute vec3 aNormal;
 
 uniform mat4 uProjMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uModelMatrix;
+uniform mat4 uiModelMatrix;
 
-out vec3 vNormal;
-out vec4 vPosition;
+varying vec3 vNormal;
+varying vec4 vPosition;
 
 void main() {
     vec4 tNormal;
@@ -17,7 +18,8 @@ void main() {
     vPosition = uModelMatrix * vec4(aPosition.x, aPosition.y, aPosition.z, 1);
     gl_Position = uProjMatrix * uViewMatrix * vPosition;
 
-    tNormal = normalize(transpose(inverse(uModelMatrix)) * vec4(aNormal, 0));
+    // tNormal = normalize(transpose(inverse(uModelMatrix)) * vec4(aNormal, 0));
+    tNormal = normalize(uiModelMatrix * vec4(aNormal, 0));
 
     // pass
     vNormal = tNormal.xyz;

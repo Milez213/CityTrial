@@ -35,6 +35,7 @@ public:
             h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
             h_uViewMatrix = safe_glGetUniformLocation(m_shaderProg, "uViewMatrix");
             h_uModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uModelMatrix");
+            h_uiModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uiModelMatrix");
 
             // attributes
             h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
@@ -100,6 +101,10 @@ public:
         safe_glUniformMatrix4fv(h_uModelMatrix, value_ptr(mat));
     }
 
+    void setiModelMatrix(mat4 mat) {
+        safe_glUniformMatrix4fv(h_uiModelMatrix, value_ptr(mat));
+    }
+
     void setViewMatrix(mat4 mat) {
         safe_glUniformMatrix4fv(h_uViewMatrix, value_ptr(mat));
     }
@@ -118,6 +123,7 @@ private:
 
     // matrices
     GLint h_uModelMatrix;
+    GLint h_uiModelMatrix;
     GLint h_uViewMatrix;
     GLint h_uProjMatrix;
 

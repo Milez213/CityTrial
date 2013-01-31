@@ -1,4 +1,4 @@
-#version 330
+// #version 320
 
 struct Material {
   vec3 aColor;
@@ -21,8 +21,8 @@ uniform vec3 uCamPos;
 
 uniform int uShowNormals;
 
-in vec4 vPosition;
-in vec3 vNormal;
+varying vec4 vPosition;
+varying vec3 vNormal;
 
 void main() {
     vec3 L;

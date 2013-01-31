@@ -55,6 +55,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   meshShader->setiModelMatrix(glm::transpose(glm::inverse(modelViewMatrix.getMatrix())));
    
    //glBindVertexArray(vertexArray);
    

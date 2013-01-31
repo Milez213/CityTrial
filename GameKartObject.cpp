@@ -1,6 +1,7 @@
 #include "GameKartObject.h"
 #include "GameUtilities.h"
 
+#include <cmath>
 
 #include <iostream>
 using namespace std;
@@ -183,6 +184,8 @@ void GameKartObject::update(double dt)
    dir = direction();
    vel = velocity();
    pos = position();
+
+   setRotation(vec3(0, - 180 * atan(dir.z, dir.x)/M_PI, 0 ));
    
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
