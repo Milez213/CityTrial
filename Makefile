@@ -33,6 +33,22 @@ ifeq ($(UNAME), Linux)
  -lRepX3CHECKED \
  -lRepXUpgrader3CHECKED \
  -lSceneQueryCHECKED \
+ -lSimulationControllerCHECKED \
+ -lLowLevelCHECKED \
+ -lLowLevelClothCHECKED \
+ -lPhysX3CHECKED \
+ -lPhysX3CharacterKinematicCHECKED \
+ -lPhysX3CommonCHECKED \
+ -lPhysX3CookingCHECKED \
+ -lPhysX3ExtensionsCHECKED \
+ -lPhysX3VehicleCHECKED \
+ -lPhysXProfileSDKCHECKED \
+ -lPhysXVisualDebuggerSDKCHECKED \
+ -lPvdRuntimeCHECKED \
+ -lPxTaskCHECKED \
+ -lRepX3CHECKED \
+ -lRepXUpgrader3CHECKED \
+ -lSceneQueryCHECKED \
  -lSimulationControllerCHECKED
 
 	LIB=./glfw/lib/x11/libglfw.a
