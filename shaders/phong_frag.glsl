@@ -8,7 +8,7 @@ struct Material {
 };
 
 // texture
-uniform sampler2D uTexUnit;
+// uniform sampler2D uTexUnit;
 
 // light info
 uniform vec3 uLightPos;
@@ -24,8 +24,6 @@ uniform int uShowNormals;
 in vec4 vPosition;
 in vec3 vNormal;
 
-layout ( location = 0 ) out vec4 FragColor;
-
 void main() {
     vec3 L;
     vec3 diffuse;
@@ -35,7 +33,9 @@ void main() {
     vec3 finalColor;
 	float NL;
 
-    vec3 dColor = texture2D(uTexUnit, 0.3*vPosition.xz).xyz;
+    // vec3 dColor = texture2D(uTexUnit, 0.3*vPosition.xz).xyz;
+    
+    vec3 dColor = uMat.dColor;
     
     // interpolated normal
     N = normalize(vNormal);
@@ -58,10 +58,8 @@ void main() {
 			spec = vec3(0.0);
 		}
 
-        FragColor = vec4(clamp(spec + diffuse + uMat.aColor, 0.0, 1.0), 1.0);
+        gl_FragColor = vec4(clamp(spec + diffuse + uMat.aColor, 0.0, 1.0), 1.0);
     } else {
-        FragColor = vec4(N, 1.0);
+        gl_FragColor = vec4(N, 1.0);
     }
-
-	//gl_FragColor = uCamPos;
 }
