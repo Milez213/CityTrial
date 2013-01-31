@@ -24,10 +24,10 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKa
    }
    
    glm::vec3 pos = position();
-   wheels[0]->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
-   wheels[1]->setPosition(vec3(pos.x - 5.0,pos.y + 5.0,pos.z));
-   wheels[2]->setPosition(vec3(pos.x + 5.0,pos.y - 5.0,pos.z));
-   wheels[3]->setPosition(vec3(pos.x + 5.0,pos.y + 5.0,pos.z));
+   wheels[0]->setPosition(vec3(pos.x - 2.0,pos.y - 2.0,pos.z));
+   wheels[1]->setPosition(vec3(pos.x - 2.0,pos.y + 2.0,pos.z));
+   wheels[2]->setPosition(vec3(pos.x + 2.0,pos.y - 2.0,pos.z));
+   wheels[3]->setPosition(vec3(pos.x + 2.0,pos.y + 2.0,pos.z));
     
    usingController = false;
     
@@ -66,20 +66,20 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     //modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
     //Draw itself
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(-2.0,-2.0,0.0));
     
     wheels[0]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(-2.0,2.0,0.0));
     wheels[1]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(2.0,-2.0,0.0));
     wheels[2]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
+    modelViewMatrix.translate(glm::vec3(2.0,2.0,0.0));
     wheels[3]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.popMatrix();  
