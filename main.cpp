@@ -140,17 +140,17 @@ void getInputState()
          glfwGetJoystickButtons(i, button, 32);
       } else {
          if (glfwGetKey('W') == GLFW_PRESS)
-            joy[0] = 1.0;
-         else if (glfwGetKey('S') == GLFW_PRESS)
-            joy[0] = -1.0;
-         else
-            joy[0] = 0.0;
-         if (glfwGetKey('A') == GLFW_PRESS)
             joy[3] = 1.0;
-         else if (glfwGetKey('D') == GLFW_PRESS)
+         else if (glfwGetKey('S') == GLFW_PRESS)
             joy[3] = -1.0;
          else
             joy[3] = 0.0;
+         if (glfwGetKey('A') == GLFW_PRESS)
+            joy[0] = 1.0;
+         else if (glfwGetKey('D') == GLFW_PRESS)
+            joy[0] = -1.0;
+         else
+            joy[0] = 0.0;
       }
       
       //printf("Joy: %0.3f\n", joy[3]);
