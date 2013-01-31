@@ -70,7 +70,7 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes)
 
 void ModelManager::loadObject(const char *filename)
 {
-   string file(fileName);
+   string file(filename);
    if (file == "ramp") {
       storage.push_back(rampMesh());
    } else {
@@ -293,7 +293,7 @@ bufferStore ModelManager::rampMesh()
       1.0, 1.0, 1.0
    };
    
-   float normals[72] = {
+   float normals[54] = {
 		0.0, 0.0, -1.0,
       -1.0, 0.0, 0.0,
       0.0, -1.0, 0.0,
@@ -311,13 +311,7 @@ bufferStore ModelManager::rampMesh()
       0.0, -1.0, 0.0,
 		0.0, 0.0, 1.0,  //15
       -1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-		0.0, 0.0, 1.0,  //18
-      1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-		0.0, 0.0, 1.0,  //21
-      -1.0, 0.0, 0.0,
-      0.0, -1.0, 0.0
+      0.0, 1.0, 0.0
    };
    
    /*GLuint faces[36] = {
@@ -366,7 +360,7 @@ bufferStore ModelManager::rampMesh()
    
    glGenBuffers(1, &ibo);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(bottom), front, GL_STATIC_DRAW);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(bottom), bottom, GL_STATIC_DRAW);
    
    glGenBuffers(1, &ibo2);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo2);

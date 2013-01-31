@@ -7,3 +7,8 @@
 //
 
 #include "GameRamp.h"
+
+GameRamp::GameRamp(const char *fileName) : GameDrawableObject("ramp")
+{
+   
+}
