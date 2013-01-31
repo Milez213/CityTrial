@@ -73,10 +73,13 @@ void ModelManager::loadObject(const char *filename)
 {
    string file(filename);
    if (file == "ramp") {
+      printf("Ramp\n");
       storage.push_back(rampMesh());
    } else if (file == "floor") {
-      storage.push_back(rampMesh());
+      printf("Floor\n");
+      storage.push_back(floorMesh());
    } else {
+      printf("Cube\n");
       storage.push_back(cubeMesh());
    }
 #ifdef DEBUG_VBO

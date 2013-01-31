@@ -120,7 +120,7 @@ void setProjectionMatrix() {
 /* camera controls */
 void setView() {
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
-   glm::mat4 lookAt = glm::lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), up);
+   glm::mat4 lookAt = glm::lookAt(vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 1.0), up);
    g_view = lookAt;
 }
 
@@ -218,17 +218,21 @@ void initObjects() {
    flatShader = new FlatShader();
 
    // Bunnie
+   GamePhysicsActor *fActor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0.0, 0.0, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
+   GameDrawableObject *floor = new GameDrawableObject(fActor, "floor");
+   floor->setScale(vec3(25.0, 0.0, 25.0));
+   drawable_objects.push_back(floor);
    for (int i = -10; i < 11; i++) {
-      for (int j = -10; j < 11; j++) {
-         GamePhysicsActor *actor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(i, j, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
-         GameDrawableObject *object = new GameDrawableObject(actor, "Stuff");
-         object->setPosition(vec3(i, j, 5.0));
+      for (int j = 5; j < 11; j++) {
+         GamePhysicsActor *actor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(i, 1.0, j)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
+         GameDrawableObject *object = new GameDrawableObject(actor, "cube");
+         object->setPosition(vec3(i, 1.0, j));
          object->setScale(vec3(0.1, 0.1, 0.1));
          drawable_objects.push_back(object);
       }
    }
    
-   drawable_objects.push_back(new GameKartObject("kart stuff"));
+   drawable_objects.push_back(new GameKartObject("cube"));
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
