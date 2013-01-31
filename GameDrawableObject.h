@@ -31,7 +31,7 @@ class GameDrawableObject : public GameObject {
 public:
    GameDrawableObject(GamePhysicsActor *actor, const char *objFile);
    
-   void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
     
 protected:
    bufferStore meshStorage;
