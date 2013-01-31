@@ -19,13 +19,15 @@ class GameUpgradeObject : public GameDrawableObject
 public:
    enum Type {FLIGHT, GRIP, TURNING};
    
-   GameUpgradeObject(GamePhysicsActor *actor, Type initType);
+   GameUpgradeObject(Type initType, glm::vec3 position);
    
    void update(double time, double dt);
    
    Type upgradeType() { return type; };
    
 private:
+   
+   static GamePhysicsActor *makeUpgradeActor(glm::vec3 position);
    Type type;
 };
 #endif /* defined(____GameUpgradeObject__) */
