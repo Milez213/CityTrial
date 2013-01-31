@@ -8,12 +8,17 @@
 
 #include "GameRamp.h"
 
-GameRamp::GameRamp(const char *fileName) : GameDrawableObject("ramp")
+GameRamp::GameRamp() : GameDrawableObject("ramp")
 {
    
 }
 
-GameRamp::getHeightAt(float x, float z)
+float GameRamp::getHeightAt(float x, float z)
 {
-   float xMod = 
+   //float xMod = (x - pos.x) / scl.x;
+   float zMod = (z - pos.z) / scl.z;
+   
+   zMod += 1.0;
+   
+   return zMod * scl.y;
 }

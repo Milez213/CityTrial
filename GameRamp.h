@@ -19,6 +19,6 @@ public:
    GameRamp();
    
    float getHeightAt(float x, float z);
-}
+};
 
 #endif /* defined(____GameRamp__) */
