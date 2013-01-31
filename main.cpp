@@ -228,6 +228,8 @@ void initObjects() {
       }
    }
    
+   drawable_objects.push_back(new GameKartObject());
+   
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
       printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
