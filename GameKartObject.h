@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -39,8 +40,8 @@ public:
        usingController = cont;
    }
    
-   //void setJoystickState(float joyState[]) { memCpy(joyState, joystickState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
-   //void setButtonState(char butState[]) { memCpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
+   void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
+   //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
     
    void stop();
    void done();

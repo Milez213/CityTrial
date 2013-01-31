@@ -134,10 +134,22 @@ void getInputState()
          glfwGetJoystickPos(i, joy, 4);
          glfwGetJoystickButtons(i, button, 32);
       } else {
-         //set arrays via keyboard/mouse checks manually
+         if (glfwGetKey('W') == GLFW_PRESS)
+            joy[0] = 1.0;
+         else if (glfwGetKey('S') == GLFW_PRESS)
+            joy[0] = -1.0;
+         else
+            joy[0] = 0.0;
+         if (glfwGetKey('A') == GLFW_PRESS)
+            joy[3] = 1.0;
+         else if (glfwGetKey('D') == GLFW_PRESS)
+            joy[3] = -1.0;
+         else
+            joy[3] = 0.0;
       }
       
-      //kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
+      //printf("Joy: %0.3f\n", joy[3]);
+      kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
       //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
    }
 }
@@ -145,12 +157,10 @@ void getInputState()
 
 void update(double dt)
 {
-   /* psuedocode
-   for each (KKPKartObject kart in kart_objects) {
-      kart->update();
+   for (int i = 0; i < (int)kart_objects.size(); i++) {
+      kart_objects[i]->update(dt);
    }
-   */
-   
+
    getInputState();
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
@@ -231,9 +241,9 @@ void initObjects() {
          drawable_objects.push_back(object);
       }
    }
-   GamePhysicsActor *cActor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0.0, 0.0, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
    GameKartObject *kart = new GameKartObject("cube");
    drawable_objects.push_back(kart);
+   kart_objects.push_back(kart);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
