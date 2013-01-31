@@ -18,10 +18,12 @@
 #include <GL/gl.h>
 #endif
 
-#include "GameObject.h"
-#include "FlatShader.h"
-
 #include "MStackHelp.h"
+#include "ModelManager.h"
+#include "FlatShader.h"
+#include "GamePhysics.h"
+
+#include "GameObject.h"
 
 using namespace glm;
 
@@ -32,10 +34,11 @@ public:
    void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
     
 protected:
-   GLuint vertexArray;
-   GLuint vertexBuffer, textureBuffer, normalBuffer;
-   GLuint *indexBuffer;
-   int *indexBufferLength;
+   bufferStore meshStorage;
+   
+   //bound boundInfo;
+   
+   GamePhysicsActor *actor;
 };
 
 #endif

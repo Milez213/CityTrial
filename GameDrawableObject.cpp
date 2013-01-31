@@ -10,14 +10,12 @@
  */
 
 #include "GameDrawableObject.h"
-#include "ModelManager.h"
 
 extern ModelManager *g_model_manager;
 
 GameDrawableObject::GameDrawableObject(const char *objFile)
 {
-   g_model_manager->getObject(objFile, &vertexBuffer, &textureBuffer,
-                              &normalBuffer, &indexBuffer, &indexBufferLength);
+   g_model_manager->getObject(objFile, &meshStorage);
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
 #endif
@@ -60,15 +58,15 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
    GLuint h_aPos = meshShader->getPosLocation();
    
    safe_glEnableVertexAttribArray(h_aPos);
-   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
-   for (int i = 0; i < (int)(sizeof(indexBuffer)/sizeof(GLuint*)); i++) {
+   for (int i = 0; i < (int)(sizeof(meshStorage.indexBuffer)/sizeof(GLuint*)); i++) {
       //printf("We are drawing, right? %d\n", indexBufferLength[i]);
       
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer[i]);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
    
-      glDrawElements(GL_TRIANGLES, indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+      glDrawElements(GL_TRIANGLES, (GLuint)meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
    safe_glDisableVertexAttribArray(h_aPos);

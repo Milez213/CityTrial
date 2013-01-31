@@ -1,40 +1,36 @@
 //
-//  KPPPhysics.h
+//  GamePhysics.h
 //  
 //
 //  Created by Eric Johnson on 1/25/13.
 //
 //
 
-#ifndef ____Physics__
-#define ____Physics__
+#ifndef ____GamePhysics__
+#define ____GamePhysics__
 
 #include <iostream>
 #include <list>
-#include "glm/glm.hpp"
+#include "PxPhysicsAPI.h"
+#include "GamePhysicsActor.h"
 
-class KPPPhysics
+class GamePhysics
 {
 public:
-   class Actor
-   {
-   public:
-      const glm::vec3 &getPosition();
-      const glm::vec3 &getDirection();
-   protected:
-      Actor(glm::vec3 position, glm::vec3 direction);
-      void update();
-      
-   private:
-      glm::vec3 position;
-      glm::vec3 direction;
-   };
-   
-   void simulate();
-   Actor *makeActor(glm::vec3 position, glm::vec3 direction);
+   GamePhysics();
+   void simulate(double dt);
+   GamePhysicsActor *makeStaticActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat);
+   GamePhysicsActor *makeDynamicActor(physx::PxTransform pose, physx::PxGeometry geom, physx::PxMaterial *mat, double density);
    
 private:
-   std::list<Actor> actors;
+   physx::PxFoundation *mFoundation;
+   physx::PxProfileZoneManager *mProfileZoneManager;
+   physx::PxPhysics *mPhysics;
+   physx::PxScene *mScene;
+   physx::pxtask::CpuDispatcher *mCpuDispatcher;
+   static const int mNbThreads = 1;
+   
+   std::list<GamePhysicsActor> actors;
 };
 
-#endif /* defined(____Physics__) */
+#endif /* defined(____GamePhysics__) */

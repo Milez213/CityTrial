@@ -1,13 +1,13 @@
 
-
-
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
-      ModelManager.o GameObject.o GameDrawableObject.o
+	ModelManager.o GameObject.o GameDrawableObject.o \
+	GameKartObject.o GamePhysics.o GamePhysicsActor.o
 
 
 # where to find .h files
-IFLAGS=-I./glfw/include
-CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g
+IFLAGS=-I./glfw/include -I./physx/Include
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g -Wno-unknown-pragmas
+PHYSXFLAGS=-g -D_DEBUG
 
 # detect os and set flags accordingly
 UNAME := $(shell uname)
@@ -15,6 +15,25 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
+	PHYSXLFLAG=-Lphysx/Lib/linux64
+	PHYSXLIBS= \
+ -lLowLevelCHECKED \
+ -lLowLevelClothCHECKED \
+ -lPhysX3CHECKED \
+ -lPhysX3CharacterKinematicCHECKED \
+ -lPhysX3CommonCHECKED \
+ -lPhysX3CookingCHECKED \
+ -lPhysX3ExtensionsCHECKED \
+ -lPhysX3VehicleCHECKED \
+ -lPhysXProfileSDKCHECKED \
+ -lPhysXVisualDebuggerSDKCHECKED \
+ -lPvdRuntimeCHECKED \
+ -lPxTaskCHECKED \
+ -lRepX3CHECKED \
+ -lRepXUpgrader3CHECKED \
+ -lSceneQueryCHECKED \
+ -lSimulationControllerCHECKED
+
 	LIB=./glfw/lib/x11/libglfw.a
 
 	# -lXrandr for csl
@@ -30,50 +49,45 @@ endif
 
 # For OS X
 ifeq ($(UNAME), Darwin)
-LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+
+PHYSXLFLAG=-L./physx/Lib/osx64
+PHYSXLIBS=\
+-lLowLevelCHECKED \
+-lLowLevelClothCHECKED \
+-lPhysX3CHECKED \
+-lPhysX3CharacterKinematicCHECKED \
+-lPhysX3CommonCHECKED \
+-lPhysX3CookingCHECKED \
+-lPhysX3ExtensionsCHECKED \
+-lPhysX3VehicleCHECKED \
+-lPhysXProfileSDKCHECKED \
+-lPhysXVisualDebuggerSDKCHECKED \
+-lPvdRuntimeCHECKED \
+-lPxTaskCHECKED \
+-lRepX3CHECKED \
+-lRepXUpgrader3CHECKED \
+-lSceneQueryCHECKED \
+-lSimulationControllerCHECKED
+
+LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit \
+$(PHYSXLFLAG) $(PHYSXLIBS)
+
 endif
 
 
-all: $(OFILES)
-	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS) 	
 
+all: build
+
+build: $(OFILES)
+	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS)
 
 %.o: %.cpp
-	g++ -c $(CFLAGS) $(IFLAGS) -o $@ $<
+	g++ -c $(CFLAGS) $(PHYSXFLAGS) $(IFLAGS) -o $@ $<
 
+clean:
+	rm -rf *.o kpp
 
 
 
 # Comment this out
-ifeq ("x", "y")
-main.o: main.cpp
-	g++ -c main.cpp
-
-GLSL_helper.o: GLSL_helper.cpp
-	g++ -c GLSL_helper.cpp
-	
-MStackHelp.o: MStackHelp.cpp
-	g++ -c MStackHelp.cpp
-	
-BBObject.o: BBObject.cpp
-	g++ -c BBObject.cpp
-	
-BBMatObject.o: BBMatObject.cpp
-	g++ -c BBMatObject.cpp
-	
-BBCamera.o: BBCamera.cpp
-	g++ -c BBCamera.cpp
-	
-BBPlayerObject.o: BBPlayerObject.cpp
-	g++ -c BBPlayerObject.cpp
-	
-BBAvoidObject.o: BBAvoidObject.cpp
-	g++ -c BBAvoidObject.cpp
-	
-BBCollectObject.o: BBCollectObject.cpp
-	g++ -c BBCollectObject.cpp
-	
-BBLight.o: BBLight.cpp
-	g++ -c BBLight.cpp
-
-endif
+# that stuff is still in makefile2

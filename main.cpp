@@ -10,7 +10,6 @@
 #include <GL/glfw.h>
 
 #include <iostream>
-using namespace std;
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -32,9 +31,12 @@ using  glm::vec4;
 
 #include "FlatShader.h"
 #include "ModelManager.h"
-#include "KPPPhysics.h"
+#include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
+#include "GameKartObject.h"
+
+using namespace std;
 
 //-----------------------------------------------
 // These are global state machines: 
@@ -81,10 +83,12 @@ vector<KPPKartObject *> kart_objects;
 */
 
 ModelManager *g_model_manager;
+GamePhysics *g_physics;
 
 // test one object for now
 FlatShader *flatShader;
-vector<GameDrawableObject> drawable_objects;
+vector<GameDrawableObject *> drawable_objects;
+vector<GameKartObject *> kart_objects;
 
 
 RenderingHelper g_model_trans;
@@ -118,20 +122,45 @@ void setView() {
    g_view = lookAt;
 }
 
+void getInputState()
+{
+   for (int i = 0; i < kart_objects.size(); i++) {
+      float joy[4]; //should vary from -1.0 to 1.0
+      unsigned char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
+      
+      if (kart_objects[i]->isUsingController()) {
+         glfwGetJoystickPos(i, joy, 4);
+         glfwGetJoystickButtons(i, button, 32);
+      } else {
+         //set arrays via keyboard/mouse checks manually
+      }
+      
+      //kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
+      //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
+   }
+}
 
-void update(double dt) {
+
+void update(double dt)
+{
    /* psuedocode
    for each (KKPKartObject kart in kart_objects) {
       kart->update();
    }
    */
-
+   
+   getInputState();
+   
+   /*for (int i = 0; i < kart_objects.size(); i++) {
+      kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
+   }*/
 }
 
 
 
 
-void draw() {
+void draw()
+{
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -145,7 +174,7 @@ void draw() {
    flatShader->setViewMatrix(g_view);
    
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      drawable_objects[i].draw(flatShader, g_model_trans);
+      drawable_objects[i]->draw(flatShader, g_model_trans);
    }
 
 
@@ -194,9 +223,17 @@ void initObjects() {
          GameDrawableObject *object = new GameDrawableObject("Stuff");
          object->setPosition(vec3(i, j, 5.0));
          object->setScale(vec3(0.1, 0.1, 0.1));
-         drawable_objects.push_back(*object);
+         drawable_objects.push_back(object);
       }
    }
+   
+   /*GameKartObject *kart = new GameKartObject("Kart");
+   if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
+      printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
+      kart->setUsingController(true);
+   }
+   kart_objects.push_back(kart);
+   drawable_objects.push_back(kart);*/
 }
 
 
@@ -271,6 +308,7 @@ void initialize()
    g_model_trans.loadIdentity();
 
    g_model_manager = new ModelManager();
+   g_physics = new GamePhysics();
    // initGeometry();
 
    initObjects();
