@@ -23,6 +23,8 @@ public:
 	
 	glm::vec3 direction();// { return vec3(dir.x, dir.y, dir.z); };
 	void setDirection(vec3 d);// { dir = vec3(d.x, d.y, d.z); };
+   //float direction();
+   //void setDirection(float d);
 	float speed();// { return spd; };
 	void setSpeed(float s);// { spd = s; }
 	glm::vec3 position();// { return vec3(pos.x, pos.y, pos.z); };

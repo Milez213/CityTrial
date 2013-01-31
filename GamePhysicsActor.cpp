@@ -16,24 +16,66 @@
 void GamePhysicsActor::push(float force)
 {
    clearForce();
-   addForce(force * direction());
+   //addForce(force * direction());
 }
 
 float GamePhysicsActor::speed()
 {
-   return glm::length(velocity());
+   glm::vec3 vel = velocity();
+   vel.y = 0;
+   return glm::length(vel);
+   //return glm::length(velocity());
 }
 void GamePhysicsActor::setSpeed(float s)
 {
-   setVelocity(direction() * s);
+   glm::vec3 vel = velocity();
+   glm::vec3 dir = direction();
+   
+   vel.x = s * dir.x;
+   vel.z = s * dir.z;
+   
+   setVelocity(vel);
+   //setVelocity(direction() * s);
 }
+/*float GamePhysicsActor::direction()
+{
+   return dir;
+}
+void GamePhysicsActor::setDirection(float dir)
+{
+   this->dir = dir;
+}*/
 glm::vec3 GamePhysicsActor::direction()
 {
-   return glm::normalize(velocity());
+   
+   glm::vec3 vel = velocity();
+   vel.y = 0;
+   
+   if (vel.x || vel.z)
+      return glm::normalize(vel);
+   else
+      return lastDir;
+   //return glm::normalize(velocity());
 }
-void GamePhysicsActor::setDirection(glm::vec3 dir)
+void GamePhysicsActor::setDirection(glm::vec3 d)
 {
-   setVelocity(glm::normalize(dir) * speed());
+   glm::vec3 vel = velocity();
+   float s = speed();
+   glm::vec3 dir;
+   d.y = 0;
+   
+   if (dir.x || dir.z) {
+      dir = glm::normalize(d);
+
+      vel.x = s * dir.x;
+      vel.z = s * dir.z;
+   
+      setVelocity(vel);
+      lastDir = dir;
+   }
+   
+      
+   //setVelocity(glm::normalize(dir) * speed());
 }
 
 glm::vec3 GamePhysicsActor::position() {

@@ -22,6 +22,8 @@ GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
 
 glm::vec3 GameObject::direction() { return mActor->direction(); }
 void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
+//float GameObject::direction() { return mActor->direction(); }
+//void GameObject::setDirection(float d) { mActor->setDirection(d); }
 float GameObject::speed() { return mActor->speed(); }
 void GameObject::setSpeed(float s) { mActor->setSpeed(s); }
 glm::vec3 GameObject::position() { return mActor->position(); }
