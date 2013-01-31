@@ -1,6 +1,5 @@
 
 
-
 #include "GameKartObject.h"
 #include "GameUtilities.h"
 
@@ -12,7 +11,7 @@ extern GamePhysics *g_physics;
 
 GamePhysicsActor *GameKartObject::makeKartActor()
 {
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 0, -5)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
 }
 GamePhysicsActor *GameKartObject::makeTireActor()
 {
@@ -68,9 +67,12 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
     modelViewMatrix.rotate(rot.x, glm::vec3(1.0,0.0,0.0));
+    modelViewMatrix.scale(glm::vec3(0.5,0.5,0.5));
+    chassis.draw(meshShader,modelViewMatrix);
     //Draw itself
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+    
     wheels[0]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
