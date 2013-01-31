@@ -30,6 +30,8 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKa
    wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
+   setDirection(vec3(0.0, 0.0, 0.0));
+   setSpeed(0.0);
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -130,21 +132,31 @@ void GameKartObject::update(double dt)
    if (joystickState[0] < 0.0) {
       glm::vec3 oldDir = direction();
       setDirection(glm::vec3(oldDir.x-(0.5 * dt),oldDir.y,oldDir.z));
-   }
-   if(joystickState[0] > 0.0) {
+   } else if(joystickState[0] > 0.0) {
       glm::vec3 oldDir = direction();
       setDirection(glm::vec3(oldDir.x+(0.5 * dt),oldDir.y,oldDir.z));
+   } else {
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x*(0.5 * dt),oldDir.y,oldDir.z));
    }
  
    if(joystickState[3] > 0.0) {
       float oldSpeed = speed();
       setSpeed(oldSpeed + (0.5 * dt));
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x,oldDir.y,oldDir.z+(2.0 * dt)));
       //mActor->push(0.5 * dt);
-   }
-   if(joystickState[3] < 0.0) {
+   } else if(joystickState[3] < 0.0) {
       float oldSpeed = speed();
       setSpeed(oldSpeed - (0.5 * dt));
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x,oldDir.y,oldDir.z-(2.0 * dt)));
       //mActor->push(-0.5 * dt);
+   } else {
+      float oldSpeed = speed();
+      setSpeed(oldSpeed*(0.5 * dt));
+      glm::vec3 oldDir = direction();
+      setDirection(glm::vec3(oldDir.x,oldDir.y,oldDir.z*(0.5 * dt)));
    }
    //}
    
