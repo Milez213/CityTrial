@@ -37,8 +37,6 @@ protected:
    bufferStore meshStorage;
    
    //bound boundInfo;
-   
-   GamePhysicsActor *actor;
 };
 
 #endif
