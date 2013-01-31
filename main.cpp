@@ -232,6 +232,9 @@ void draw()
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
 
+   // camera position
+   meshShader->setCamPos(kartPos - kartDir);
+
    // choose from materials
    setPhongMaterial(0);
    
@@ -277,9 +280,11 @@ void initObjects() {
 
    meshShader = new PhongShader();
    // Light 
-   g_lightInfo.pos = vec3(1, 0, 1);
+   g_lightInfo.pos = vec3(1, 5, 1);
    g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
 
+   meshShader->setLight(g_lightInfo);
+   meshShader->setShowNormals(0);
 
 
    // Bunnie
