@@ -45,7 +45,7 @@ GameDrawableObject::GameDrawableObject(GamePhysicsActor *actor, const char *objF
 
 void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
-   cout << "draw\n";
+   //cout << "draw\n";
    modelViewMatrix.pushMatrix();
    meshShader->use();
    
