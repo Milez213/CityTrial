@@ -21,13 +21,15 @@ void GamePhysicsActor::push(float force)
 
 float GamePhysicsActor::speed()
 {
-   glm::vec3 vel = velocity();
+   return lastSpeed;
+   /*glm::vec3 vel = velocity();
    vel.y = 0;
-   return glm::length(vel);
+   return glm::length(vel);*/
    //return glm::length(velocity());
 }
 void GamePhysicsActor::setSpeed(float s)
 {
+   lastSpeed = s;
    glm::vec3 vel = velocity();
    glm::vec3 dir = direction();
    
