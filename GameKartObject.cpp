@@ -51,27 +51,26 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
 {
    
  
-    modelViewMatrix.useMatrix();
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(pos.x,pos.y,pos.z));
-    modelViewMatrix.rotate(glm::vec3(rot.x,rot.y,rot.z));
-    chassis.draw(meshShader,modelViewMatrix);
+    modelViewMatrix.rotate(rot.x, glm::vec3(1.0,0.0,0.0));
+    //Draw itself
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
-    wheel[0].draw(meshShader,modelViewMatrix);
-    modelViewmatrix.popMatrix();
+    wheels[0]->draw(meshShader,modelViewMatrix);
+    modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
-    wheel[1].draw(meshShader,modelViewMatrix);
-    modelViewmatrix.popMatrix();
+    wheels[1]->draw(meshShader,modelViewMatrix);
+    modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
-    wheel[2].draw(meshShader,modelViewMatrix);
-    modelViewmatrix.popMatrix();
+    wheels[2]->draw(meshShader,modelViewMatrix);
+    modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
     modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
-    wheel[3].draw(meshShader,modelViewMatrix);
-    modelViewmatrix.popMatrix();  
+    wheels[3]->draw(meshShader,modelViewMatrix);
+    modelViewMatrix.popMatrix();
     modelViewMatrix.popMatrix();  
  
 

@@ -371,7 +371,6 @@ int main(int argc, char** argv)
  		fprintf(stderr, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
 	}
 
-
    glfwSetWindowSizeCallback( reshape );
    glfwSetKeyCallback( keyboard_callback_key );
 

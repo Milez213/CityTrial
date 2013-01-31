@@ -37,6 +37,7 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes)
       if (file == storage[test].name) {
          index = test;
       }
+      test++;
    }
       
    if (index == -1) {
