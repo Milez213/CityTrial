@@ -10,12 +10,19 @@
  
 #include "GameObject.h"
 
-GameObject::GameObject()
+GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
 {
-	dir = vec3(0.0, 0.0, 1.0);
-   spd = 0.0;
+	//dir = vec3(0.0, 0.0, 1.0);
+   //spd = 0.0;
    
-   pos = vec3(0.0, 0.0, 0.0);
+   //pos = vec3(0.0, 0.0, 0.0);
    rot = vec3(0.0, 0.0, 0.0);
    scl = vec3(0.0, 0.0, 0.0);
 }
+
+glm::vec3 GameObject::direction() { return mActor->direction(); }
+void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
+float GameObject::speed() { return mActor->speed(); }
+void GameObject::setSpeed(float s) { mActor->setSpeed(s); }
+glm::vec3 GameObject::position() { return mActor->position(); }
+void GameObject::setPosition(vec3 p) { mActor->setPosition(p); }

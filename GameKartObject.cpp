@@ -2,17 +2,29 @@
 
 
 #include "GameKartObject.h"
+#include "GameUtilities.h"
+
 
 #include <iostream>
 using namespace std;
 
-GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chassis") {
+GamePhysicsActor *GameKartObject::makeKartActor(GamePhysics *physics)
+{
+   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), physics->makeMaterial(), 5.0);
+}
+GamePhysicsActor *GameKartObject::makeTireActor(GamePhysics *physics)
+{
+   return physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), physics->makeMaterial(), 1.0);
+}
+
+GameKartObject::GameKartObject(GamePhysics *physics, const char *fileName) : GameDrawableObject(makeKartActor(physics), "chassis") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject("tire");
+      GameDrawableObject *tire = new GameDrawableObject(makeTireActor(physics), "tire");
       wheels.push_back(tire);
    }
-    
+   
+   glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x-5.0,pos.y-5.0,pos.z));
    wheels[1]->setPosition(vec3(pos.x - 5.0,pos.y + 5.0,pos.z));
    wheels[2]->setPosition(vec3(pos.x + 5.0,pos.y - 5.0,pos.z));

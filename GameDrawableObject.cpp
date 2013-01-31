@@ -13,16 +13,17 @@
 
 extern ModelManager *g_model_manager;
 
-GameDrawableObject::GameDrawableObject(const char *objFile)
+GameDrawableObject::GameDrawableObject(GamePhysicsActor *actor, const char *objFile) :
+   GameObject(actor)
 {
    g_model_manager->getObject(objFile, &meshStorage);
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
 #endif
-   dir = vec3(0.0, 0.0, 1.0);
-   spd = 0.0;
+   //dir = vec3(0.0, 0.0, 1.0);
+   //spd = 0.0;
    
-   pos = vec3(0.0, 0.0, 5.0);
+   //pos = vec3(0.0, 0.0, 5.0);
    rot = vec3(0.0, 0.0, 0.0);
    scl = vec3(1.0, 3.0, 1.0);
    
@@ -46,7 +47,7 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
    modelViewMatrix.pushMatrix();
    meshShader->use();
    
-   modelViewMatrix.translate(pos);
+   modelViewMatrix.translate(position());
    modelViewMatrix.scale(scl.x, scl.y, scl.z);
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));

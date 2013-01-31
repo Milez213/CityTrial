@@ -27,10 +27,12 @@ class GamePhysicsActor
    friend class GamePhysics;
    
 public:
-   glm::vec3 get_position();
-   glm::vec3 get_velocity();
-   void set_position(glm::vec3 pos);
-   void set_velocity(glm::vec3 vel);
+   glm::vec3 direction();
+	void setDirection(glm::vec3 d);
+	float speed();
+	void setSpeed(float s);
+	glm::vec3 position();
+	void setPosition(glm::vec3 p);
    
 protected:
    GamePhysicsActor(physx::PxRigidActor *actor) : mActor(actor) {}

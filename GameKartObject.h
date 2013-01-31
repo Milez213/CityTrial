@@ -23,7 +23,7 @@ using glm::rotate;
 class GameKartObject : public GameDrawableObject {
    
 public:
-   GameKartObject(const char *fileName);
+   GameKartObject(GamePhysics *physics, const char *fileName);
    ~GameKartObject();
 
    void update(double dt);
@@ -48,6 +48,8 @@ public:
 private:
    FlatShader *meshShader;
    
+   static GamePhysicsActor *makeKartActor(GamePhysics *physics);
+   static GamePhysicsActor *makeTireActor(GamePhysics *physics);
    vector<GameDrawableObject *> wheels;
    
    bool usingController;
