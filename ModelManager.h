@@ -76,6 +76,7 @@ private:
 	void loadObject(const char* filename);
    bufferStore cubeMesh();
    bufferStore rampMesh();
+   bufferStore floorMesh();
 	vector<bufferStore> storage;
 };
 
