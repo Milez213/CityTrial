@@ -1,7 +1,6 @@
 
 
 
-
 #include "GameKartObject.h"
 #include "GameUtilities.h"
 
@@ -96,21 +95,25 @@ void GameKartObject::update(double dt)
    if(usingController == true){
     if (joystickState[0] < 0.0)
     {
-       //rotate actor left
+    glm::vec3 oldDir = direction();
+    setDirection(glm::vec3(oldDir.x-(0.5 * dt),oldDir.y,oldDir.z));
     }  
 
     if(joystickState[0] > 0.0)
     {
-       //rotate actor right
+    glm::vec3 oldDir = direction();
+    setDirection(glm::vec3(oldDir.x+(0.5 * dt),oldDir.y,oldDir.z));   
     }
  
     if(joystickState[3] > 0.0)
     {
-    //accelerate
+    float oldSpeed = speed();    
+    setSpeed(oldSpeed + (0.5 * dt));
     }
     if(joystickState[3]<0.0)
     {
-    //decelerate 
+    float oldSpeed = speed();    
+    setSpeed(oldSpeed - (0.5 * dt));    
     }
    }
    
