@@ -29,7 +29,7 @@ public:
    void update(double dt);
    void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
-   bool collide(GamePhysicsActor *collide);
+   void collide(GameObject *collide);
    
    bool isUsingController() {
        return usingController;

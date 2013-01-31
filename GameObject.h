@@ -20,6 +20,7 @@ using namespace glm;
 class GameObject {
 public:
 	GameObject(GamePhysicsActor *actor);
+   char *name;
 	
    virtual void collide(GameObject *other);
    

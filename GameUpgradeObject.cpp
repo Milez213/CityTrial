@@ -24,6 +24,7 @@ GamePhysicsActor *GameUpgradeObject::makeUpgradeActor(glm::vec3 position)
 GameUpgradeObject::GameUpgradeObject(Type initType, glm::vec3 position) : GameDrawableObject(makeUpgradeActor(position), "cube")
 {
    type = initType;
+   name = "upgrade";
 }
 
 void GameUpgradeObject::update(double time, double dt)

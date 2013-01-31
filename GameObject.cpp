@@ -13,6 +13,7 @@
 GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
 {
    mActor->link(this);
+   type  = "";
 	//dir = vec3(0.0, 0.0, 1.0);
    //spd = 0.0;
    
@@ -20,7 +21,6 @@ GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
    rot = vec3(0.0, 0.0, 0.0);
    scl = vec3(0.0, 0.0, 0.0);
 }
-
 
 void GameObject::collide(GameObject *other)
 {

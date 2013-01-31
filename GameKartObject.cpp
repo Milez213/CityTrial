@@ -46,11 +46,11 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKa
 
 }
 
-bool GameKartObject::collide(GamePhysicsActor *collide)
+void GameKartObject::collide(GameObject *collide)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (true /*collide == GameUpgradeObject enum*/) {
+   if (!strcmp(collide->name, "upgrade" )) {
       GameDrawableObject *upgrade = new GameDrawableObject(makeTireActor(), "wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrade->setSpeed(0.0);
@@ -58,7 +58,7 @@ bool GameKartObject::collide(GamePhysicsActor *collide)
       upgrades.push_back(upgrade);
    }
    
-   return true;
+   //return true;
 }
 
 GameKartObject::~GameKartObject()
@@ -108,7 +108,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    safe_glDisableVertexAttribArray(h_aPos);
    
    //glBindVertexArray(0);
-   modelViewMatrix.popMatrix();
+   modelViewMatrix.popMatrix();*/
 
    /*modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
