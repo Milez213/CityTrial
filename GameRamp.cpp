@@ -12,3 +12,8 @@ GameRamp::GameRamp(const char *fileName) : GameDrawableObject("ramp")
 {
    
 }
+
+GameRamp::getHeightAt(float x, float z)
+{
+   float xMod = 
+}
