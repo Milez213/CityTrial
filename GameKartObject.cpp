@@ -59,7 +59,6 @@ void GameKartObject::stop()
 
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
-   cout << "drawin'";
    glm::vec3 pos = position();
  
     modelViewMatrix.pushMatrix();
@@ -72,7 +71,7 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
     wheels[0]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
-    modelViewMatrix.translate(glm::vec3(-2.0,2.0,0.0));
+    modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
     wheels[1]->draw(meshShader,modelViewMatrix);
     modelViewMatrix.popMatrix();
     modelViewMatrix.pushMatrix();
