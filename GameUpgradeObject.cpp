@@ -13,9 +13,9 @@ GameUpgradeObject::GameUpgradeObject(GamePhysicsActor *actor, Type initType) : G
    type = initType;
 }
 
-void GameUpgradeObject::update(float dt)
+void GameUpgradeObject::update(double time, double dt)
 {
-   setPosition(vec3(position().x, position().y + sin(dt), position().z));
+   setPosition(vec3(position().x, position().y + (cos(time) * 0.05), position().z));
    
    float yRot = rotation().y + 90 * dt;
    if (yRot > 360) 

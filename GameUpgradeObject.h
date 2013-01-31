@@ -21,7 +21,7 @@ public:
    
    GameUpgradeObject(GamePhysicsActor *actor, Type initType);
    
-   void update(float dt);
+   void update(double time, double dt);
    
    Type upgradeType() { return type; };
    

@@ -34,6 +34,7 @@ using  glm::vec4;
 #include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
+#include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 
 #include "GameUtilities.h"
@@ -92,6 +93,7 @@ FlatShader *flatShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
+GameUpgradeObject *wings;
 
 RenderingHelper g_model_trans;
 
@@ -162,6 +164,8 @@ void update(double dt)
    }
 
    getInputState();
+   
+   wings->update(g_time, dt);
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
@@ -244,6 +248,10 @@ void initObjects() {
    GameKartObject *kart = new GameKartObject("cube");
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
+   
+   GamePhysicsActor *uActor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(3.0, 1.0, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0, 1.0, 1.0))), g_physics->makeMaterial(), 1.0);
+   wings = new GameUpgradeObject(uActor, GameUpgradeObject::FLIGHT);
+   drawable_objects.push_back(wings);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
