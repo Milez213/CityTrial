@@ -59,7 +59,7 @@ void GameKartObject::stop()
 
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
-   
+   cout << "drawin'";
    glm::vec3 pos = position();
  
     modelViewMatrix.pushMatrix();
