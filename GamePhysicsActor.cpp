@@ -51,9 +51,9 @@ glm::vec3 GamePhysicsActor::direction()
    glm::vec3 vel = velocity();
    vel.y = 0;
    
-   if (vel.x || vel.z)
+   /*if (vel.x || vel.z)
       return glm::normalize(vel);
-   else
+   else*/
       return lastDir;
    //return glm::normalize(velocity());
 }
