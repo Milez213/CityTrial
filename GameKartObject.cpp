@@ -9,7 +9,7 @@ extern GamePhysics *g_physics;
 
 GamePhysicsActor *GameKartObject::makeKartActor()
 {
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 0, 5)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
+   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 3, 5)), new physx::PxBoxGeometry(convert(glm::vec3(2.0, 1.0, 4.0))), g_physics->makeMaterial(), 5.0);
 }
 GamePhysicsActor *GameKartObject::makeTireActor()
 {
@@ -18,16 +18,16 @@ GamePhysicsActor *GameKartObject::makeTireActor()
 
 GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKartActor(), "chassis") {
     
-   for (int i = 0; i < 4; i++) {
+   /*for (int i = 0; i < 4; i++) {
       GameDrawableObject *tire = new GameDrawableObject(makeTireActor(), "tire");
       wheels.push_back(tire);
    }
    
    glm::vec3 pos = position();
-   wheels[0]->setPosition(vec3(pos.x - 2.0,pos.y - 2.0,pos.z));
-   wheels[1]->setPosition(vec3(pos.x - 2.0,pos.y + 2.0,pos.z));
-   wheels[2]->setPosition(vec3(pos.x + 2.0,pos.y - 2.0,pos.z));
-   wheels[3]->setPosition(vec3(pos.x + 2.0,pos.y + 2.0,pos.z));
+   wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
+   wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
+   wheels[2]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z + 12.0));
+   wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
     
@@ -59,8 +59,10 @@ void GameKartObject::stop()
 
 void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
 {
-
-   modelViewMatrix.pushMatrix();
+   GameDrawableObject::draw(meshShader, modelViewMatrix);
+   
+   
+   /*modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(position());
    modelViewMatrix.pushMatrix();
    meshShader->use();
@@ -110,11 +112,19 @@ void GameKartObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatri
    modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
-   modelViewMatrix.popMatrix();
+   modelViewMatrix.popMatrix();*/
 }
 
 void GameKartObject::update(double dt)
 {
+   glm::vec3 dir = direction();
+   glm::vec3 pos = position();
+   
+   printf("\nbefore\n");
+   printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
+   printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
+   printf(" speed: %f\n", speed());
+   
     // Update Actor parameters based on current input from joystickState and buttonState
    //if(usingController == true){
    if (joystickState[0] < 0.0) {
@@ -129,12 +139,21 @@ void GameKartObject::update(double dt)
    if(joystickState[3] > 0.0) {
       float oldSpeed = speed();
       setSpeed(oldSpeed + (0.5 * dt));
+      //mActor->push(0.5 * dt);
    }
    if(joystickState[3] < 0.0) {
       float oldSpeed = speed();
       setSpeed(oldSpeed - (0.5 * dt));
+      //mActor->push(-0.5 * dt);
    }
    //}
+   
+   dir = direction();
+   pos = position();
+   printf("after\n");
+   printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
+   printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
+   printf(" speed: %f\n", speed());
    
 
 }
