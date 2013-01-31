@@ -61,12 +61,12 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
    glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
-   for (int i = 0; i < (int)(sizeof(meshStorage.indexBuffer)/sizeof(GLuint*)); i++) {
+   for (int i = 0; i < meshStorage.numMeshes; i++) {
       //printf("We are drawing, right? %d\n", indexBufferLength[i]);
       
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
    
-      glDrawElements(GL_TRIANGLES, (GLuint)meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+      glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
    safe_glDisableVertexAttribArray(h_aPos);

@@ -37,6 +37,8 @@ struct bufferStore {
 	
 	vec3 *diffuseColor;
 	float *specularity;
+   
+   int numMeshes;
 };
 
 class ModelManager {
