@@ -13,7 +13,7 @@
 GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
 {
    mActor->link(this);
-   type  = "";
+   name  = "";
 	//dir = vec3(0.0, 0.0, 1.0);
    //spd = 0.0;
    
