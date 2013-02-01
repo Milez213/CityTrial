@@ -43,7 +43,7 @@ GameDrawableObject::GameDrawableObject(GamePhysicsActor *actor, const char *objF
 }
 
 
-void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewMatrix)
+void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    //cout << "draw\n";
    modelViewMatrix.pushMatrix();
@@ -55,14 +55,21 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   meshShader->setiModelMatrix(glm::transpose(glm::inverse(modelViewMatrix.getMatrix())));
    
    //glBindVertexArray(vertexArray);
    
    GLuint h_aPos = meshShader->getPosLocation();
+   GLuint h_aNorm = meshShader->getNormLocation();
+   // TODO - add texture buffer
    
    safe_glEnableVertexAttribArray(h_aPos);
    glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+   safe_glEnableVertexAttribArray(h_aNorm);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+   safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
    for (int i = 0; i < meshStorage.numMeshes; i++) {
       //printf("We are drawing, right? %d\n", indexBufferLength[i]);
@@ -73,7 +80,7 @@ void GameDrawableObject::draw(FlatShader *meshShader, RenderingHelper modelViewM
    }
    
    safe_glDisableVertexAttribArray(h_aPos);
+   safe_glDisableVertexAttribArray(h_aNorm);
    
-   //glBindVertexArray(0);
    modelViewMatrix.popMatrix();
 }

@@ -20,7 +20,7 @@
 
 #include "MStackHelp.h"
 #include "ModelManager.h"
-#include "FlatShader.h"
+#include "PhongShader.h"
 #include "GamePhysics.h"
 
 #include "GameObject.h"
@@ -31,14 +31,12 @@ class GameDrawableObject : public GameObject {
 public:
    GameDrawableObject(GamePhysicsActor *actor, const char *objFile);
    
-   virtual void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
     
 protected:
    bufferStore meshStorage;
    
    //bound boundInfo;
-   
-   GamePhysicsActor *actor;
 };
 
 #endif

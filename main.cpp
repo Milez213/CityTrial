@@ -29,11 +29,12 @@ using  glm::vec4;
 
 #include "MStackHelp.h"
 
-#include "FlatShader.h"
+#include "PhongShader.h"
 #include "ModelManager.h"
 #include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
+#include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 
 #include "GameUtilities.h"
@@ -88,10 +89,11 @@ ModelManager *g_model_manager;
 GamePhysics *g_physics;
 
 // test one object for now
-FlatShader *flatShader;
+PhongShader *meshShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
+GameUpgradeObject *wings;
 
 RenderingHelper g_model_trans;
 
@@ -107,6 +109,43 @@ mat4 g_model;
 vec3 g_lookAt;
 
 
+// *** lights ***
+
+LightInfo g_lightInfo;
+
+#define NUM_MATERIALS 4
+
+PhongMaterial g_materials[NUM_MATERIALS] = {
+                  {vec3(0.2, 0.2, 0.2), // amb
+                   vec3(0.7, 0.4, 0.4), // diff
+                   vec3(1, 1, 1),       // spec
+                   20.0},               // shine
+
+                  {vec3(0.0, 0.0, 0.0),
+                   vec3(H2_3f(0xfff852)), //Hex color to rgb
+                   vec3(1, 1, 1),
+                   10.0},
+
+                  {vec3(0.1, 0.1, 0.3),
+                   vec3(0.6, 0.1, 0.1),
+                   vec3(0.1, 0.1, 0.7),
+                   20.0},
+                  {vec3(0, 1, 1),  // for drawing light
+                   vec3(0.0),
+                   vec3(0),
+                   0.0},
+};
+
+/* helper function to set up material for shading */
+
+void setPhongMaterial(int i) {
+    if ((i >= 0) && i < NUM_MATERIALS) {
+        meshShader->setMaterial(g_materials[i]);
+    }
+}
+
+
+// *** end lights ***
 
 // === end Globals ==============================
 
@@ -119,8 +158,13 @@ void setProjectionMatrix() {
 
 /* camera controls */
 void setView() {
+   // TODO - make a Camera object
+
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
-   glm::mat4 lookAt = glm::lookAt(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), up);
+   vec3 kartPos = kart_objects[0]->position();
+   vec3 kartDir = normalize(kart_objects[0]->direction());
+   kartDir = vec3(kartDir.x * 6.0, kartDir.y * 6.0 - 2.0, kartDir.z * 6.0);
+   glm::mat4 lookAt = glm::lookAt(kartPos - kartDir, kartPos, up);
    g_view = lookAt;
 }
 
@@ -134,10 +178,22 @@ void getInputState()
          glfwGetJoystickPos(i, joy, 4);
          glfwGetJoystickButtons(i, button, 32);
       } else {
-         //set arrays via keyboard/mouse checks manually
+         if (glfwGetKey('W') == GLFW_PRESS)
+            joy[3] = 1.0;
+         else if (glfwGetKey('S') == GLFW_PRESS)
+            joy[3] = -1.0;
+         else
+            joy[3] = 0.0;
+         if (glfwGetKey('A') == GLFW_PRESS)
+            joy[0] = 1.0;
+         else if (glfwGetKey('D') == GLFW_PRESS)
+            joy[0] = -1.0;
+         else
+            joy[0] = 0.0;
       }
       
-      //kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
+      //printf("Joy: %0.3f\n", joy[3]);
+      kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
       //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
    }
 }
@@ -145,17 +201,20 @@ void getInputState()
 
 void update(double dt)
 {
-   /* psuedocode
-   for each (KKPKartObject kart in kart_objects) {
-      kart->update();
+   for (int i = 0; i < (int)kart_objects.size(); i++) {
+      kart_objects[i]->update(dt);
    }
-   */
-   
+
    getInputState();
+   
+   wings->update(g_time, dt);
+   
+   g_physics->simulate(dt);
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
    }*/
+   
 }
 
 
@@ -171,12 +230,23 @@ void draw()
    setView();
 
    // set once for this shader
-   flatShader->use();
-   flatShader->setProjMatrix(g_proj);
-   flatShader->setViewMatrix(g_view);
+   meshShader->use();
+   meshShader->setProjMatrix(g_proj);
+   meshShader->setViewMatrix(g_view);
+
+   // get camera position
+   vec3 kartPos = kart_objects[0]->position();
+   vec3 kartDir = normalize(kart_objects[0]->direction());
+   kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
+   meshShader->setCamPos(kartPos - kartDir);
+
+   // choose from materials
    
+      setPhongMaterial(0);
+
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      drawable_objects[i]->draw(flatShader, g_model_trans);
+      drawable_objects[i]->draw(meshShader, g_model_trans);
+      setPhongMaterial(1);
    }
 
 
@@ -215,20 +285,38 @@ void initObjects() {
    
    // TODO - test for return values (but we usually know if they work or not)
 
-   flatShader = new FlatShader();
+   meshShader = new PhongShader();
+   // Light 
+   g_lightInfo.pos = vec3(1, 5, 1);
+   g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
+
+   meshShader->setLight(g_lightInfo);
+   meshShader->setShowNormals(0);
+
 
    // Bunnie
+   GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, -0.1, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(25.0, 0.1, 25.0))), g_physics->makeMaterial());
+   GameDrawableObject *floor = new GameDrawableObject(fActor, "floor");
+   floor->setScale(vec3(25.0, 0.0, 25.0));
+   drawable_objects.push_back(floor);
+   
    for (int i = -10; i < 11; i++) {
-      for (int j = -10; j < 11; j++) {
-         GamePhysicsActor *actor = g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(i, j, 5.0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
-         GameDrawableObject *object = new GameDrawableObject(actor, "Stuff");
-         object->setPosition(vec3(i, j, 5.0));
+      for (int j = 5; j < 11; j++) {
+         GamePhysicsActor *actor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0)), new physx::PxBoxGeometry(convert(glm::vec3(0.1, 0.1, 0.1))), g_physics->makeMaterial());
+         GameDrawableObject *object = new GameDrawableObject(actor, "cube");
+         object->setPosition(vec3(i, 1.0, j));
          object->setScale(vec3(0.1, 0.1, 0.1));
          drawable_objects.push_back(object);
       }
    }
    
-   drawable_objects.push_back(new GameKartObject("kart stuff"));
+   GameKartObject *kart = new GameKartObject("cube");
+   drawable_objects.push_back(kart);
+   kart_objects.push_back(kart);
+   
+   
+   wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT, glm::vec3(10.0, 2.0, 10.0));
+   drawable_objects.push_back(wings);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****

@@ -12,6 +12,8 @@
 
 GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
 {
+   mActor->link(this);
+   type  = "";
 	//dir = vec3(0.0, 0.0, 1.0);
    //spd = 0.0;
    
@@ -20,8 +22,17 @@ GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
    scl = vec3(0.0, 0.0, 0.0);
 }
 
+void GameObject::collide(GameObject *other)
+{
+   //don't modify or delete actors during callback
+}
+
+
+glm::vec3 GameObject::velocity() { return mActor->velocity(); }
 glm::vec3 GameObject::direction() { return mActor->direction(); }
 void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
+//float GameObject::direction() { return mActor->direction(); }
+//void GameObject::setDirection(float d) { mActor->setDirection(d); }
 float GameObject::speed() { return mActor->speed(); }
 void GameObject::setSpeed(float s) { mActor->setSpeed(s); }
 glm::vec3 GameObject::position() { return mActor->position(); }

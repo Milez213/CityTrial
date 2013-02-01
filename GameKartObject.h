@@ -6,10 +6,10 @@
 
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "FlatShader.h"
 #include "GamePhysics.h"
 #include "GameDrawableObject.h"
 
@@ -27,9 +27,9 @@ public:
    ~GameKartObject();
 
    void update(double dt);
-   void draw(FlatShader *meshShader, RenderingHelper modelViewMatrix);
+   void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
-   bool collide(GamePhysicsActor *collide);
+   void collide(GameObject *collide);
    
    bool isUsingController() {
        return usingController;
@@ -39,18 +39,21 @@ public:
        usingController = cont;
    }
    
-   //void setJoystickState(float joyState[]) { memCpy(joyState, joystickState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
-   //void setButtonState(char butState[]) { memCpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
+   void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
+   //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
     
    void stop();
    void done();
    
 private:
-   FlatShader *meshShader;
+   PhongShader *meshShader;
    
    static GamePhysicsActor *makeKartActor();
    static GamePhysicsActor *makeTireActor();
    vector<GameDrawableObject *> wheels;
+   vector <GameDrawableObject *> upgrades;
+   
+   float acceleration, topSpeed, turningRadius;
    
    bool usingController;
    float joystickState[4];
