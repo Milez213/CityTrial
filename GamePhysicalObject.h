@@ -21,8 +21,8 @@ public:
    float dir;
    float spd;
    
-   virtual float getDirection() { return TO_DEGREES(dir); };
-	virtual void setDirection(float d) { dir = TO_RADIANS(d); };
+   virtual float getDirection() { return TO_DEGREES(-dir); };
+	virtual void setDirection(float d) { dir = TO_RADIANS(-d); };
 	virtual float getSpeed() { return spd; };
 	virtual void setSpeed(float s) { spd = s; }
    
