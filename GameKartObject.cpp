@@ -131,7 +131,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    }*/
 }
 
-void GameKartObject::update(double dt)
+void GameKartObject::update(float dt)
 {
    glm::vec3 dir = direction();
    glm::vec3 vel = velocity();
@@ -181,5 +181,5 @@ void GameKartObject::update(double dt)
    printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
    printf(" speed: %f\n", speed());
    
-
+   GameObject::update(dt);
 }

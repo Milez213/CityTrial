@@ -25,7 +25,7 @@ public:
    GameKartObject(const char *fileName);
    ~GameKartObject();
 
-   void update(double dt);
+   void update(float dt);
    void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
    void collide(GameObject *collide);
