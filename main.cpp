@@ -72,17 +72,7 @@ using namespace std;
 
 // === Globals =================================
 
-/*
-// TODO
-KPPPhysics *physics_sim;
-KPPMeshManager *mesh_manager;
-KPPShader *shader;
-
-vector<KPPObject *> moving_objects;
-vector<KPPDrawnObject *> drawn_objects;
-vector<KPPKartObject *> kart_objects;
-*/
-
+// Singletons
 ModelManager *g_model_manager;
 
 // test one object for now
@@ -103,7 +93,8 @@ double g_last_time;
 mat4 g_proj;
 mat4 g_view;
 mat4 g_model;
-vec3 g_lookAt;
+
+
 
 
 // *** lights ***

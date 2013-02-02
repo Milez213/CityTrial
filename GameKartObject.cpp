@@ -185,11 +185,13 @@ void GameKartObject::update(float dt)
    glm::vec3 vel = getVelocity();
    glm::vec3 pos = getPosition();
    
+   /*
    printf("\nbefore\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
    printf(" direction: %f\n", getDirection());
    printf(" speed: %f\n", getSpeed());
+   */
    
     // Update Actor parameters based on current input from joystickState and buttonState
    //if(usingController == true){
@@ -241,11 +243,13 @@ void GameKartObject::update(float dt)
    vel = getVelocity();
    pos = getPosition();
    
+   /*
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
    printf(" direction: %f\n", getDirection());
    printf(" speed: %f\n", getSpeed());
+   */
    
    GameObject::update(dt); //actually move the cart with these updated values
 }
