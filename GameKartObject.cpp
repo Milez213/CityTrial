@@ -11,7 +11,9 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
       GameDrawableObject *tire = new GameDrawableObject("tire");
       wheels.push_back(tire);
    }
-   
+         GameDrawableObject *upgrade = new GameDrawableObject("wings");
+      upgrade->setPosition(vec3(0.0, 0.0, 0.0));
+      upgrades.push_back(upgrade);
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
    wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
@@ -19,14 +21,9 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
-   setDirection(0);
-   setSpeed(0);
-   acceleration = 10;
-   friction = 5;
-   topSpeed = 5.0;
-   turningRadius = 1.0;
    tireAngle = 0.0;
    tireTurnAngle = 45.0;
+   //wings = true;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -38,14 +35,16 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
 
 }
 
-void GameKartObject::collide(GameObject *collide)
+void GameKartObject::onCollide(GameObject *collide)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
    if (!strcmp(collide->getName(), "upgrade" )) {
-      GameDrawableObject *upgrade = new GameDrawableObject("wings");
+      properties.toggleWings();
+      /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
-      upgrades.push_back(upgrade);
+      upgrades.push_back(upgrade);*/
+
    }
    
    //return true;
@@ -119,8 +118,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
-   
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));   
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
@@ -132,6 +130,17 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
+   if (properties.hasWings())
+   {
+      modelViewMatrix.pushMatrix();
+      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
+      modelViewMatrix.scale(0.1,0.1,5.0);
+      modelViewMatrix.rotate(80.0,vec3(0.0,0.0,1.0));
+      upgrades[0]->draw(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }
+
+
    modelViewMatrix.popMatrix();
    
    //Draws Wheels and Upgrades More efficiently *****
@@ -198,11 +207,11 @@ void GameKartObject::update(float dt)
    short speedAccelMult = (oldSpeed > 0.0) ? 1 : 2;
    
    if (joystickState[0] < 0.0) {
-      setDirection(oldDirection-speedDirectionInverse*turningRadius);
+      setDirection(oldDirection-speedDirectionInverse*properties.getTurnSpeed());
       changeTireTurnAngle(-25.0); 
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(oldDirection+speedDirectionInverse*turningRadius);
+      setDirection(oldDirection+speedDirectionInverse*properties.getTurnSpeed());
       changeTireTurnAngle(25.0);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
@@ -218,9 +227,9 @@ void GameKartObject::update(float dt)
 
    
    if(joystickState[3] > 0.0) {      
-      setSpeed(oldSpeed + (speedAccelMult * acceleration * dt));
+      setSpeed(oldSpeed + (speedAccelMult * properties.getAcceleration() * dt));
    } else if(joystickState[3] < 0.0) {
-      setSpeed(oldSpeed - (speedBrakeMult*acceleration * dt));
+      setSpeed(oldSpeed - (speedBrakeMult*properties.getAcceleration() * dt));
    } else {
       if (abs(oldSpeed) > friction * dt)
          setSpeed(oldSpeed - (sign(oldSpeed) * friction * dt));
@@ -238,5 +247,5 @@ void GameKartObject::update(float dt)
    printf(" direction: %f\n", getDirection());
    printf(" speed: %f\n", getSpeed());
    
-   GameObject::update(dt);
+   GameObject::update(dt); //actually move the cart with these updated values
 }

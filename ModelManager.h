@@ -42,11 +42,16 @@ struct bufferStore {
 };
  
 struct bound {
-   vec3 boundingBoxMin;
-   vec3 boundingBoxMax;
+   vec3 bottomLeft;
+   vec3 dimension;
    vec3 center;
    float radius;
+   
+   //static bool sphereOnSphere(bound objOne, bound objTwo);
+   //static bool sphereOnBox(bound objOne, bound objTwo);
+   //static bool boxOnBox(bound objOne, bound objTwo);
 };
+
 
 class ModelManager {
 
@@ -78,6 +83,10 @@ public:
 	// true if successfull, false if unsuccessful
 	//--------------------------------------------
 	bool getObject(const char *fileName, bufferStore *meshes, bound *boundingInfo);
+   
+   bool sphereOnSphere(bound objOne, bound objTwo);
+   bool sphereOnBox(bound objOne, bound objTwo);
+   bool boxOnBox(bound objOne, bound objTwo);
 	
 private:
 	void loadObject(const char* filename);

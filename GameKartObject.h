@@ -11,6 +11,7 @@
 #include <stdarg.h>
 
 #include "GamePhysicalObject.h"
+#include "GameKartProperties.h"
 
 // global variables
 using std::vector;
@@ -28,7 +29,7 @@ public:
    void update(float dt);
    void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
-   void collide(GameObject *collide);
+   void onCollide(GameObject *collide);
    
    void changeTireTurnAngle(float targetAngle);
 
@@ -48,13 +49,14 @@ public:
    
 private:
    PhongShader *meshShader;
+   GameKartProperties properties;
    
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    
-   float acceleration, topSpeed, turningRadius, friction, tireAngle, tireTurnAngle;
+   float tireAngle, tireTurnAngle;
    
-   bool usingController;
+   bool usingController,wings;
    float joystickState[4];
    char buttonState[32];
 };
