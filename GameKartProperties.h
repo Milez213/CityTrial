@@ -18,17 +18,17 @@ public:
    
    //parts
    bool hasWings() {return wings;}
-   bool toggleWings() {wings = !wings;}
+   void toggleWings() {wings = !wings;}
    
    //stats
    float getAcceleration() {return acceleration;}
-   float upgradeAcceleration() {acceleration += 1;}
+   void upgradeAcceleration() {acceleration += 1;}
    float getTopSpeed() {return topSpeed;}
-   float upgradeTopSpeed() {topSpeed += 5;}
+   void upgradeTopSpeed() {topSpeed += 5;}
    float getBrakeSpeed() {return brakeSpeed;}
-   float upgradeBrakeSpeed() {brakeSpeed += 5;}
+   void upgradeBrakeSpeed() {brakeSpeed += 5;}
    float getTurnSpeed() {return turnSpeed;}
-   float upgradeTurnSpeed() {turnSpeed += 5;}
+   void upgradeTurnSpeed() {turnSpeed += 5;}
    
 private:
    //parts

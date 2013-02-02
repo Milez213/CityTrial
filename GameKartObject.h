@@ -49,7 +49,7 @@ public:
    
 private:
    PhongShader *meshShader;
-   GamePartProperties properties;
+   GameKartProperties properties;
    
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;

@@ -22,12 +22,12 @@ public:
    float direction;
    float speed;
    
-   virtual float getDirection() { return TO_DEGREES(-dir); };
-	virtual void setDirection(float d) { dir = TO_RADIANS(-d); };
-	virtual float getSpeed() { return spd; };
-	virtual void setSpeed(float s) { spd = s; }
+   virtual float getDirection() { return TO_DEGREES(-direction); };
+	virtual void setDirection(float dir) { direction = TO_RADIANS(-dir); };
+	virtual float getSpeed() { return speed; };
+	virtual void setSpeed(float spd) { speed = spd; }
    
-   virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(dir), 0, sin(dir)); };
+   virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(direction), 0, sin(direction)); };
    virtual glm::vec3 getVelocity() { return getSpeed() * getDirectionVector(); };
    
    virtual void update(float dt) { GameDrawableObject::update(dt); };
