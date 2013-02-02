@@ -25,6 +25,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    friction = 2.5;
    topSpeed = 5.0;
    turningRadius = 1.0;
+   tireAngle = 0.0;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -62,6 +63,7 @@ void GameKartObject::stop()
 
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
+   tireAngle+=(getSpeed()/2.0);
    GameDrawableObject::draw(meshShader, modelViewMatrix);
    
    
@@ -103,22 +105,25 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-2.0,-1.0,-2.0));
-   //modelViewMatrix.rotate(-45.0,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[0]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-2.0,-1.0,2.0));
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[1]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,2.0));
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
