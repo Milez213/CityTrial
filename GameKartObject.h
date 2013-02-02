@@ -54,7 +54,7 @@ private:
    
    float acceleration, topSpeed, turningRadius, friction, tireAngle, tireTurnAngle;
    
-   bool usingController;
+   bool usingController,wings;
    float joystickState[4];
    char buttonState[32];
 };

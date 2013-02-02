@@ -11,7 +11,9 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
       GameDrawableObject *tire = new GameDrawableObject("tire");
       wheels.push_back(tire);
    }
-   
+         GameDrawableObject *upgrade = new GameDrawableObject("wings");
+      upgrade->setPosition(vec3(0.0, 0.0, 0.0));
+      upgrades.push_back(upgrade);
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
    wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
@@ -27,6 +29,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    turningRadius = 1.0;
    tireAngle = 0.0;
    tireTurnAngle = 45.0;
+   wings = true;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -46,6 +49,7 @@ void GameKartObject::collide(GameObject *collide)
       GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrades.push_back(upgrade);
+
    }
    
    //return true;
@@ -119,8 +123,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
-   
+   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));   
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
@@ -132,6 +135,17 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
+   if (wings == true)
+   {
+      modelViewMatrix.pushMatrix();
+      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
+      modelViewMatrix.scale(0.1,0.1,5.0);
+      modelViewMatrix.rotate(80.0,vec3(0.0,0.0,1.0));
+      upgrades[0]->draw(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }
+
+
    modelViewMatrix.popMatrix();
    
    //Draws Wheels and Upgrades More efficiently *****
