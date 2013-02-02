@@ -36,7 +36,7 @@ public:
 	glm::vec3 rotation() { return rot; };
 	void setRotation(glm::vec3 r) { rot = r; };
 	glm::vec3 scale() { return scl; };
-	void setScale(glm::vec3 s) { scl = scl; };
+	void setScale(glm::vec3 s) { scl = s; };
    
 	char *getName() { return name; };
 

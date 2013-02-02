@@ -11,7 +11,7 @@
 #include "GameObject.h"
 #include <iostream>
 
-GameObject::GameObject() : vel(0.0, 0.0, 1.0), pos(0.0), rot(0.0), scl(0.0)
+GameObject::GameObject() : vel(0.0, 0.0, 1.0), pos(0.0), rot(0.0), scl(1.0)
 {
    
 }
