@@ -31,6 +31,8 @@ public:
    GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+   
+   bound getBoundingInfo() { return boundingInfo; };
     
 protected:
    bufferStore meshStorage;

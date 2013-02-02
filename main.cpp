@@ -204,11 +204,11 @@ void update(double dt)
       kart_objects[i]->update(dt);
    }
 
-   for (int i = 0; i < drawable_objects.size(); i++) {
-      for (int j = i+1; j < drawable_objects.size(); j++) {
-         if (sphereOnSphere(drawable_objects[i].boundingInfo, drawable_objects[j].boundingInfo)) {
-            drawable_objects[i].onCollide(drawable_objects[j]);
-            drawable_objects[j].onCollide(drawable_objects[i]);
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      for (int j = i+1; j < (int)drawable_objects.size(); j++) {
+         if (g_model_manager->sphereOnSphere(drawable_objects[i]->getBoundingInfo(), drawable_objects[j]->getBoundingInfo())) {
+            drawable_objects[i]->onCollide(drawable_objects[j]);
+            drawable_objects[j]->onCollide(drawable_objects[i]);
          }
       }
    }

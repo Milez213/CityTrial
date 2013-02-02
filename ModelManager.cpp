@@ -13,6 +13,38 @@
 
 #include "ModelManager.h"
 
+bool ModelManager::sphereOnSphere(bound objOne, bound objTwo)
+{
+   vec3 diff = objOne.center - objTwo.center;
+   float dist = sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+   
+   if (dist < objOne.radius + objTwo.radius) {
+      return true;
+   }
+   
+   return false;
+}
+
+bool ModelManager::sphereOnBox(bound objOne, bound objTwo)
+{
+   return false;
+}
+
+bool ModelManager::boxOnBox(bound objOne, bound objTwo)
+{
+   if (objOne.bottomLeft.x > objTwo.bottomLeft.x + objTwo.dimension.x ||
+       objOne.bottomLeft.x + objOne.dimension.x < objTwo.dimension.x  ||
+       objOne.bottomLeft.y > objTwo.bottomLeft.y + objTwo.dimension.y ||
+       objOne.bottomLeft.y + objOne.dimension.y < objTwo.dimension.y  ||
+       objOne.bottomLeft.z > objTwo.bottomLeft.z + objTwo.dimension.z ||
+       objOne.bottomLeft.z + objOne.dimension.z < objTwo.dimension.z) {
+      return false;
+   }
+   
+   return true;
+}
+
+
 ModelManager::ModelManager()
 {
    
