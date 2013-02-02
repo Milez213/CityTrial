@@ -31,13 +31,11 @@ using  glm::vec4;
 
 #include "PhongShader.h"
 #include "ModelManager.h"
-#include "GamePhysics.h"
 
 #include "GameDrawableObject.h"
 #include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 
-#include "GameUtilities.h"
 
 using namespace std;
 
@@ -86,7 +84,6 @@ vector<KPPKartObject *> kart_objects;
 */
 
 ModelManager *g_model_manager;
-GamePhysics *g_physics;
 
 // test one object for now
 PhongShader *meshShader;
@@ -209,8 +206,6 @@ void update(double dt)
    
    wings->update(g_time, dt);
    
-   g_physics->simulate(dt);
-   
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
    }*/
@@ -295,15 +290,13 @@ void initObjects() {
 
 
    // Bunnie
-   GamePhysicsActor *fActor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0, -0.1, 0.0)), new physx::PxBoxGeometry(convert(glm::vec3(25.0, 0.1, 25.0))), g_physics->makeMaterial());
-   GameDrawableObject *floor = new GameDrawableObject(fActor, "floor");
+   GameDrawableObject *floor = new GameDrawableObject("floor");
    floor->setScale(vec3(25.0, 0.0, 25.0));
    drawable_objects.push_back(floor);
    
    for (int i = -10; i < 11; i++) {
       for (int j = 5; j < 11; j++) {
-         GamePhysicsActor *actor = g_physics->makeStaticActor(physx::PxTransform(physx::PxVec3(0.0)), new physx::PxBoxGeometry(convert(glm::vec3(0.1, 0.1, 0.1))), g_physics->makeMaterial());
-         GameDrawableObject *object = new GameDrawableObject(actor, "cube");
+         GameDrawableObject *object = new GameDrawableObject("cube");
          object->setPosition(vec3(i, 1.0, j));
          object->setScale(vec3(0.1, 0.1, 0.1));
          drawable_objects.push_back(object);
@@ -403,7 +396,6 @@ void initialize()
    g_model_trans.loadIdentity();
 
    g_model_manager = new ModelManager();
-   g_physics = new GamePhysics();
    // initGeometry();
 
    initObjects();

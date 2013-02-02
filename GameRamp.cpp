@@ -8,16 +8,7 @@
 
 #include "GameRamp.h"
 
-#include "GameUtilities.h"
-
-extern GamePhysics *g_physics;
-
-static GamePhysicsActor *makeRampActor()
-{
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(5.0))), g_physics->makeMaterial(), 5.0);
-}
-
-GameRamp::GameRamp() : GameDrawableObject(makeRampActor() ,"ramp")
+GameRamp::GameRamp() : GameDrawableObject("ramp")
 {
    
 }

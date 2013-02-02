@@ -11,7 +11,6 @@
 
 #include <iostream>
 
-#include "GamePhysics.h"
 #include "GameDrawableObject.h"
 
 class GameUpgradeObject : public GameDrawableObject
@@ -27,7 +26,6 @@ public:
    
 private:
    
-   static GamePhysicsActor *makeUpgradeActor(glm::vec3 position);
    Type type;
 };
 #endif /* defined(____GameUpgradeObject__) */

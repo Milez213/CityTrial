@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "GamePhysics.h"
 #include "GameDrawableObject.h"
 
 // global variables
@@ -48,8 +47,6 @@ public:
 private:
    PhongShader *meshShader;
    
-   static GamePhysicsActor *makeKartActor();
-   static GamePhysicsActor *makeTireActor();
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    

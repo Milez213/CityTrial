@@ -21,7 +21,6 @@
 #include "MStackHelp.h"
 #include "ModelManager.h"
 #include "PhongShader.h"
-#include "GamePhysics.h"
 
 #include "GameObject.h"
 
@@ -29,7 +28,7 @@ using namespace glm;
 
 class GameDrawableObject : public GameObject {
 public:
-   GameDrawableObject(GamePhysicsActor *actor, const char *objFile);
+   GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
     

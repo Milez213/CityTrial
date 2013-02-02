@@ -9,31 +9,30 @@
  */
  
 #include "GameObject.h"
+#include <iostream>
 
-GameObject::GameObject(GamePhysicsActor *actor) : mActor(actor)
+GameObject::GameObject() : vel(0.0, 0.0, 1.0), pos(0.0), rot(0.0), scl(0.0)
 {
-   mActor->link(this);
-   name  = "";
-	//dir = vec3(0.0, 0.0, 1.0);
-   //spd = 0.0;
    
-   //pos = vec3(0.0, 0.0, 0.0);
-   rot = vec3(0.0, 0.0, 0.0);
-   scl = vec3(0.0, 0.0, 0.0);
 }
 
 void GameObject::collide(GameObject *other)
 {
-   //don't modify or delete actors during callback
+   
+}
+
+void GameObject::update(float dt)
+{
+   pos += dt * vel;
 }
 
 
-glm::vec3 GameObject::velocity() { return mActor->velocity(); }
-glm::vec3 GameObject::direction() { return mActor->direction(); }
-void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
+//glm::vec3 GameObject::velocity() { return mActor->velocity(); }
+//glm::vec3 GameObject::direction() { return mActor->direction(); }
+//void GameObject::setDirection(vec3 d) { mActor->setDirection(d); }
 //float GameObject::direction() { return mActor->direction(); }
 //void GameObject::setDirection(float d) { mActor->setDirection(d); }
-float GameObject::speed() { return mActor->speed(); }
-void GameObject::setSpeed(float s) { mActor->setSpeed(s); }
-glm::vec3 GameObject::position() { return mActor->position(); }
-void GameObject::setPosition(vec3 p) { mActor->setPosition(p); }
+float GameObject::speed() { return glm::length(vel); }
+void GameObject::setSpeed(float s) { vel = s * glm::normalize(vel); }
+//glm::vec3 GameObject::position() { return mActor->position(); }
+//void GameObject::setPosition(vec3 p) { mActor->setPosition(p); }

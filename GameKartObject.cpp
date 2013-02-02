@@ -1,30 +1,18 @@
 #include "GameKartObject.h"
-#include "GameUtilities.h"
 
 #include <cmath>
 
 #include <iostream>
 using namespace std;
 
-extern GamePhysics *g_physics;
-
-GamePhysicsActor *GameKartObject::makeKartActor()
-{
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0, 3, 5)), new physx::PxBoxGeometry(convert(glm::vec3(2.0, 1.0, 4.0))), g_physics->makeMaterial(), 5.0);
-}
-GamePhysicsActor *GameKartObject::makeTireActor()
-{
-   return g_physics->makeDynamicActor(physx::PxTransform(physx::PxVec3(0)), new physx::PxBoxGeometry(convert(glm::vec3(1.0))), g_physics->makeMaterial(), 1.0);
-}
-
-GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject(makeKartActor(), "chassis") {
+GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chassis") {
     
-   /*for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject(makeTireActor(), "tire");
+   for (int i = 0; i < 4; i++) {
+      GameDrawableObject *tire = new GameDrawableObject("tire");
       wheels.push_back(tire);
    }
    
-   glm::vec3 pos = position();
+   /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
    wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
    wheels[2]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z + 12.0));
@@ -51,8 +39,8 @@ void GameKartObject::collide(GameObject *collide)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (!strcmp(collide->name, "upgrade" )) {
-      GameDrawableObject *upgrade = new GameDrawableObject(makeTireActor(), "wings");
+   if (!strcmp(collide->getName(), "upgrade" )) {
+      GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrade->setSpeed(0.0);
       upgrade->setDirection(vec3(0.0, 0.0, 0.0));
