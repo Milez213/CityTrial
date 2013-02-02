@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "GameDrawableObject.h"
+#include "GamePhysicalObject.h"
 
 // global variables
 using std::vector;
@@ -19,7 +19,7 @@ using glm::scale;
 using glm::rotate;
 
 
-class GameKartObject : public GameDrawableObject {
+class GameKartObject : public GamePhysicalObject {
    
 public:
    GameKartObject(const char *fileName);

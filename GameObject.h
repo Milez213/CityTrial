@@ -19,24 +19,19 @@ class GameObject {
 public:
 	GameObject();
 	
-   virtual void collide(GameObject *other);
+   virtual void onCollide(GameObject *other);
    virtual void update(float dt);
    
-   glm::vec3 velocity() { return vel; }
+   virtual glm::vec3 getVelocity() { return vel; }
    
-	glm::vec3 direction() { return vel; };
-	void setDirection(glm::vec3 d) { vel = d; };
-   //float direction();
-   //void setDirection(float d);
-	float speed();// { return spd; };
-	void setSpeed(float s);// { spd = s; }
-	glm::vec3 position() { return pos; };
-	void setPosition(glm::vec3 p) { pos = p; };
+	
+	virtual glm::vec3 getPosition() { return pos; };
+	virtual void setPosition(glm::vec3 p) { pos = p; };
    
-	glm::vec3 rotation() { return rot; };
-	void setRotation(glm::vec3 r) { rot = r; };
-	glm::vec3 scale() { return scl; };
-	void setScale(glm::vec3 s) { scl = s; };
+	virtual glm::vec3 getRotation() { return rot; };
+	virtual void setRotation(glm::vec3 r) { rot = r; };
+	virtual glm::vec3 getScale() { return scl; };
+	virtual void setScale(glm::vec3 s) { scl = s; };
    
 	char *getName() { return name; };
 
