@@ -94,6 +94,11 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
       meshes->diffuseColor[i] = storage[index].diffuseColor[i];
       meshes->specularity[i] = storage[index].specularity[i];
    }
+   
+   boundingInfo->bottomLeft = vec3(-1.0, -1.0, -1.0);
+   boundingInfo->dimension = vec3(2.0, 2.0, 2.0);
+   boundingInfo->center = vec3(0.0, 0.0, 0.0);
+   boundingInfo->radius = 1.0;
 
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Given Pointer Location: %d\n", (int)*vertexBuffer);

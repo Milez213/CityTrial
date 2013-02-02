@@ -94,6 +94,7 @@ private:
    bufferStore rampMesh();
    bufferStore floorMesh();
 	vector<bufferStore> storage;
+   vector<bound> boundStorage;
 };
 
 #endif
