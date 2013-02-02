@@ -159,7 +159,7 @@ void setView() {
 
    vec3 up = glm::vec3(0.0, 1.0, 0.0);
    vec3 kartPos = kart_objects[0]->getPosition();
-   vec3 kartDir = normalize(kart_objects[0]->getDirection());
+   vec3 kartDir = normalize(kart_objects[0]->getDirectionVector());
    kartDir = vec3(kartDir.x * 6.0, kartDir.y * 6.0 - 2.0, kartDir.z * 6.0);
    glm::mat4 lookAt = glm::lookAt(kartPos - kartDir, kartPos, up);
    g_view = lookAt;
@@ -232,7 +232,7 @@ void draw()
 
    // get camera position
    vec3 kartPos = kart_objects[0]->getPosition();
-   vec3 kartDir = normalize(kart_objects[0]->getDirection());
+   vec3 kartDir = normalize(kart_objects[0]->getDirectionVector());
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 

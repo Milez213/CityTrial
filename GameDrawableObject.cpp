@@ -48,7 +48,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    modelViewMatrix.pushMatrix();
    meshShader->use();
    
-   modelViewMatrix.translate(position());
+   modelViewMatrix.translate(getPosition());
    modelViewMatrix.scale(scl.x, scl.y, scl.z);
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
