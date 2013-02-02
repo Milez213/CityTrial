@@ -26,6 +26,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    topSpeed = 5.0;
    turningRadius = 1.0;
    tireAngle = 0.0;
+   tireTurnAngle = 45.0;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -117,13 +118,17 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
+   modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
+   
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.0,-1.0,2.0));
+   modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
+
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
@@ -141,6 +146,29 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
       upgrades[i]->draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }*/
+}
+
+
+void GameKartObject::changeTireTurnAngle(float targetAngle)
+{
+   if (targetAngle < 0.0)
+   {
+      if(tireTurnAngle > targetAngle)
+       tireTurnAngle +=-0.5;
+   }
+   else if(targetAngle > 0.0)
+   {
+      if(tireTurnAngle < targetAngle)
+         tireTurnAngle +=0.5;
+   }
+   else
+   {
+      if(tireTurnAngle > 0.0)
+         tireTurnAngle +=-0.5;
+      else if(tireTurnAngle<0.0)
+         tireTurnAngle +=0.5;
+   }
+
 }
 
 void GameKartObject::update(float dt)
@@ -171,15 +199,23 @@ void GameKartObject::update(float dt)
    
    if (joystickState[0] < 0.0) {
       setDirection(oldDirection+speedDirectionInverse*turningRadius);
+      changeTireTurnAngle(-25.0); 
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
       setDirection(oldDirection-speedDirectionInverse*turningRadius);
+      changeTireTurnAngle(25.0);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
+   } else if (joystickState[0] == 0.0){
+      changeTireTurnAngle(0.0);
    }
+
+   
  
    setRotation(vec3(0, -getDirection(), 0 ));
    
    
+   
+
    
    if(joystickState[3] > 0.0) {      
       setSpeed(oldSpeed + (speedAccelMult * acceleration * dt));
