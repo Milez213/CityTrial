@@ -40,6 +40,13 @@ struct bufferStore {
    
    int numMeshes;
 };
+ 
+struct bound {
+   vec3 boundingBoxMin;
+   vec3 boundingBoxMax;
+   vec3 center;
+   float radius;
+};
 
 class ModelManager {
 
@@ -70,7 +77,7 @@ public:
 	// Returns:
 	// true if successfull, false if unsuccessful
 	//--------------------------------------------
-	bool getObject(const char *fileName, bufferStore *meshes);
+	bool getObject(const char *fileName, bufferStore *meshes, bound *boundingInfo);
 	
 private:
 	void loadObject(const char* filename);

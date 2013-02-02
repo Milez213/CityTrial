@@ -327,6 +327,10 @@ void initObjects() {
    drawable_objects.push_back(kart);*/
 }
 
+void initMap() {
+   
+}
+
 
 
 

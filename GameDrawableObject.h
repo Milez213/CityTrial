@@ -35,6 +35,7 @@ public:
     
 protected:
    bufferStore meshStorage;
+   bound boundingInfo;
    
    //bound boundInfo;
 };
