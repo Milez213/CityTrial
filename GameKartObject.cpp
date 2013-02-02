@@ -21,8 +21,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    usingController = false;
    setDirection(0);
    setSpeed(0);
-   acceleration = 5;
-   friction = 2.5;
+   acceleration = 10;
+   friction = 5;
    topSpeed = 5.0;
    turningRadius = 1.0;
    tireAngle = 0.0;
@@ -162,22 +162,24 @@ void GameKartObject::update(float dt)
    vec3 move = normalize(cross(up, oldDir));
    move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
-   short speedDirectionInverse = (joystickState[3] < 0.0) ? -1 : 1;
+   float oldSpeed = getSpeed();
+   float oldDirection = getDirection();
+   
+   short speedDirectionInverse = (oldSpeed < 0.0) ? -1 : 1;
+   short speedBrakeMult = (oldSpeed < 0.0) ? 1 : 2;
+   short speedAccelMult = (oldSpeed > 0.0) ? 1 : 2;
    
    if (joystickState[0] < 0.0) {
-      setDirection(getDirection()+speedDirectionInverse*turningRadius);
+      setDirection(oldDirection+speedDirectionInverse*turningRadius);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(getDirection()-speedDirectionInverse*turningRadius);
+      setDirection(oldDirection-speedDirectionInverse*turningRadius);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    }
  
    setRotation(vec3(0, -getDirection(), 0 ));
    
-   float oldSpeed = getSpeed();
    
-   short speedBrakeMult = (oldSpeed < 0.0) ? 1 : 2;
-   short speedAccelMult = (oldSpeed > 0.0) ? 1 : 2;
    
    if(joystickState[3] > 0.0) {      
       setSpeed(oldSpeed + (speedAccelMult * acceleration * dt));
@@ -190,7 +192,6 @@ void GameKartObject::update(float dt)
    
    vel = getVelocity();
    pos = getPosition();
-
    
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
