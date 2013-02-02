@@ -32,7 +32,7 @@ public:
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    
-   bound getBoundingInfo() { return boundingInfo; };
+   bound getBoundingInfo();
     
 protected:
    bufferStore meshStorage;

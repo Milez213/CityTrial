@@ -83,3 +83,27 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    
    modelViewMatrix.popMatrix();
 }
+
+bound GameDrawableObject::getBoundingInfo()
+{
+   bound chgBound;
+   chgBound.bottomLeft = boundingInfo.bottomLeft + this->getPosition();
+   chgBound.dimension = boundingInfo.dimension * this->getScale();
+   chgBound.center = boundingInfo.center + this->getPosition();
+   
+   if (this->getScale().x > this->getScale().y) {
+      if (this->getScale().x > this->getScale().z) {
+         chgBound.radius *= this->getScale().x;
+      } else {
+         chgBound.radius *= this->getScale().z;
+      }
+   } else {
+      if (this->getScale().y > this->getScale().z) {
+         chgBound.radius *= this->getScale().y;
+      } else {
+         chgBound.radius *= this->getScale().z;
+      }
+   }
+   
+   return chgBound;
+}
