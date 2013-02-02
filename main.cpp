@@ -304,11 +304,15 @@ void initObjects() {
    }
    
    GameKartObject *kart = new GameKartObject("cube");
+   kart->setPosition(vec3(0, 0, 0));
+   kart->setScale(vec3(2.0, 1.0, 4.0));
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
    
    
-   wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT, glm::vec3(10.0, 2.0, 10.0));
+   wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
+   wings->setPosition(vec3(10, 2, 10));
+   wings->setScale(vec3(1.0, 2.0, 1.0));
    drawable_objects.push_back(wings);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
