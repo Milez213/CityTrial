@@ -149,14 +149,18 @@ void GameKartObject::update(float dt)
    vec3 move = normalize(cross(up, oldDir));
    move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
+   char speedDirectionInverse = (joystickState[3] < 0.0) ? -1 : 1;
+   
    if (joystickState[0] < 0.0) {
-      setDirection(getDirection()+turningRadius);
+      setDirection(getDirection()+speedDirectionInverse*turningRadius);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(getDirection()-turningRadius);
+      setDirection(getDirection()-speedDirectionInverse*turningRadius);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    }
  
+   setRotation(vec3(0, -getDirection(), 0 ));
+   
    float oldSpeed = getSpeed();
    
    if(joystickState[3] > 0.0) {      
@@ -171,7 +175,6 @@ void GameKartObject::update(float dt)
    vel = getVelocity();
    pos = getPosition();
 
-   setRotation(vec3(0, - 180 * getDirection()/M_PI, 0 ));
    
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
