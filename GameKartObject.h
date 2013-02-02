@@ -30,6 +30,8 @@ public:
 
    void collide(GameObject *collide);
    
+   void changeTireTurnAngle(float targetAngle);
+
    bool isUsingController() {
        return usingController;
    }
@@ -50,7 +52,7 @@ private:
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    
-   float acceleration, topSpeed, turningRadius, friction, tireAngle;
+   float acceleration, topSpeed, turningRadius, friction, tireAngle, tireTurnAngle;
    
    bool usingController;
    float joystickState[4];
