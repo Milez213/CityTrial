@@ -20,7 +20,7 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chass
     
    usingController = false;
    setDirection(vec3(0.0, 0.0, 1.0));
-   //setSpeed(0.0);
+   setSpeed(1.0);
    acceleration = 0.5;
    topSpeed = 5.0;
    turningRadius = 1.0;
