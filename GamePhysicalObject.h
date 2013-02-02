@@ -16,10 +16,11 @@
 class GamePhysicalObject : public GameDrawableObject
 {
 public:
-   static float gravity;
+   static const float gravity = 9.81;
+   static const float friction = 5;
    float lift;
-   float dir;
-   float spd;
+   float direction;
+   float speed;
    
    virtual float getDirection() { return TO_DEGREES(-dir); };
 	virtual void setDirection(float d) { dir = TO_RADIANS(-d); };
@@ -32,7 +33,7 @@ public:
    virtual void update(float dt) { GameDrawableObject::update(dt); };
    virtual void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
    
-   GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile) {}
+   GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile), lift(0), direction(0), speed(0) {}
 };
 
 

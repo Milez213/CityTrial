@@ -21,12 +21,6 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
-   setDirection(0);
-   setSpeed(0);
-   acceleration = 10;
-   friction = 5;
-   topSpeed = 5.0;
-   turningRadius = 1.0;
    tireAngle = 0.0;
    tireTurnAngle = 45.0;
    wings = true;
