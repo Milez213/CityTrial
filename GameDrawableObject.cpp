@@ -16,7 +16,7 @@ extern ModelManager *g_model_manager;
 GameDrawableObject::GameDrawableObject(GamePhysicsActor *actor, const char *objFile) :
    GameObject(actor)
 {
-   g_model_manager->getObject(objFile, &meshStorage);
+   g_model_manager->getObject(objFile, &meshStorage, &boundingInfo);
 
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);

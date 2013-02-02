@@ -28,7 +28,7 @@ ModelManager::~ModelManager()
    }
 }
 
-bool ModelManager::getObject(const char *fileName, bufferStore *meshes)
+bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *boundingInfo)
 {
    int index = -1, test = 0;
 
