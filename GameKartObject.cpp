@@ -65,23 +65,26 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    GameDrawableObject::draw(meshShader, modelViewMatrix);
    
    
-   /*modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(position());
    modelViewMatrix.pushMatrix();
-   meshShader->use();
+   modelViewMatrix.translate(getPosition());
+   modelViewMatrix.scale(0.5,0.5,0.5);
+  
    
-   modelViewMatrix.translate(position());
-   modelViewMatrix.scale(scl.x, scl.y, scl.z);
+   //modelViewMatrix.pushMatrix();
+   //meshShader->use();
+   
+   //modelViewMatrix.translate(position());
+   //modelViewMatrix.scale(scl.x, scl.y, scl.z);
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
-   meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   //meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    //glBindVertexArray(vertexArray);
    
-   GLuint h_aPos = meshShader->getPosLocation();
+   //GLuint h_aPos = meshShader->getPosLocation();
    
-   safe_glEnableVertexAttribArray(h_aPos);
+   /*safe_glEnableVertexAttribArray(h_aPos);
    glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
@@ -91,30 +94,35 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
       
       glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
-   }
+   }*/
    
-   safe_glDisableVertexAttribArray(h_aPos);
+   //safe_glDisableVertexAttribArray(h_aPos);
    
    //glBindVertexArray(0);
-   modelViewMatrix.popMatrix();*/
-
-   /*modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(-5.0,-5.0,0.0));
+   //modelViewMatrix.popMatrix();
+   
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(-2.0,-1.0,-2.0));
+   //modelViewMatrix.rotate(-45.0,vec3(0.0,0.0,1.0));
+   modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[0]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(-5.0,5.0,0.0));
+   modelViewMatrix.translate(glm::vec3(-2.0,-1.0,2.0));
+   modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[1]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(5.0,-5.0,0.0));
+   modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
+   modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(5.0,5.0,0.0));
+   modelViewMatrix.translate(glm::vec3(2.0,-1.0,2.0));
+   modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
-   modelViewMatrix.popMatrix();*/
+   modelViewMatrix.popMatrix();
    
    //Draws Wheels and Upgrades More efficiently *****
    /*for (int i = 0; i < (int)wheels.size(); i++) {

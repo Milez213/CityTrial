@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "GameDrawableObject.h"
-#include "Defines.h"
+#include "defines.h"
 
 class GamePhysicalObject : public GameDrawableObject
 {
