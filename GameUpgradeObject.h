@@ -18,7 +18,7 @@ class GameUpgradeObject : public GameDrawableObject
 public:
    enum Type {FLIGHT, GRIP, TURNING};
    
-   GameUpgradeObject(Type initType, glm::vec3 position);
+   GameUpgradeObject(Type initType);
    
    void update(double time, double dt);
    

@@ -9,7 +9,7 @@
 #include "GameUpgradeObject.h"
 
 
-GameUpgradeObject::GameUpgradeObject(Type initType, glm::vec3 position) : GameDrawableObject("cube")
+GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
 {
    type = initType;
    name = "upgrade";
