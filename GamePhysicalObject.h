@@ -20,11 +20,13 @@ public:
    float dir;
    float spd;
    
-   virtual glm::vec3 getVelocity() { return glm::vec3(spd * cos(dir), 0, spd * sin(dir)); };
    virtual float getDirection() { return dir; };
 	virtual void setDirection(float d) { dir = d; };
 	virtual float getSpeed() { return spd; };
 	virtual void setSpeed(float s) { spd = s; }
+   
+   virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(getDirection()), 0, sin(getDirection())); };
+   virtual glm::vec3 getVelocity() { return getSpeed() * getDirectionVector(); };
    
    void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
    

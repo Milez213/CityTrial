@@ -16,7 +16,7 @@ GameRamp::GameRamp() : GameDrawableObject("ramp")
 float GameRamp::getHeightAt(float x, float z)
 {
    //float xMod = (x - pos.x) / scl.x;
-   float zMod = (z - position().z) / scl.z;
+   float zMod = (z - getPosition().z) / scl.z;
    
    zMod += 1.0;
    

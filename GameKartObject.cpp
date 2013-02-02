@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chassis") {
+GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chassis") {
     
    for (int i = 0; i < 4; i++) {
       GameDrawableObject *tire = new GameDrawableObject("tire");
@@ -19,8 +19,8 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chass
    wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
-   setDirection(vec3(0.0, 0.0, 1.0));
-   setSpeed(1.0);
+   setDirection(0);
+   setSpeed(0);
    acceleration = 5;
    friction = 2.5;
    topSpeed = 5.0;
@@ -43,8 +43,6 @@ void GameKartObject::collide(GameObject *collide)
    if (!strcmp(collide->getName(), "upgrade" )) {
       GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
-      upgrade->setSpeed(0.0);
-      upgrade->setDirection(vec3(0.0, 0.0, 0.0));
       upgrades.push_back(upgrade);
    }
    
@@ -134,30 +132,32 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
 void GameKartObject::update(float dt)
 {
-   glm::vec3 dir = direction();
-   glm::vec3 vel = velocity();
-   glm::vec3 pos = position();
+   glm::vec3 vel = getVelocity();
+   glm::vec3 pos = getPosition();
    
    printf("\nbefore\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
-   printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
-   printf(" speed: %f\n", speed());
+   printf(" direction: %f\n", getDirection());
+   printf(" speed: %f\n", getSpeed());
    
     // Update Actor parameters based on current input from joystickState and buttonState
    //if(usingController == true){
-   vec3 up = vec3(0.0, 1.0, 0.0);
+   
+   /*vec3 up = vec3(0.0, 1.0, 0.0);
    glm::vec3 oldDir = direction();
    vec3 move = normalize(cross(up, oldDir));
-   move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);
+   move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
    if (joystickState[0] < 0.0) {
-      setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
+      setDirection(getDirection()-turningRadius);
+      //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
+      setDirection(getDirection()+turningRadius);
+      //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    }
  
-   float oldSpeed = speed();
+   float oldSpeed = getSpeed();
    
    if(joystickState[3] > 0.0) {      
       setSpeed(oldSpeed + (acceleration * dt));
@@ -168,17 +168,16 @@ void GameKartObject::update(float dt)
    }
    //}
    
-   dir = direction();
-   vel = velocity();
-   pos = position();
+   vel = getVelocity();
+   pos = getPosition();
 
-   setRotation(vec3(0, - 180 * atan(dir.z, dir.x)/M_PI, 0 ));
+   setRotation(vec3(0, - 180 * getDirection()/M_PI, 0 ));
    
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
-   printf(" direction: %f,%f,%f\n", dir.x, dir.y, dir.z);
-   printf(" speed: %f\n", speed());
+   printf(" direction: %f\n", getDirection());
+   printf(" speed: %f\n", getSpeed());
    
    GameObject::update(dt);
 }
