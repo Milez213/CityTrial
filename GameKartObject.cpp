@@ -21,7 +21,8 @@ GameKartObject::GameKartObject(const char *fileName) : GameDrawableObject("chass
    usingController = false;
    setDirection(vec3(0.0, 0.0, 1.0));
    setSpeed(1.0);
-   acceleration = 0.5;
+   acceleration = 5;
+   friction = 2.5;
    topSpeed = 5.0;
    turningRadius = 1.0;
     
@@ -160,12 +161,10 @@ void GameKartObject::update(float dt)
    
    if(joystickState[3] > 0.0) {      
       setSpeed(oldSpeed + (acceleration * dt));
-      //mActor->push(0.5 * dt);
    } else if(joystickState[3] < 0.0) {
-      setSpeed(oldSpeed - (acceleration * dt));
-      //mActor->push(-0.5 * dt);
+      setSpeed(oldSpeed - (2*acceleration * dt));
    } else {
-      //setSpeed(oldSpeed*(0.5 * dt));
+      setSpeed(oldSpeed - (friction * dt));
    }
    //}
    

@@ -50,7 +50,7 @@ private:
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    
-   float acceleration, topSpeed, turningRadius;
+   float acceleration, topSpeed, turningRadius, friction;
    
    bool usingController;
    float joystickState[4];
