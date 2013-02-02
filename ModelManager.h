@@ -42,11 +42,46 @@ struct bufferStore {
 };
  
 struct bound {
-   vec3 boundingBoxMin;
-   vec3 boundingBoxMax;
+   vec3 bottomLeft;
+   vec3 dimension;
    vec3 center;
    float radius;
+   
+   bool sphereOnSphere(bound objOne, bound objTwo);
+   bool sphereOnBox(bound objOne, bound objTwo);
+   bool boxOnBox(bound objOne, bound objTwo);
 };
+
+bool sphereOnSphere(bound objOne, bound objTwo)
+{
+   vec3 diff = objOne.center - objTwo.center;
+   float dist = sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
+   
+   if (dist < objOne.radius + objTwo.radius) {
+      return true;
+   }
+   
+   return false;
+}
+
+bool sphereOnBox(bound objOne, bound objTwo)
+{
+   return false;
+}
+
+bool boxOnBox(bound objOne, bound objTwo)
+{
+   if (objOne.bottomLeft.x > objTwo.bottomLeft.x + objTwo.dimension.x ||
+       objOne.bottomLeft.x + objOne.dimesnion.x < objTwo.dimension.x  ||
+       objOne.bottomLeft.y > objTwo.bottomLeft.y + objTwo.dimension.y ||
+       objOne.bottomLeft.y + objOne.dimesnion.y < objTwo.dimension.y  ||
+       objOne.bottomLeft.z > objTwo.bottomLeft.z + objTwo.dimension.z ||
+       objOne.bottomLeft.z + objOne.dimesnion.z < objTwo.dimension.z) {
+      return false;
+   }
+   
+   return true;
+}
 
 class ModelManager {
 
