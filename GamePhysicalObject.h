@@ -26,7 +26,7 @@ public:
 	virtual float getSpeed() { return spd; };
 	virtual void setSpeed(float s) { spd = s; }
    
-   void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject>(other) != NULL) speed = 0; };
+   void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
    
    GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile) {}
 };
