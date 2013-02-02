@@ -29,7 +29,7 @@ public:
    void update(float dt);
    void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
 
-   void collide(GameObject *collide);
+   void onCollide(GameObject *collide);
    
    void changeTireTurnAngle(float targetAngle);
 

@@ -23,7 +23,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 45.0;
-   wings = true;
+   //wings = true;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -35,14 +35,15 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
 
 }
 
-void GameKartObject::collide(GameObject *collide)
+void GameKartObject::onCollide(GameObject *collide)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
    if (!strcmp(collide->getName(), "upgrade" )) {
-      GameDrawableObject *upgrade = new GameDrawableObject("wings");
+      properties.toggleWings();
+      /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
-      upgrades.push_back(upgrade);
+      upgrades.push_back(upgrade);*/
 
    }
    
@@ -129,7 +130,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.scale(1.0,0.5,1.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
-   if (wings == true)
+   if (properties.hasWings())
    {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
@@ -246,5 +247,5 @@ void GameKartObject::update(float dt)
    printf(" direction: %f\n", getDirection());
    printf(" speed: %f\n", getSpeed());
    
-   GameObject::update(dt);
+   GameObject::update(dt); //actually move the cart with these updated values
 }
