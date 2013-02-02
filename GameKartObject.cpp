@@ -149,7 +149,7 @@ void GameKartObject::update(float dt)
    vec3 move = normalize(cross(up, oldDir));
    move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
-   char speedDirectionInverse = (joystickState[3] < 0.0) ? -1 : 1;
+   short speedDirectionInverse = (joystickState[3] < 0.0) ? -1 : 1;
    
    if (joystickState[0] < 0.0) {
       setDirection(getDirection()+speedDirectionInverse*turningRadius);
@@ -163,10 +163,13 @@ void GameKartObject::update(float dt)
    
    float oldSpeed = getSpeed();
    
+   short speedBrakeMult = (oldSpeed < 0.0) ? 1 : 2;
+   short speedAccelMult = (oldSpeed > 0.0) ? 1 : 2;
+   
    if(joystickState[3] > 0.0) {      
-      setSpeed(oldSpeed + (acceleration * dt));
+      setSpeed(oldSpeed + (speedAccelMult * acceleration * dt));
    } else if(joystickState[3] < 0.0) {
-      setSpeed(oldSpeed - (2*acceleration * dt));
+      setSpeed(oldSpeed - (speedBrakeMult*acceleration * dt));
    } else {
       setSpeed(oldSpeed - (sign(oldSpeed) * friction * dt));
    }
