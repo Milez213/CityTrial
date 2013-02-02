@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "GameDrawableObject.h"
+#include "Defines.h"
 
 class GamePhysicalObject : public GameDrawableObject
 {
@@ -20,15 +21,16 @@ public:
    float dir;
    float spd;
    
-   virtual float getDirection() { return dir; };
-	virtual void setDirection(float d) { dir = d; };
+   virtual float getDirection() { return TO_DEGREES(dir); };
+	virtual void setDirection(float d) { dir = TO_RADIANS(d); };
 	virtual float getSpeed() { return spd; };
 	virtual void setSpeed(float s) { spd = s; }
    
-   virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(getDirection()), 0, sin(getDirection())); };
+   virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(dir), 0, sin(dir)); };
    virtual glm::vec3 getVelocity() { return getSpeed() * getDirectionVector(); };
    
-   void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
+   virtual void update(float dt) { GameDrawableObject::update(dt); };
+   virtual void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
    
    GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile) {}
 };

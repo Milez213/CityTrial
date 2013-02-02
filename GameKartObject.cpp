@@ -150,10 +150,10 @@ void GameKartObject::update(float dt)
    move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
    if (joystickState[0] < 0.0) {
-      setDirection(getDirection()-turningRadius);
+      setDirection(getDirection()+turningRadius);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(getDirection()+turningRadius);
+      setDirection(getDirection()-turningRadius);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    }
  
@@ -164,7 +164,7 @@ void GameKartObject::update(float dt)
    } else if(joystickState[3] < 0.0) {
       setSpeed(oldSpeed - (2*acceleration * dt));
    } else {
-      setSpeed(oldSpeed - (friction * dt));
+      setSpeed(oldSpeed - (sign(oldSpeed) * friction * dt));
    }
    //}
    
