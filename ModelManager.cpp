@@ -15,10 +15,11 @@
 
 bool ModelManager::sphereOnSphere(bound objOne, bound objTwo)
 {
-   vec3 diff = objOne.center - objTwo.center;
+   /*vec3 diff = objOne.center - objTwo.center;
    float dist = sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
    
-   if (dist < objOne.radius + objTwo.radius) {
+   if (dist < objOne.radius + objTwo.radius) {*/
+   if (glm::length(objOne.center-objTwo.center) < objOne.radius + objTwo.radius) {
       return true;
    }
    
