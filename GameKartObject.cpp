@@ -1,4 +1,5 @@
 #include "GameKartObject.h"
+#include "GameRamp.h"
 
 #include <cmath>
 
@@ -33,16 +34,31 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
 
 }
 
-void GameKartObject::onCollide(GameObject *collide)
+void GameKartObject::onCollide(GameObject *other)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (strcmp(collide->getName(), "upgrade" ) == 0) {
+   if (strcmp(other->getName(), "upgrade" ) == 0) {
       properties.toggleWings();
       /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrades.push_back(upgrade);*/
 
+   }
+   else if (GameRamp *ramp =  dynamic_cast<GameRamp *>(other)) {
+      
+      vec3 oldPos = getPosition();
+      float newHeight = ramp->getHeightAt(oldPos.x, oldPos.z);
+      
+      if (oldPos.y < newHeight and oldPos.y + 1 >= newHeight) {
+         setPosition(vec3(oldPos.x, newHeight, oldPos.z));
+      }
+      else if (oldPos.y + 1 < newHeight) {
+         setSpeed(0);
+      }
+   }
+   else {
+      GamePhysicalObject::onCollide(other);
    }
    
    //return true;

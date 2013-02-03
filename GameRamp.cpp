@@ -21,4 +21,10 @@ float GameRamp::getHeightAt(float x, float z)
    zMod += 1.0;
    
    return zMod * scl.y;
+   /*vec3 pos = getPosition();
+   float minHeight = 0, incHeight = scl.y*2;
+   float minZ = pos.z - scl.z, incZ = scl.z*2;
+   float zMod = (z - minZ) / incZ;
+   
+   return minHeight + zMod*incHeight;*/
 }
