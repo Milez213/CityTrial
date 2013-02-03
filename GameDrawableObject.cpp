@@ -86,7 +86,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
 
 bound GameDrawableObject::getBoundingInfo()
 {
-   bound chgBound;
+   /*bound chgBound;
    chgBound.bottomLeft = boundingInfo.bottomLeft + this->getPosition();
    chgBound.dimension = boundingInfo.dimension * this->getScale();
    chgBound.center = boundingInfo.center + this->getPosition();
@@ -105,5 +105,7 @@ bound GameDrawableObject::getBoundingInfo()
       }
    }
    
-   return chgBound;
+   return chgBound;*/
+   boundingInfo.center = this->getPosition();
+   return boundingInfo;
 }
