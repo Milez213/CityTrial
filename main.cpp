@@ -35,6 +35,7 @@ using  glm::vec4;
 #include "GameDrawableObject.h"
 #include "GameUpgradeObject.h"
 #include "GameKartObject.h"
+#include "GameCamera.h"
 
 
 using namespace std;
@@ -94,7 +95,7 @@ mat4 g_proj;
 mat4 g_view;
 mat4 g_model;
 
-
+GameCamera *g_camera;
 
 
 // *** lights ***
@@ -146,14 +147,17 @@ void setProjectionMatrix() {
 
 /* camera controls */
 void setView() {
-   // TODO - make a Camera object
-
-   vec3 up = glm::vec3(0.0, 1.0, 0.0);
+   vec3 kartDir = kart_objects[0]->getDirectionVector();
    vec3 kartPos = kart_objects[0]->getPosition();
-   vec3 kartDir = normalize(kart_objects[0]->getDirectionVector());
-   kartDir = vec3(kartDir.x * 6.0, kartDir.y * 6.0 - 2.0, kartDir.z * 6.0);
-   glm::mat4 lookAt = glm::lookAt(kartPos - kartDir, kartPos, up);
-   g_view = lookAt;
+
+   // move camera back and up
+   kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
+
+   g_camera->setLookAtTarget(kart_objects[0]->getPosition());
+   g_camera->setPosition(kartPos - kartDir);
+
+   g_view = g_camera->getViewMat();
+   
 }
 
 void getInputState()
@@ -205,6 +209,8 @@ void update(double dt)
    }
    
    wings->update(g_time, dt);
+   
+   
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
@@ -279,7 +285,8 @@ void initObjects() {
    cout << "Initializing game objects\n";
    
    // TODO - test for return values (but we usually know if they work or not)
-
+   g_camera = new GameCamera();
+   
    meshShader = new PhongShader();
    // Light 
    g_lightInfo.pos = vec3(1, 5, 1);
@@ -419,6 +426,10 @@ void reshape(int width, int height)
 void GLFWCALL keyboard_callback_key(int key, int action) {
    // only gives upercase
    switch (key) {
+   case 'R':
+      g_camera->setYaw(45);
+      printf("yaw %f\n", g_time - g_last_time);
+      break;
    case 'Q':
    case GLFW_KEY_ESC:
       printf("Bye :)\n");
