@@ -14,7 +14,7 @@
 class GameKartProperties
 {
 public:
-   GameKartProperties() : wings(false), acceleration(10), topSpeed(50), brakeSpeed(20), turnSpeed(1){}
+   GameKartProperties() : wings(false), acceleration(10), topSpeed(25), brakeSpeed(20), turnSpeed(1){}
    
    //parts
    bool hasWings() {return wings;}

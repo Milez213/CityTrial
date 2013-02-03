@@ -273,5 +273,5 @@ void GameKartObject::update(float dt)
    printf(" speed: %f\n", getSpeed());
    */
    
-   GameObject::update(dt); //actually move the cart with these updated values
+   GamePhysicalObject::update(dt); //actually move the cart with these updated values
 }
