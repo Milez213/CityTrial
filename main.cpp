@@ -31,7 +31,10 @@ using  glm::vec4;
 
 #include "PhongShader.h"
 #include "ModelManager.h"
+
+#ifdef __unix__
 #include "SDLSoundManager.h"
+#endif
 
 #include "GameDrawableObject.h"
 #include "GameUpgradeObject.h"
@@ -80,7 +83,9 @@ using namespace std;
 ModelManager *g_model_manager;
 SoundManager *g_sound_manager;
 
+#ifdef __unix__
 GameSound *g_music;
+#endif
 
 // test one object for now
 PhongShader *meshShader;
@@ -379,9 +384,11 @@ void initialize()
 
    g_model_manager = new ModelManager();
 
+#ifdef __unix__
    g_sound_manager = new SDLSoundManager();
    g_music = g_sound_manager->getMusic("music/raptor.ogg");   
    g_music->play();
+#endif
 
    initObjects();
 }
