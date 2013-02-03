@@ -18,10 +18,9 @@ glm::vec3 GamePhysicalObject::getVelocity()
 
 void GamePhysicalObject::update(float dt)
 {
-   if (getPosition().y > scl.y) {
-      fallSpeed += gravity*dt - speed*getLift()*dt;
-   }
-   else {
+   fallSpeed += gravity*dt - speed*getLift()*dt;
+   
+   if (getPosition().y < scl.y && fallSpeed > 0) {
       fallSpeed = 0;
    }
    

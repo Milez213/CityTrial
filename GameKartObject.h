@@ -31,7 +31,7 @@ public:
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    virtual void onCollide(GameObject *collide);
    
-   virtual float getLift() {return properties.hasWings() ? 1 : 0;}
+   virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
    
    void changeTireTurnAngle(float targetAngle);
 
