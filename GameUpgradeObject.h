@@ -20,7 +20,9 @@ public:
    
    GameUpgradeObject(Type initType);
    
-   void update(double time, double dt);
+   virtual void update(double time, double dt);
+   
+   virtual void onCollide(GameObject *other) {}
    
    Type upgradeType() { return type; };
    

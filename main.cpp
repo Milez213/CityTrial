@@ -37,6 +37,7 @@ using  glm::vec4;
 #include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
+#include "GameRamp.h"
 
 
 
@@ -330,6 +331,12 @@ void initObjects() {
    wings->setPosition(vec3(0, 3, -10));
    wings->setScale(vec3(1.0, 2.0, 1.0));
    drawable_objects.push_back(wings);
+   
+   
+   GameRamp *ramp = new GameRamp();
+   ramp->setPosition(vec3(-6, 2, -6));
+   ramp->setScale(vec3(3.0, 2.0, 3.0));
+   drawable_objects.push_back(ramp);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****

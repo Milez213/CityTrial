@@ -26,10 +26,12 @@ public:
    GameKartObject(const char *fileName);
    ~GameKartObject();
 
-   void update(float dt);
-   void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
-
-   void onCollide(GameObject *collide);
+   virtual void update(float dt);
+   
+   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void onCollide(GameObject *collide);
+   
+   virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
    
    void changeTireTurnAngle(float targetAngle);
 
@@ -46,6 +48,7 @@ public:
     
    void stop();
    void done();
+   
    
 private:
    PhongShader *meshShader;
