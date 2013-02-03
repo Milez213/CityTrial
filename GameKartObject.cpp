@@ -11,8 +11,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
       GameDrawableObject *tire = new GameDrawableObject("tire");
       wheels.push_back(tire);
    }
-         GameDrawableObject *upgrade = new GameDrawableObject("wings");
-      upgrade->setPosition(vec3(0.0, 0.0, 0.0));
+      GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrades.push_back(upgrade);
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
@@ -23,7 +22,6 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chass
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 45.0;
-   //wings = true;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -39,7 +37,7 @@ void GameKartObject::onCollide(GameObject *collide)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (!strcmp(collide->getName(), "upgrade" )) {
+   if (strcmp(collide->getName(), "upgrade" ) == 0) {
       properties.toggleWings();
       /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
@@ -201,19 +199,17 @@ void GameKartObject::update(float dt)
    vec3 move = normalize(cross(up, oldDir));
    move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
    
-   float oldSpeed = getSpeed();
+   float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
-   short speedDirectionInverse = (oldSpeed < 0.0) ? -1 : 1;
-   short speedBrakeMult = (oldSpeed < 0.0) ? 1 : 2;
-   short speedAccelMult = (oldSpeed > 0.0) ? 1 : 2;
+   short speedDirectionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
    
    if (joystickState[0] < 0.0) {
-      setDirection(oldDirection-speedDirectionInverse*properties.getTurnSpeed());
+      setDirection(oldDirection-speedDirectionMult*properties.getTurnSpeed());
       changeTireTurnAngle(-25.0); 
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(oldDirection+speedDirectionInverse*properties.getTurnSpeed());
+      setDirection(oldDirection+speedDirectionMult*properties.getTurnSpeed());
       changeTireTurnAngle(25.0);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
@@ -228,16 +224,26 @@ void GameKartObject::update(float dt)
    
 
    
-   if(joystickState[3] > 0.0) {      
-      setSpeed(oldSpeed + (speedAccelMult * properties.getAcceleration() * dt));
+   if(joystickState[3] > 0.0) {
+      short speedUp = (oldSpeed > 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
+      newSpeed = oldSpeed + (speedUp * dt);
    } else if(joystickState[3] < 0.0) {
-      setSpeed(oldSpeed - (speedBrakeMult*properties.getAcceleration() * dt));
+      short speedDown = (oldSpeed < 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
+      newSpeed = oldSpeed - (speedDown * dt);
    } else {
       if (abs(oldSpeed) > friction * dt)
-         setSpeed(oldSpeed - (sign(oldSpeed) * friction * dt));
+         newSpeed = oldSpeed - (sign(oldSpeed) * friction * dt);
       else
-         setSpeed(0);
+         newSpeed = 0;
    }
+   
+   if (newSpeed > properties.getTopSpeed())
+      newSpeed = properties.getTopSpeed();
+   else if (newSpeed < -properties.getTopSpeed())
+         newSpeed = -properties.getTopSpeed();
+   
+   setSpeed(newSpeed);
+   
    //}
    
    vel = getVelocity();

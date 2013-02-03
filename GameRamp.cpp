@@ -8,7 +8,7 @@
 
 #include "GameRamp.h"
 
-GameRamp::GameRamp() : GameDrawableObject("ramp")
+GameRamp::GameRamp() : GameSceneryObject("ramp")
 {
    
 }

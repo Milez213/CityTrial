@@ -12,9 +12,9 @@
 
 #include <iostream>
 
-#include "GameDrawableObject.h"
+#include "GameSceneryObject.h"
 
-class GameRamp : public GameDrawableObject {
+class GameRamp : public GameSceneryObject {
 public:
    GameRamp();
    
