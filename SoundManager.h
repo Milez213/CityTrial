@@ -37,7 +37,6 @@ class SoundManager {
 public:
 
     virtual ~SoundManager() {
-        destroy();
     };
 
     // loads the sound. may cache it.

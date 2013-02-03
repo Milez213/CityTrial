@@ -380,7 +380,7 @@ void initialize()
    g_model_manager = new ModelManager();
 
    g_sound_manager = new SDLSoundManager();
-   g_music = g_sound_manager->getMusic("music.ogg");   
+   g_music = g_sound_manager->getMusic("music/raptor.ogg");   
    g_music->play();
 
    initObjects();
