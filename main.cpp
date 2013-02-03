@@ -31,11 +31,13 @@ using  glm::vec4;
 
 #include "PhongShader.h"
 #include "ModelManager.h"
+#include "SDLSoundManager.h"
 
 #include "GameDrawableObject.h"
 #include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
+
 
 
 using namespace std;
@@ -75,6 +77,9 @@ using namespace std;
 
 // Singletons
 ModelManager *g_model_manager;
+SoundManager *g_sound_manager;
+
+GameSound *g_music;
 
 // test one object for now
 PhongShader *meshShader;
@@ -322,7 +327,7 @@ void initObjects() {
    
    
    wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(0, 6, 20));
+   wings->setPosition(vec3(0, 3, -10));
    wings->setScale(vec3(1.0, 2.0, 1.0));
    drawable_objects.push_back(wings);
    
@@ -333,61 +338,16 @@ void initObjects() {
    }
    kart_objects.push_back(kart);
    drawable_objects.push_back(kart);*/
+
+
 }
+
+
+
 
 void initMap() {
    
 }
-
-
-
-
-//-----------------------------------------------
-// This function initializes geometry from a 
-//  geometry file "geometry_loader", which has 
-//  has the format:
-//  (type) (.obj file) (type specific data) ...
-//-----------------------------------------------
-/*
-void initGeometry()
-{
-   ifstream in("geometry_loader", ios::in);
-   if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
-
-   string line;
-   while (getline(in, line)) {
-      istringstream s(line);
-
-      char type;
-      type << s;
-
-      string meshFile;
-      meshFile << s;
-
-      switch (type) {
-      case: "d"
-         KPPDrawnObject *object = new KPPDrawnObject(meshFile.c_str());
-         //Any initialization from type specific data in file
-         drawn_objects.push_back(object);
-         moving_objects.push_back(object);
-         break;
-      case: "k"
-         KKPKartObject *object = new KPPKartObject(meshFile.c_str());
-         if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) {
-            printf("Controller Connected for Player %d\n", kart_objects.size());
-         }
-         //Any initialization from type specific data in file
-         kart_objects.push_back(object);
-         drawn_objects.push_back(object);
-         moving_objects.push_back(object);
-         break;
-      default:
-         cerr << "ERROR: Inproper Type Declared in Geometry Loader File\n";
-         exit(0);
-      }
-   }
-}
-*/
 
 
 
@@ -411,9 +371,21 @@ void initialize()
    g_model_trans.loadIdentity();
 
    g_model_manager = new ModelManager();
-   // initGeometry();
+
+   g_sound_manager = new SDLSoundManager();
+   g_music = g_sound_manager->getMusic("music.ogg");   
+   g_music->play();
 
    initObjects();
+}
+
+
+
+void shutdown() {
+
+   delete g_sound_manager;
+
+   exit(0);
 }
 
 
@@ -437,7 +409,7 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
    case 'Q':
    case GLFW_KEY_ESC:
       printf("Bye :)\n");
-      exit(0);
+      shutdown();
       break;
    }
 

@@ -13,7 +13,7 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
-	LIB=./glfw/lib/x11/libglfw.a
+	LIB=./glfw/lib/x11/libglfw.a -lSDL_mixer
 
 	# -lXrandr for csl
 	ifeq ($(shell uname -n), pack-nasa)
@@ -21,6 +21,9 @@ ifeq ($(UNAME), Linux)
 	else
 		XRANDR=-lXrandr
 	endif
+
+
+    IFLAGS += -I/usr/include/SDL
 
 LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)
 endif

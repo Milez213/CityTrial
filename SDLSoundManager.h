@@ -7,42 +7,93 @@
 
 #include "SDL_mixer.h"
 
-class SDLGameSoundSample : GameSound {
+class SDLGameSoundSample : public GameSound {
 
 public:
 
     SDLGameSoundSample(char* filename) {
         m_channel = -1;
+        m_loops = 0; // play once
         m_sound = Mix_LoadWAV(filename);
         if (NULL == m_sound) {
-            fprintf(stderr, "*** Error loading sound \"%s\": %\n",
+            fprintf(stderr, "*** Error loading sound \"%s\": %s\n",
                     filename,
                     Mix_GetError());
         }
-
     }
 
-    virtual ~SDLGameSoundSample() {
+    ~SDLGameSoundSample() {
+        Mix_FreeChunk(m_sound);
         Mix_HaltChannel(m_channel);
     }
 
     // Plays the sound.
     // sound = ModelManager->getSound("woof.ogg");
     // Sound sound("woof");
-    virtual void play() {
+    void play() {
         m_channel = Mix_PlayChannel(-1, m_sound, m_loops);
     }
 
-    virtual void play(bool looped) {
+    void play(bool looped) {
         m_channel = Mix_PlayChannel(-1, m_sound, -1);
     }
 
-    virtual void pause() {
+    void pause() {
         Mix_Pause(m_channel);
     }
 
+    void resume() {
+        Mix_Resume(m_channel);
+    }
+
+    // TODO - SDL_Mix can specify how many times to loop but not irrklang
+
+private:
+    // a sound is pointed to by m_sound
+    // a sound plays on one of the channels, which SDL_Mix can choose
+    Mix_Chunk *m_sound;
+    int m_channel;
+};
+
+
+
+class SDLGameSoundMusic : public GameSound {
+
+public:
+
+    SDLGameSoundMusic(char* filename) {
+        m_loops = 0;
+        m_music = Mix_LoadMUS(filename);
+        if (NULL == m_music) {
+            fprintf(stderr, "*** Error loading sound \"%s\": %s\n",
+                    filename,
+                    Mix_GetError());
+        }
+
+    }
+
+    ~SDLGameSoundMusic() {
+        Mix_HaltMusic();
+        Mix_FreeMusic(m_music);
+    }
+
+    // Plays the sound.
+    // sound = ModelManager->getSound("woof.ogg");
+    // Sound sound("woof");
+    virtual void play() {
+        Mix_PlayMusic(m_music, m_loops);
+    }
+
+    virtual void play(bool looped) {
+        Mix_PlayMusic(m_music, looped? -1 : 0);
+    }
+
+    virtual void pause() {
+        Mix_PauseMusic();
+    }
+
     virtual void resume() {
-        Mix_resume(m_channel);
+        Mix_ResumeMusic();
     }
 
     // TODO - SDL_Mix can specify how many times to loop but not irrklang
@@ -54,21 +105,18 @@ public:
     }
 
 private:
-    Mix_Music *m_music; // FIXME - change
-    Mix_Chunk *m_sound;
+    Mix_Music *m_music;
 
-    int m_channel;
-
-    int m_loops = 0;
-    
 };
 
 
-class SDLSoundManager {
+
+class SDLSoundManager : public SoundManager {
 
 public:
 
     SDLSoundManager() {
+        printf("Initializing SDL_Mix sound\n");
         int sample_rate = 22050;
         Uint16 audio_format = AUDIO_S16;
         int audio_channels = 2;
@@ -84,24 +132,24 @@ public:
                     Mix_GetError());
             return;
         }
-
+        printf("Initializing SDL_Mix sound successful\n");
     }
 
-    virtual ~SDLSoundManager() {
+    ~SDLSoundManager() {
         Mix_CloseAudio();
     }
 
     // loads the sound. may cache it.
     virtual GameSound* getMusic(char* filename) {
         // TODO - cache?
-        SLDSound *sound = new SDLGameSoundMusic(filename);
+        GameSound *sound = new SDLGameSoundMusic(filename);
         return sound;
     }
 
     // loads the sound. may cache it.
     virtual GameSound* getSample(char* filename) {
         // TODO - cache?
-        SLDSound *sound = new SDLGameSoundSample(filename);
+        SDLGameSoundSample *sound = new SDLGameSoundSample(filename);
 
         return sound;
     }
