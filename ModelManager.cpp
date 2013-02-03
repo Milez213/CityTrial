@@ -13,8 +13,11 @@
 
 #include "ModelManager.h"
 
+#include <stdio.h>
+
 bool ModelManager::sphereOnSphere(bound objOne, bound objTwo)
 {
+
    /*vec3 diff = objOne.center - objTwo.center;
    float dist = sqrt(pow(diff.x, 2) + pow(diff.y, 2) + pow(diff.z, 2));
    

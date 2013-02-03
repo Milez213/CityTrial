@@ -141,7 +141,8 @@ void setPhongMaterial(int i) {
 
 /* projection matrix */
 void setProjectionMatrix() {
-   g_proj = glm::perspective(90.0f, (float)g_win_width/g_win_height, 0.1f, 100.f);
+   g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 2.0f + 90.0f,
+         (float)g_win_width/g_win_height, 0.1f, 100.f);
 }
 
 
@@ -199,9 +200,14 @@ void update(double dt)
       kart_objects[i]->update(dt);
    }
 
+   bound b1, b2;
+
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
-         if (g_model_manager->sphereOnSphere(drawable_objects[i]->getBoundingInfo(), drawable_objects[j]->getBoundingInfo())) {
+         if (g_model_manager->sphereOnSphere(drawable_objects[i]->getBoundingInfo(),
+                drawable_objects[j]->getBoundingInfo())) {
+            b1 = drawable_objects[i]->getBoundingInfo();
+            
             drawable_objects[i]->onCollide(drawable_objects[j]);
             drawable_objects[j]->onCollide(drawable_objects[i]);
          }
@@ -304,21 +310,21 @@ void initObjects() {
    for (int i = -10; i < 11; i++) {
       for (int j = 5; j < 11; j++) {
          GameDrawableObject *object = new GameDrawableObject("cube");
-         object->setPosition(vec3(i, 1.0, j));
-         object->setScale(vec3(0.1, 0.1, 0.1));
+         object->setPosition(vec3(2*i, 1.0, 2*j));
+         object->setScale(vec3(0.1, 0.5, 0.1));
          drawable_objects.push_back(object);
       }
    }
    
    GameKartObject *kart = new GameKartObject("cube");
-   kart->setPosition(vec3(0, 2, 5));
+   kart->setPosition(vec3(0, 1, 5));
    kart->setScale(vec3(1.0, 0.75, 1.0));
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
    
    
    wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(10, 2, 10));
+   wings->setPosition(vec3(0, 6, 20));
    wings->setScale(vec3(1.0, 2.0, 1.0));
    drawable_objects.push_back(wings);
    

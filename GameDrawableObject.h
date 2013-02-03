@@ -31,6 +31,11 @@ public:
    GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+
+   virtual void setScale(glm::vec3 s) {
+       scl = s;
+       boundingInfo.radius *= s.y;
+   };
    
    bound getBoundingInfo();
     

@@ -31,7 +31,9 @@ public:
    virtual glm::vec3 getVelocity() { return getSpeed() * getDirectionVector(); };
    
    virtual void update(float dt) { GameDrawableObject::update(dt); };
-   virtual void onCollide(GameObject *other) { if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
+   virtual void onCollide(GameObject *other) {
+       cout << "collision!\n";
+       if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0); };
    
    GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile), lift(0), direction(0), speed(0) {}
 };
