@@ -12,11 +12,15 @@ public:
     // Sound sound("woof");
     virtual void play() = 0; 
 
-    // TODO - SDL_Mix can specify how many times to loop but not irrklang
+    virtual void play(bool looped) = 0; 
+
     virtual void makeLooped() = 0;
     virtual bool isLooped() = 0;
 
-    // TODO - position? inherent from GameObject?
+    virtual void pause() = 0;
+    virtual bool resume() = 0;
+
+    // TODO - position for 3d? inherent from GameObject?
     
 };
 
@@ -32,7 +36,7 @@ public:
     // loads the sound. may cache it.
     virtual GameSound* getSample(char* filename) = 0;
 
-    // For music.
+    // For music. could use getSample but this is better
     virtual GameSound* getMusic(char* filename) = 0;
 };
 

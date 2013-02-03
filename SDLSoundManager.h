@@ -11,30 +11,55 @@ class SDLGameSoundSample : GameSound {
 
 public:
 
-    SDLGameSoundSample() {
+    SDLGameSoundSample(char* filename) {
+        m_channel = -1;
+        m_sound = Mix_LoadWAV(filename);
+        if (NULL == m_sound) {
+            fprintf(stderr, "*** Error loading sound \"%s\": %\n",
+                    filename,
+                    Mix_GetError());
+        }
 
     }
 
     virtual ~SDLGameSoundSample() {
-        
+        Mix_HaltChannel(m_channel);
     }
 
     // Plays the sound.
     // sound = ModelManager->getSound("woof.ogg");
     // Sound sound("woof");
-    virtual void play() = 0; 
+    virtual void play() {
+        m_channel = Mix_PlayChannel(-1, m_sound, m_loops);
+    }
+
+    virtual void play(bool looped) {
+        m_channel = Mix_PlayChannel(-1, m_sound, -1);
+    }
+
+    virtual void pause() {
+        Mix_Pause(m_channel);
+    }
+
+    virtual void resume() {
+        Mix_resume(m_channel);
+    }
 
     // TODO - SDL_Mix can specify how many times to loop but not irrklang
-    virtual void makeLooped() = 0;
-    virtual bool isLooped() = 0;
-
-    // TODO - position? inherent from GameObject?
+    virtual void setLooped(bool looped) {
+        m_loops = looped? -1 : 0;
+    }
+    virtual bool isLooped() {
+        return m_loops == -1;
+    }
 
 private:
     Mix_Music *m_music; // FIXME - change
     Mix_Chunk *m_sound;
 
     int m_channel;
+
+    int m_loops = 0;
     
 };
 
@@ -68,14 +93,17 @@ public:
 
     // loads the sound. may cache it.
     virtual GameSound* getMusic(char* filename) {
-        SLDSound *sound = new SDLSound();
-
+        // TODO - cache?
+        SLDSound *sound = new SDLGameSoundMusic(filename);
+        return sound;
     }
 
     // loads the sound. may cache it.
     virtual GameSound* getSample(char* filename) {
-        SLDSound *sound = new SDLSound();
+        // TODO - cache?
+        SLDSound *sound = new SDLGameSoundSample(filename);
 
+        return sound;
     }
 };
 
