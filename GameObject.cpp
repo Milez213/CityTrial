@@ -17,12 +17,6 @@ GameObject::GameObject() : vel(0.0, 0.0, 1.0), pos(0.0), rot(0.0), scl(1.0)
    name = "nada";
 }
 
-void GameObject::onCollide(GameObject *other)
-{
-    cout << "outch!" << other->pos.x << "\n";
-    scl.y = 0.02;
-}
-
 void GameObject::update(float dt)
 {
    setPosition(getPosition() + dt * getVelocity());

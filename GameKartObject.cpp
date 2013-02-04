@@ -37,7 +37,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 }
 
-void GameKartObject::onCollide(GameObject *other)
+void GameKartObject::onCollide(GameDrawableObject *other)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
