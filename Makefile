@@ -23,10 +23,10 @@ ifeq ($(UNAME), Linux)
 	endif
 
     # uncomment to not compile with sound, and not use any real sound
-    CFLAGS += -DUSE_DUMMY_SOUND
+    # CFLAGS += -DUSE_DUMMY_SOUND
 
     # uncomment to compile with sdl_mixer for sound
-    # LIB += -lSDL_mixer
+    LIB += -lSDL_mixer
 
     IFLAGS += -I/usr/include/SDL
 

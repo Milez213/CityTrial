@@ -291,7 +291,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
 			boundingBoxMin.z = verts[i*3+2];
       }*/
       
-      printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
+      // printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
    }
    
    normals.resize(v.size(), glm::vec3(0.0, 0.0, 0.0));
@@ -336,11 +336,13 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    
    store->textureBuffer = 0;
    
+   /*
    printf("Mesh Info:\n");
    printf("   Number of Meshes: %d\n", store->numMeshes);
    for (int i = 0; i < store->numMeshes; i++) {
       printf("      Mesh %d has %d faces\n", i, store->indexBufferLength[i]);
    }
+   */
    
    return 0;
 }
