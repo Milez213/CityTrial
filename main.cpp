@@ -315,7 +315,7 @@ void initObjects() {
 
    // Bunnie
    GameDrawableObject *floor = new GameDrawableObject("floor");
-   floor->setScale(vec3(25.0, 0.0, 25.0));
+   floor->setScale(vec3(25.0, 0.01, 25.0));
    drawable_objects.push_back(floor);
    
    for (int i = -10; i < 11; i++) {
@@ -393,8 +393,8 @@ void initialize()
    g_music->play();
 #else
    g_sound_manager = new SDLSoundManager();
-   g_music = g_sound_manager->getMusic("music/raptor.ogg");   
-   g_music->play();
+   // g_music = g_sound_manager->getMusic("music/raptor.ogg");   
+   // g_music->play();
 #endif
 
    initObjects();
