@@ -399,7 +399,7 @@ void shutdown() {
 
 #ifdef __unix__
    delete g_sound_manager;
-#ifdef
+#endif
 
    exit(0);
 }

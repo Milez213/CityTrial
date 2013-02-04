@@ -98,8 +98,8 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    for (int i = 0; i < meshes->numMeshes; i++) {
       meshes->indexBuffer[i] = storage[index].indexBuffer[i];
       meshes->indexBufferLength[i] = storage[index].indexBufferLength[i];
-      meshes->diffuseColor[i] = storage[index].diffuseColor[i];
-      meshes->specularity[i] = storage[index].specularity[i];
+      // meshes->diffuseColor[i] = storage[index].diffuseColor[i];
+      // meshes->specularity[i] = storage[index].specularity[i];
    }
    
    printf("Mesh Info:\n");
