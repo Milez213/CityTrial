@@ -157,7 +157,7 @@ public:
 protected:
     virtual void init(const char *fontfilename) {
 
-        font_size = 48;
+        font_size = 36;
 
         /* Initialize the FreeType2 library */
         if (FT_Init_FreeType(&ft)) {

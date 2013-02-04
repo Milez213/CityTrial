@@ -284,8 +284,9 @@ void draw()
    */
 
    // draw text
-      
-   g_ttf_text_renderer->drawText("Hello!", 0, 0, 2.0/g_win_width, 2.0/g_win_height);
+   char text[100];
+   sprintf(text, "speed: %.0f", kart_objects[0]->getSpeed());   
+   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_win_width, 2.0/g_win_height);
    
 
    glfwSwapBuffers();
