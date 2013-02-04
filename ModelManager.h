@@ -90,6 +90,7 @@ public:
 	
 private:
 	void loadObject(const char* filename);
+   int fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f);
    bufferStore cubeMesh();
    bufferStore rampMesh();
    bufferStore floorMesh();

@@ -14,6 +14,9 @@
 #include "ModelManager.h"
 
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 bool ModelManager::sphereOnSphere(bound objOne, bound objTwo)
 {
@@ -99,6 +102,12 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
       meshes->specularity[i] = storage[index].specularity[i];
    }
    
+   printf("Mesh Info:\n");
+   printf("   Number of Meshes: %d\n", meshes->numMeshes);
+   for (int i = 0; i < meshes->numMeshes; i++) {
+      printf("      Mesh %d has %d faces\n", i, meshes->indexBufferLength[i]);
+   }
+   
    boundingInfo->bottomLeft = vec3(-1.0, -1.0, -1.0);
    boundingInfo->dimension = vec3(2.0, 2.0, 2.0);
    boundingInfo->center = vec3(0.0, 0.0, 0.0);
@@ -119,13 +128,221 @@ void ModelManager::loadObject(const char *filename)
    } else if (file == "floor") {
       printf("Floor\n");
       storage.push_back(floorMesh());
-   } else {
+   } else if (file == "cube") {
       printf("Cube\n");
       storage.push_back(cubeMesh());
+   } else {
+   
+      vector<glm::vec3> vertices;
+      vector<glm::vec2> textures;
+      vector<glm::vec2> texturesTemp;
+      vector< vector<GLushort> > elements;
+      
+      bool objectStarted = false;
+      vector<GLushort> triangles;
+      bufferStore store;
+      
+      store.name = string(filename);
+      
+      ifstream in(filename, ios::in);
+      ifstream matlib;
+      if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+      
+      string line;
+      while (getline(in, line)) {
+         if (line.substr(0,2) == "o ") {
+            if (objectStarted) {
+               elements.push_back(triangles);
+               triangles.clear();
+               /*for (int i = 0; i < elements.size(); i+=3) {
+                  GLushort ia = elements[i];
+                  GLushort ib = elements[i+1];
+                  GLushort ic = elements[i+2];
+                  glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
+                                                               glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
+                  normals[ia] += normal;
+                  normals[ib] += normal;
+                  normals[ic] += normal;
+               }
+               
+               newObject->BBBindBuffers(vertices, normals, elements, textures);
+               newObjects->push_back(*newObject);
+               normals.clear();
+               elements.clear();
+               textures.clear();
+               newObject = new BBMatObject;*/
+            }
+            objectStarted = true;
+         }
+         else if (line.substr(0,2) == "v ") {
+            istringstream s(line.substr(2));
+            glm::vec3 v; s >> v.x; s >> v.y; s >> v.z;
+            vertices.push_back(v);
+         }  else if (line.substr(0,2) == "f ") {
+            /*if (useMtl == 1) {
+               string s = line.substr(2);
+               string n;
+               int txtCrd = 0;
+               GLushort a;
+               
+               for (int i = 0; i <= s.length(); i++) {
+                  if (s[i] != 47 && s[i] != 32 && i != s.length()) {
+                     n += s[i];
+                  } else {
+                     istringstream str(n);
+                     if (txtCrd == 0) {
+                        str >> a;
+                        a--;
+                        //printf("Vertex %d has texture coordinates ", a);
+                        elements.push_back(a);
+                     } else {
+                        int t;
+                        str >> t;
+                        //printf("(%0.3f, %0.3f)\n", texturesTemp.at(t-1).x, texturesTemp.at(t-1).y);
+                        if (textures.at(a).x != texturesTemp.at(t-1).x && textures.at(a).x != 0.0) {
+                           //printf("Replacing existing texture at %d\n", a+1);
+                        }
+                        textures.at(a).x = texturesTemp.at(t-1).x;
+                        textures.at(a).y = texturesTemp.at(t-1).y;
+                     }
+                     n.clear();
+                     txtCrd = (txtCrd + 1) % 2;
+                  }
+               }
+            } else {*/
+               istringstream s(line.substr(2));
+               GLushort a,b,c;
+               s >> a; s >> b; s >> c;
+               a--; b--; c--;
+               triangles.push_back(a); triangles.push_back(b); triangles.push_back(c);
+            //}
+         } else if (line.substr(0,3) == "vt ") {
+            istringstream s(line.substr(3));
+            glm::vec2 v; s >> v.x; s >> v.y;
+            texturesTemp.push_back(v);
+         } else if (line.substr(0,7) == "usemtl ") {
+            if (line.substr(7).length() < 2) {
+               //textures.resize(vertices.size(), vec2(0.0, 0.0));
+            }
+            
+         } else if (line.substr(0,6) == "mtllib") {
+            string mtl = "models/";
+            mtl += line.substr(7);
+            matlib.open(mtl.c_str(), ifstream::in);
+         }
+         else if (line[0] == '#') { /* ignoring this line */ }
+         else { /* ignoring this line */ }
+      }
+      
+      /*normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
+      for (int i = 0; i < (int)elements.size(); i+=3) {
+         //printf("Face %d: (%d, %d, %d)\n", i / 3, elements[i], elements[i+1], elements[i+2]);
+         GLushort ia = elements[i];
+         GLushort ib = elements[i+1];
+         GLushort ic = elements[i+2];
+         glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
+                                                      glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
+         normals[ia] += normal;
+         normals[ib] += normal;
+         normals[ic] += normal;
+      }
+      newObject->BBBindBuffers(vertices, normals, elements, textures);
+      //printf("%d\n", newObject->IndexBufferLength());
+      newObjects->push_back(*newObject);*/
+      elements.push_back(triangles);
+      fillBuffer(&store, vertices, elements);
+      
+      storage.push_back(store);
    }
+   
 #ifdef DEBUG_VBO
    printf("VBO Transfered to Object Memory: %d\n", (int)storage[0].vertexBuffer);
 #endif
+}
+
+int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f)
+{
+   vector<vec3> normals;
+   bound meshBound;
+   float verts[v.size()*3];
+   printf("Loading Verticies:\n");
+   for (int i = 0; i < (int)v.size(); i++) {
+      verts[i * 3] = v.at(i).x;
+      verts[i * 3 + 1] = v.at(i).y;
+      verts[i * 3 + 2] = v.at(i).z;
+      
+      meshBound.center.x += verts[i*3];
+      meshBound.center.y += verts[i*3+1];
+      meshBound.center.z += verts[i*3+2];
+      
+      /*if (verts[i*3] > boundingBoxMax.x) {
+         boundingBoxMax.x = verts[i*3];
+      } else if (verts[i*3] < boundingBoxMin.x) {
+			boundingBoxMin.x = verts[i*3];
+      }
+      if (verts[i*3+1] > boundingBoxMax.y) {
+         boundingBoxMax.y = verts[i*3+1];
+      } else if (verts[i*3+1] < boundingBoxMin.y) {
+			boundingBoxMin.y = verts[i*3+1];
+      }
+      if (verts[i*3+2] > boundingBoxMax.z) {
+         boundingBoxMax.z = verts[i*3+2];
+      } else if (verts[i*3+2] < boundingBoxMin.z) {
+			boundingBoxMin.z = verts[i*3+2];
+      }*/
+      
+      printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
+   }
+   
+   normals.resize(v.size(), glm::vec3(0.0, 0.0, 0.0));
+   float norms[normals.size()*3];
+   GLushort *faces;
+   store->numMeshes = f.size();
+   store->indexBuffer = new GLuint[store->numMeshes];
+   store->indexBufferLength = new int[store->numMeshes];
+   for (int i = 0; i < (int)f.size(); i++) {
+      faces = new GLushort[f[i].size()];
+      store->indexBufferLength[i] = f[i].size();
+      for (int j = 0; j < (int)f[i].size(); j+=3) {
+         GLushort ia = faces[i] = f[i][j];
+         GLushort ib = faces[i+1] = f[i][j+1];
+         GLushort ic = faces[i+2] = f[i][j+2];
+         glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(v[ib]) - glm::vec3(v[ia]),
+                                                         glm::vec3(v[ic]) - glm::vec3(v[ia])));
+         normals[ia] += normal;
+         normals[ib] += normal;
+         normals[ic] += normal;
+      }
+      
+      glGenBuffers(1, &store->indexBuffer[i]);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, store->indexBuffer[i]);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
+   }
+
+   for (int i = 0; i < (int)normals.size(); i++) {
+      normals[i] = normalize(normals[i]);
+      norms[i*3] = normals[i].x;
+      norms[i*3+1] = normals[i].y;
+      norms[i*3+2] = normals[i].z;
+   }
+   
+   glGenBuffers(1, &store->vertexBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+   
+   glGenBuffers(1, &store->normalBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, store->normalBuffer);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(norms), norms, GL_STATIC_DRAW);
+   
+   store->textureBuffer = 0;
+   
+   printf("Mesh Info:\n");
+   printf("   Number of Meshes: %d\n", store->numMeshes);
+   for (int i = 0; i < store->numMeshes; i++) {
+      printf("      Mesh %d has %d faces\n", i, store->indexBufferLength[i]);
+   }
+   
+   return 0;
 }
 
 bufferStore ModelManager::cubeMesh()

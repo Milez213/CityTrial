@@ -6,13 +6,13 @@
 #include <iostream>
 using namespace std;
 
-GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("chassis") {
+GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject("tire");
+      GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
-      GameDrawableObject *upgrade = new GameDrawableObject("wings");
+      GameDrawableObject *upgrade = new GameDrawableObject("cube");
       upgrades.push_back(upgrade);
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
