@@ -19,7 +19,6 @@ class GameObject {
 public:
 	GameObject();
 	
-   virtual void onCollide(GameObject *other);
    virtual void update(float dt);
    
    virtual glm::vec3 getVelocity() { return vel; }

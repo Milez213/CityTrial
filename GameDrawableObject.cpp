@@ -85,6 +85,12 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    modelViewMatrix.popMatrix();
 }
 
+void GameDrawableObject::onCollide(GameDrawableObject *other)
+{
+   cout << "outch!" << other->getPosition().x << "\n";
+   setScale(vec3(getScale().x, 0.02, getScale().z));
+}
+
 bound GameDrawableObject::getBoundingInfo()
 {
    /*bound chgBound;
