@@ -38,9 +38,12 @@ endif
 ifeq ($(UNAME), Darwin)
 
     # uncomment to not compile with sound, and not use any real sound
-    CFLAGS += -DUSE_DUMMY_SOUND
+    #CFLAGS += -DUSE_DUMMY_SOUND
 
-    LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+    IFLAGS += -I/Library/Frameworks/SDL_mixer.framework/Headers \
+	-I/Library/Frameworks/SDL.framework/Headers
+
+    LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit -framework SDL_mixer -framework SDL
 
 endif
 
