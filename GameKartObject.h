@@ -13,6 +13,8 @@
 #include "GamePhysicalObject.h"
 #include "GameKartProperties.h"
 
+#include "SoundManager.h"
+
 // global variables
 using std::vector;
 using glm::translate;
@@ -62,6 +64,8 @@ private:
    bool usingController,wings;
    float joystickState[4];
    char buttonState[32];
+
+   GameSound *ding_sound;
 };
 
 #endif

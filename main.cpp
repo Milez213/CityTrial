@@ -32,7 +32,9 @@ using  glm::vec4;
 #include "PhongShader.h"
 #include "ModelManager.h"
 
-#ifdef __unix__
+#ifdef USE_DUMMY_SOUND
+#include "DummySoundManager.h"
+#else
 #include "SDLSoundManager.h"
 #endif
 
@@ -319,6 +321,7 @@ void initObjects() {
    for (int i = -10; i < 11; i++) {
       for (int j = 5; j < 11; j++) {
          GameDrawableObject *object = new GameDrawableObject("cube");
+         object->setName("thingy");
          object->setPosition(vec3(2*i, 1.0, 2*j));
          object->setScale(vec3(0.1, 0.5, 0.1));
          drawable_objects.push_back(object);
@@ -384,7 +387,11 @@ void initialize()
 
    g_model_manager = new ModelManager();
 
-#ifdef __unix__
+#ifdef USE_DUMMY_SOUND
+   g_sound_manager = new DummySoundManager();
+   g_music = g_sound_manager->getMusic("music/raptor.ogg");   
+   g_music->play();
+#else
    g_sound_manager = new SDLSoundManager();
    g_music = g_sound_manager->getMusic("music/raptor.ogg");   
    g_music->play();
@@ -397,10 +404,7 @@ void initialize()
 
 void shutdown() {
 
-#ifdef __unix__
    delete g_sound_manager;
-#endif
-
    exit(0);
 }
 

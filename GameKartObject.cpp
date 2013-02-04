@@ -6,6 +6,8 @@
 #include <iostream>
 using namespace std;
 
+extern SoundManager *g_sound_manager;
+
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
@@ -32,6 +34,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    &drawable_objects->push_back(chassis);
    */
 
+   ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 }
 
 void GameKartObject::onCollide(GameObject *other)
@@ -57,6 +60,10 @@ void GameKartObject::onCollide(GameObject *other)
          setSpeed(0);
       }
    }
+   else if (strcmp(other->getName(), "thingy") == 0) {
+       ding_sound->play();
+       other->setName("squashed_thingy");
+   }
    else {
       GamePhysicalObject::onCollide(other);
    }
@@ -66,6 +73,10 @@ void GameKartObject::onCollide(GameObject *other)
 
 GameKartObject::~GameKartObject()
 {
+
+#ifdef USE_SOUND 
+   delete ding_sound;
+#endif
    cout << "Kart Object Deleted\n";
 }
 

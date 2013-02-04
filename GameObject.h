@@ -34,6 +34,10 @@ public:
 	virtual void setScale(glm::vec3 s) { scl = s; };
    
 	char *getName() { return name; };
+    void setName(const char *new_name) {
+        // TODO - use c++ string or strncpy?
+        name = (char*) new_name;
+    }
 
 protected:
    char *name;

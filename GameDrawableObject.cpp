@@ -75,7 +75,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
       
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
    
-      printf("Number of Faces: %d\n", meshStorage.indexBufferLength[i]);
+      // printf("Number of Faces: %d\n", meshStorage.indexBufferLength[i]);
       glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    

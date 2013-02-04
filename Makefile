@@ -13,7 +13,7 @@ UNAME := $(shell uname)
 
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
-	LIB=./glfw/lib/x11/libglfw.a -lSDL_mixer
+	LIB=./glfw/lib/x11/libglfw.a 
 
 	# -lXrandr for csl
 	ifeq ($(shell uname -n), pack-nasa)
@@ -22,6 +22,11 @@ ifeq ($(UNAME), Linux)
 		XRANDR=-lXrandr
 	endif
 
+    # uncomment to not compile with sound, and not use any real sound
+    CFLAGS += -DUSE_DUMMY_SOUND
+
+    # uncomment to compile with sdl_mixer for sound
+    # LIB += -lSDL_mixer
 
     IFLAGS += -I/usr/include/SDL
 
@@ -32,7 +37,10 @@ endif
 # For OS X
 ifeq ($(UNAME), Darwin)
 
-LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
+    # uncomment to not compile with sound, and not use any real sound
+    CFLAGS += -DUSE_DUMMY_SOUND
+
+    LDFLAGS=-lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
 endif
 
