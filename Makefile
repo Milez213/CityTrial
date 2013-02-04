@@ -30,6 +30,12 @@ ifeq ($(UNAME), Linux)
 
     IFLAGS += -I/usr/include/SDL
 
+    # uncomment to use TTF rendering
+    # CFLAGS += -DMAIN_USE_TTF
+    # LIB += -lfreetype
+    # IFLAGS += -I/usr/include/freetype2
+
+
 LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)
 endif
 

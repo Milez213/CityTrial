@@ -45,6 +45,12 @@ using  glm::vec4;
 #include "GameRamp.h"
 
 
+#ifdef MAIN_USE_TTF
+#include "TTFRenderer.h"
+#else
+#include "DummyTextRenderer.h"
+#endif
+
 
 using namespace std;
 
@@ -82,8 +88,11 @@ using namespace std;
 // === Globals =================================
 
 // Singletons
+// There should be only one instance of these
 ModelManager *g_model_manager;
 SoundManager *g_sound_manager;
+TextRenderer *g_ttf_text_renderer;
+
 
 #ifdef __unix__
 GameSound *g_music;
@@ -274,6 +283,11 @@ void draw()
    }
    */
 
+   // draw text
+      
+   g_ttf_text_renderer->drawText("Hello!", 0, 0, 2.0/g_win_width, 2.0/g_win_height);
+   
+
    glfwSwapBuffers();
 }
 
@@ -396,6 +410,15 @@ void initialize()
    // g_music = g_sound_manager->getMusic("music/raptor.ogg");   
    // g_music->play();
 #endif
+
+   // initialize with default font
+#ifdef MAIN_USE_TTF
+   g_ttf_text_renderer = new TTFRenderer("fonts/DejaVuSans.ttf");
+#else
+   g_ttf_text_renderer = new DummyTextRenderer("lolololol");
+#endif
+
+   
 
    initObjects();
 }
