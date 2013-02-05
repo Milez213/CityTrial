@@ -7,6 +7,7 @@
 //
 
 #include "GameUpgradeObject.h"
+#include "GameKartObject.h"
 
 
 GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
@@ -25,4 +26,11 @@ void GameUpgradeObject::update(double time, double dt)
       yRot -= 360;
 
    // setRotation(vec3(getRotation().x, yRot, getPosition().z));
+}
+
+void GameUpgradeObject::onCollide(GameDrawableObject *other)
+{
+   if (GameKartObject *upgrade =  dynamic_cast<GameKartObject *>(other)) {
+      scheduleForRemoval();
+   }
 }

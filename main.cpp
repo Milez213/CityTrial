@@ -252,6 +252,12 @@ void update(double dt)
       }
    }
    
+   for (std::vector<GameDrawableObject *>::iterator it = drawable_objects.begin(); it != drawable_objects.end(); ++it) {
+      if ((*it)->isScheduledForRemoval()) {
+         drawable_objects.erase(it);
+      }
+   }
+   
    wings->update(g_time, dt);
    
    
