@@ -13,7 +13,7 @@ extern int g_num_squashes;
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject("cube");
+      GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
       GameDrawableObject *upgrade = new GameDrawableObject("cube");
