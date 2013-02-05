@@ -33,13 +33,10 @@ public:
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    virtual void onCollide(GameDrawableObject *other);
 
-   virtual void setScale(glm::vec3 s) {
-      scl = s;
-      boundingInfo.bottomLeft = getPosition()-s;
-      boundingInfo.dimension = 2.0f * s;
-      boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);
-   };
+   virtual void setScale(vec3 s);
+   virtual void setPosition(vec3 p);
    
+   void updateBoundingInfo();
    bound getBoundingInfo();
     
 protected:

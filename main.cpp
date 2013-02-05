@@ -232,7 +232,7 @@ void update(double dt)
    // test for collisions
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
-         if (g_model_manager->sphereOnSphere(drawable_objects[i]->getBoundingInfo(),
+         if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
             drawable_objects[i]->onCollide(drawable_objects[j]);
             drawable_objects[j]->onCollide(drawable_objects[i]);
