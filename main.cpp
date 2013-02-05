@@ -373,17 +373,17 @@ void initObjects() {
    drawable_objects.push_back(ramp);
    
    
-   GameBuilding *building = new GameBuilding();
-   building->setPosition(vec3(-6, 2, -3));
-   building->setScale(vec3(3.0, 2.0, 3.0));
-   drawable_objects.push_back(building);
+   GameBuilding *buildin = new GameBuilding();
+   buildin->setPosition(vec3(-6, 2, -3));
+   buildin->setScale(vec3(3.0, 2.0, 3.0));
+   drawable_objects.push_back(buildin);
 
    
-   GamePhysicalObject *building = new GamePhysicalObject("cube");
+  /* GamePhysicalObject *building = new GamePhysicalObject("cube");
    building->setName("building");
    building->setPosition(vec3(0, 2, 0));
    building->setScale(vec3(1.0, 1.0, 1.0));
-   drawable_objects.push_back(building);
+   drawable_objects.push_back(building);*/
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
