@@ -169,7 +169,7 @@ void setPhongMaterial(int i) {
 
 /* projection matrix */
 void setProjectionMatrix() {
-   g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 2.0f + 90.0f,
+   g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 0.5f + 90.0f,
          (float)g_win_width/g_win_height, 0.1f, 100.f);
 }
 
