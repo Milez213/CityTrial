@@ -105,7 +105,7 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    printf("Mesh Info:\n");
    printf("   Number of Meshes: %d\n", meshes->numMeshes);
    for (int i = 0; i < meshes->numMeshes; i++) {
-      printf("      Mesh %d has %d faces\n", i, meshes->indexBufferLength[i]);
+      printf("      Mesh %d has %d index\n", i, (int)meshes->indexBuffer[i]);
    }
    
    boundingInfo->bottomLeft = vec3(-1.0, -1.0, -1.0);
@@ -291,8 +291,12 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
 			boundingBoxMin.z = verts[i*3+2];
       }*/
       
-      // printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
+       printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
    }
+   
+   glGenBuffers(1, &store->vertexBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, verts, GL_STATIC_DRAW);
    
    normals.resize(v.size(), glm::vec3(0.0, 0.0, 0.0));
    float norms[normals.size()*3];
@@ -303,20 +307,30 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    for (int i = 0; i < (int)f.size(); i++) {
       faces = new GLushort[f[i].size()];
       store->indexBufferLength[i] = f[i].size();
+      printf("   Mesh %d: %d faces\n", i, store->indexBufferLength[i]/3);
       for (int j = 0; j < (int)f[i].size(); j+=3) {
-         GLushort ia = faces[i] = f[i][j];
-         GLushort ib = faces[i+1] = f[i][j+1];
-         GLushort ic = faces[i+2] = f[i][j+2];
+         GLushort ia = f[i][j];
+         GLushort ib = f[i][j+1];
+         GLushort ic = f[i][j+2];
          glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(v[ib]) - glm::vec3(v[ia]),
                                                          glm::vec3(v[ic]) - glm::vec3(v[ia])));
          normals[ia] += normal;
          normals[ib] += normal;
          normals[ic] += normal;
+         
+         faces[j] = f[i][j];
+         faces[j+1] = f[i][j+1];
+         faces[j+2] = f[i][j+2];
+         printf("   Face %d: (%d, %d, %d)\n", j/3, faces[j], faces[j+1], faces[j+2]);
       }
-      
+       
+      printf("Index Buffer %d Before: %d\n", i, (int)store->indexBuffer[i]);
       glGenBuffers(1, &store->indexBuffer[i]);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, store->indexBuffer[i]);
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * f[i].size(), faces, GL_STATIC_DRAW);
+      printf("Index Buffer %d After: %d\n", i, (int)store->indexBuffer[i]);
+      
+      delete[] faces;
    }
 
    for (int i = 0; i < (int)normals.size(); i++) {
@@ -326,13 +340,9 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       norms[i*3+2] = normals[i].z;
    }
    
-   glGenBuffers(1, &store->vertexBuffer);
-   glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-   
    glGenBuffers(1, &store->normalBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, store->normalBuffer);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(norms), norms, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, norms, GL_STATIC_DRAW);
    
    store->textureBuffer = 0;
    
