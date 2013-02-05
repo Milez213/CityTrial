@@ -254,7 +254,7 @@ void update(double dt)
 
 
 
-void draw()
+void draw(float dt)
 {
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -292,12 +292,20 @@ void draw()
 
    // draw text
    char text[100];
-   sprintf(text, "speed: %.0f", kart_objects[0]->getSpeed());   
+   sprintf(text, "speed: %.1f", kart_objects[0]->getSpeed());   
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_win_width, 2.0/g_win_height);
 
    // draw squashes
    sprintf(text, "squashes: %d", g_num_squashes);
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_win_width, 2.0/g_win_height);
+   
+   // draw fps
+   sprintf(text, "fps: %.0f", 1/dt);
+   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_win_width, 2.0/g_win_height);
+   
+   // draw height
+   sprintf(text, "height: %.1f", kart_objects[0]->getPosition().y);
+   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_win_width, 2.0/g_win_height);
    
 
    glfwSwapBuffers();
@@ -316,7 +324,7 @@ void gameLoop()
 
    update(dt);
 
-   draw();
+   draw(dt);
 
    g_last_time = g_time;   	
 }
