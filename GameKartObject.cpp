@@ -10,6 +10,10 @@ using namespace std;
 extern SoundManager *g_sound_manager;
 extern int g_num_squashes;
 
+
+const float GameKartObject::maxTireTurnAngle = 25.0;
+const float GameKartObject::tireTurnAngleTime = 0.5;
+
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
@@ -26,7 +30,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
     
    usingController = false;
    tireAngle = 0.0;
-   tireTurnAngle = 45.0;
+   tireTurnAngle = 0.0;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -205,24 +209,24 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 }
 
 
-void GameKartObject::changeTireTurnAngle(float targetAngle)
+void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
 {
    if (targetAngle < 0.0)
    {
       if(tireTurnAngle > targetAngle)
-       tireTurnAngle +=-0.5;
+       tireTurnAngle -= dt * maxTireTurnAngle/tireTurnAngleTime;
    }
    else if(targetAngle > 0.0)
    {
       if(tireTurnAngle < targetAngle)
-         tireTurnAngle +=0.5;
+         tireTurnAngle += dt * maxTireTurnAngle/tireTurnAngleTime;
    }
    else
    {
       if(tireTurnAngle > 0.0)
-         tireTurnAngle +=-0.5;
+         tireTurnAngle -= dt * maxTireTurnAngle/tireTurnAngleTime;
       else if(tireTurnAngle<0.0)
-         tireTurnAngle +=0.5;
+         tireTurnAngle += dt * maxTireTurnAngle/tireTurnAngleTime;
    }
 
 }
@@ -251,21 +255,21 @@ void GameKartObject::update(float dt)
    float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
-   short speedDirectionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
+   //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
    
    if (joystickState[0] < 0.0) {
-      setDirection(oldDirection-dt*speedDirectionMult*properties.getTurnSpeed());
-      changeTireTurnAngle(-25.0); 
+      changeTireTurnAngle(dt, -maxTireTurnAngle);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(oldDirection+dt*speedDirectionMult*properties.getTurnSpeed());
-      changeTireTurnAngle(25.0);
+      changeTireTurnAngle(dt, maxTireTurnAngle);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
-      changeTireTurnAngle(0.0);
+      changeTireTurnAngle(dt, 0.0);
    }
 
    
+   float directionMult = dt*tireTurnAngle/maxTireTurnAngle * getSpeed()/properties.getTopSpeed();
+   setDirection(oldDirection+directionMult*properties.getTurnSpeed());
  
    setRotation(vec3(0, getDirection(), 0 ));
    
