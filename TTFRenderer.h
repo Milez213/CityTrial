@@ -16,7 +16,7 @@
 // This is correct
 #include FT_FREETYPE_H
 
-#include <GL/gl.h>
+#include "include_gl.h"
 
 
 #include "FontShader.h"
