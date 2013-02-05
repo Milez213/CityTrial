@@ -34,6 +34,7 @@ public:
    virtual void onCollide(GameDrawableObject *collide);
    
    virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
+   float getRideHeight() { return getScale().y; }
    
    void changeTireTurnAngle(float targetAngle);
 

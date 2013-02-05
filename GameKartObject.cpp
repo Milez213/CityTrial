@@ -55,21 +55,26 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       upgrades.push_back(upgrade);*/
 
    }
-   else if (GameRamp *ramp =  dynamic_cast<GameRamp *>(other)) {
+   else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
       
       vec3 oldPos = getPosition();
-      float newHeight = ramp->getHeightAt(oldPos.x, oldPos.z);
+      float top = scenery->getHeightAt(oldPos.x, oldPos.z);
+      float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
-      if (oldPos.y < newHeight and oldPos.y + 1 >= newHeight) {
-         setPosition(vec3(oldPos.x, newHeight, oldPos.z));
-      }
-      else if (oldPos.y + 1 < newHeight) {
-         setSpeed(0);
+      if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
+         if (oldPos.y - getRideHeight() + 0.5 > top) {
+            setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
+            fallSpeed = 0;
+         }
+         else  {
+            setSpeed(0);
+         }
       }
    }
    else if (strcmp(other->getName(), "thingy") == 0) {
        ding_sound->play();
-       other->setName("squashed_thingy");
+      other->setName("squashed_thingy");
+      other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
    }
    else {
       GamePhysicalObject::onCollide(other);

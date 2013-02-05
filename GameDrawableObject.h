@@ -34,8 +34,10 @@ public:
    virtual void onCollide(GameDrawableObject *other);
 
    virtual void setScale(glm::vec3 s) {
-       scl = s;
-       boundingInfo.radius *= s.y;
+      scl = s;
+      boundingInfo.bottomLeft = getPosition()-s;
+      boundingInfo.dimension = 2.0f * s;
+      boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);
    };
    
    bound getBoundingInfo();

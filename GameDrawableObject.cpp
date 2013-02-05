@@ -25,7 +25,7 @@ GameDrawableObject::GameDrawableObject(const char *objFile)
    
    //pos = vec3(0.0, 0.0, 5.0);
    rot = vec3(0.0, 0.0, 0.0);
-   scl = vec3(1.0, 3.0, 1.0);
+   setScale(vec3(1.0, 1.0, 1.0));
    
    /*glGenVertexArrays(1, &vertexArray);
    glBindVertexArray(vertexArray);
@@ -88,7 +88,6 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
 void GameDrawableObject::onCollide(GameDrawableObject *other)
 {
    cout << "outch!" << other->getPosition().x << "\n";
-   setScale(vec3(getScale().x, 0.02, getScale().z));
 }
 
 bound GameDrawableObject::getBoundingInfo()

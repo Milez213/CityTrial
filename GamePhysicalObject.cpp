@@ -18,21 +18,22 @@ glm::vec3 GamePhysicalObject::getVelocity()
 
 void GamePhysicalObject::update(float dt)
 {
-   fallSpeed += gravity*dt - speed*getLift()*dt;
+   cout << "physics update\n";
    
-   if (getPosition().y < scl.y && fallSpeed > 0) {
+   fallSpeed += gravity*dt;
+   fallSpeed -= speed*getLift()*dt;
+   
+   if (getPosition().y < -10) {
+      setPosition(vec3(0, 5, 0));
+      speed = 0;
       fallSpeed = 0;
    }
    
-   /*vec3 oldPos = getPosition();
-   float newHeight = oldPos.y - gravity*dt;
+   /*if (getPosition().y < scl.y && fallSpeed > 0) {
+      fallSpeed = 0;
+   }*/
    
-   if (newHeight < scl.y)
-      newHeight = scl.y;
-   
-   setPosition(vec3(oldPos.x, newHeight, oldPos.z));*/
-   
-   GameDrawableObject::update(dt);
+   GameDrawableObject::update(dt); //updates position
 }
 void GamePhysicalObject::onCollide(GameDrawableObject *other)
 {

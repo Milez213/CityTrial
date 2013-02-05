@@ -43,6 +43,8 @@ using  glm::vec4;
 #include "GameKartObject.h"
 #include "GameCamera.h"
 #include "GameRamp.h"
+#include "GameBuilding.h"
+#include "GameTerrain.h"
 
 
 #ifdef MAIN_USE_TTF
@@ -328,8 +330,9 @@ void initObjects() {
 
 
    // Bunnie
-   GameDrawableObject *floor = new GameDrawableObject("floor");
-   floor->setScale(vec3(25.0, 0.01, 25.0));
+   GameTerrain *floor = new GameTerrain();
+   floor->setScale(vec3(50.0, 1.0, 50.0));
+   floor->setPosition(vec3(0, 0, 0));
    drawable_objects.push_back(floor);
    
    for (int i = -10; i < 11; i++) {
@@ -356,9 +359,15 @@ void initObjects() {
    
    
    GameRamp *ramp = new GameRamp();
-   ramp->setPosition(vec3(-6, 2, -6));
+   ramp->setPosition(vec3(-6, 2, -9));
    ramp->setScale(vec3(3.0, 2.0, 3.0));
    drawable_objects.push_back(ramp);
+   
+   
+   GameBuilding *building = new GameBuilding();
+   building->setPosition(vec3(-6, 2, -3));
+   building->setScale(vec3(3.0, 2.0, 3.0));
+   drawable_objects.push_back(building);
    
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****

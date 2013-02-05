@@ -39,12 +39,12 @@ bool ModelManager::sphereOnBox(bound objOne, bound objTwo)
 
 bool ModelManager::boxOnBox(bound objOne, bound objTwo)
 {
-   if (objOne.bottomLeft.x > objTwo.bottomLeft.x + objTwo.dimension.x ||
-       objOne.bottomLeft.x + objOne.dimension.x < objTwo.dimension.x  ||
-       objOne.bottomLeft.y > objTwo.bottomLeft.y + objTwo.dimension.y ||
-       objOne.bottomLeft.y + objOne.dimension.y < objTwo.dimension.y  ||
-       objOne.bottomLeft.z > objTwo.bottomLeft.z + objTwo.dimension.z ||
-       objOne.bottomLeft.z + objOne.dimension.z < objTwo.dimension.z) {
+   if (objOne.bottomLeft.x > objTwo.bottomLeft.x + objTwo.dimension.x  ||
+       objOne.bottomLeft.x + objOne.dimension.x  < objTwo.bottomLeft.x ||
+       objOne.bottomLeft.y > objTwo.bottomLeft.y + objTwo.dimension.y  ||
+       objOne.bottomLeft.y + objOne.dimension.y  < objTwo.bottomLeft.y ||
+       objOne.bottomLeft.z > objTwo.bottomLeft.z + objTwo.dimension.z  ||
+       objOne.bottomLeft.z + objOne.dimension.z  < objTwo.bottomLeft.z ) {
       return false;
    }
    

@@ -6,19 +6,22 @@
 //
 //
 
-#ifndef ____GameSceneObject__
-#define ____GameSceneObject__
+#ifndef ____GameSceneryObject__
+#define ____GameSceneryObject__
 
 #include <iostream>
 
-#include "GamePhysicalObject.h"
+#include "GameDrawableObject.h"
 
-class GameSceneryObject : public GamePhysicalObject {
+class GameSceneryObject : public GameDrawableObject {
 public:
-   GameSceneryObject(const char *objFile) : GamePhysicalObject(objFile) {};
+   GameSceneryObject(const char *objFile) : GameDrawableObject(objFile) {};
+   
+   virtual void onCollide(GameDrawableObject *other) {}
    
    virtual float getHeightAt(float x, float z) = 0;
+   virtual float getBottomAt(float x, float z) { return getPosition().y-getScale().y; }
 };
 
 
-#endif /* defined(____GameSceneObject__) */
+#endif /* defined(____GameSceneryObject__) */
