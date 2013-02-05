@@ -100,6 +100,8 @@ FontShader *fontShader;
 // ======= end fonts =======
 
 
+vec3 g_export_scale(1.0f);
+vec3 g_export_rot_vec3;
 
 
 // drawables
@@ -110,6 +112,7 @@ TFBParticles *parts2;
 */
 Mesh *cube;
 Mesh *cube2;
+
 
 // rocket manager
 // extern Rockets *rockets;
@@ -156,8 +159,8 @@ float g_time;
 bool g_paused = false;
 float g_fps;
 
-char xform_names[][20] = {"Object", "Light", "View", "Flame"};
-enum {XT_OBJ, XT_LIGHT, XT_VIEW, XT_FLAME};
+char xform_names[][20] = {"Object", "View", "Light", "Flame"};
+enum {XT_OBJ, XT_VIEW, XT_LIGHT, XT_FLAME};
 int g_xform = XT_VIEW;
 
 // transform type
@@ -173,12 +176,162 @@ glm::vec3 g_trans(0, 0, 0);
 glm::mat4 g_scaleRotMat(1.0f);
 glm::vec3 g_flamePos(0, -0.5, -2);
 
+glm::mat4 g_ground_xform(1.0f);
+
+
+#define NUM_MATERIALS 5
+
+// ===== Export Objects =====
+struct ExportObject {
+    string name;
+    mat4 xt;
+    int materialIndex;
+    vec3 t;
+    vec3 s;
+    vec3 r;
+};
+
 // list of meshes
-list<mat4> boxes_xt;
+// list<mat4> boxes_xt;
+
+list<ExportObject> g_export_objects;
+
+int g_current_material = 0;
+
+void toggleMaterials(int pos) {
+
+    if (pos == -1) {
+        if (g_current_material == 0) {
+            g_current_material = NUM_MATERIALS - 1;
+        }
+    }
+    g_current_material = (g_current_material + pos) % NUM_MATERIALS;
+}
+
+
+void printMat4(mat4 mat, FILE *file) {
+    for (int i=0; i<4; i++)
+    for (int j=0; j<4; j++) {
+        fprintf(file, "%f%s", mat[i][j], j==3? "\n" : " ");
+    };
+}
+
+void readMat4(mat4 &mat, FILE *file) {
+    float tmp;
+    for (int i=0; i<4; i++)
+    for (int j=0; j<4; j++) {
+        fscanf(file, "%f ", &tmp);
+        mat[i][j] = tmp;
+    };
+}
+
+void  fprint3f(vec3 v, FILE *file) {
+    fprintf(file, "%f %f %f\n", v.x, v.y, v.z);
+}
+
+void  read3f(vec3 &v, FILE *file) {
+    fscanf(file, "%f %f %f ", &v.x, &v.y, &v.z);
+}
+
+
+// == Export map
+// saves g_export_objects to a file.
+//
+bool exportMap(const char *filename) {
+
+    FILE * file = fopen(filename, "w+");
+
+    if (NULL == file) {
+        fprintf(stderr, "Couldn't open %s for exporting map\n", filename);
+        return false;
+    }
+
+    fprintf(file, "%d\n", (int) g_export_objects.size());
+
+    list<ExportObject>::iterator it;
+    for (it=g_export_objects.begin(); it != g_export_objects.end(); it++) {
+        fprintf(file, "%s %d\n", it->name.c_str(), it->materialIndex);
+        // printMat4(it->xt, file);
+        fprint3f(it->t, file);  
+        fprint3f(it->s, file);  
+        fprint3f(it->r, file); 
+    }
+
+    fclose(file);
+    
+    return true;
+}
+
+
+bool loadMap(const char* filename, list<ExportObject> &map) {
+
+    FILE * file = fopen(filename, "r");
+
+    if (NULL == file) {
+        fprintf(stderr, "Couldn't open %s for reading the map\n", filename);
+        return false;
+    }
+
+    int num_objs = 0;
+
+    fscanf(file, "%d ", &num_objs); 
+
+    list<ExportObject>::iterator it;
+
+    
+    ExportObject reconstructedObject;
+
+    char name[100];
+    int matnum;
+    mat4 rotmat;
+
+    while (num_objs--) {
+        fscanf(file, "%s %d\n", name, &matnum);
+
+        read3f(reconstructedObject.t, file);
+        printf("read t:\n");
+        fprint3f(reconstructedObject.t, stdout);
+
+        read3f(reconstructedObject.s, file);
+        printf("read s:\n");
+        fprint3f(reconstructedObject.s, stdout);
+
+        read3f(reconstructedObject.r, file);
+        printf("read r:\n");
+        fprint3f(reconstructedObject.r, stdout);
+
+        reconstructedObject.materialIndex = matnum;
+        reconstructedObject.name = name;
+
+        reconstructedObject.xt = scale(mat4(1.0), reconstructedObject.s) * 
+                                 translate(mat4(1.0), reconstructedObject.t);
+
+        map.push_back(reconstructedObject);
+    }
+
+    /* with mats
+    while (num_objs--) {
+        fscanf(file, "%s %d\n", name, &matnum);
+        readMat4(reconstructedObject.xt, file);
+        printf("read mat4\n");
+        printMat4(reconstructedObject.xt, stdout);
+        reconstructedObject.materialIndex = matnum;
+        reconstructedObject.name = name;
+        map.push_back(reconstructedObject);
+    }
+    */
+
+    fclose(file);
+    
+    return true;
+
+}
+
+
+// ===== end Export Objects =====
 
 // lighting stuff
 
-#define NUM_MATERIALS 4
 int g_flat = 1;
 int g_material = 1;
 LightInfo g_lightInfo;
@@ -196,14 +349,20 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
                    vec3(1, 1, 1),
                    10.0},
 
-                  {vec3(0.1, 0.1, 0.3),
+                  {vec3(0.5, 0.1, 0.1),
                    vec3(0.6, 0.1, 0.1),
                    vec3(0.1, 0.1, 0.7),
                    20.0},
+
                   {vec3(0, 1, 1),  // for drawing light
                    vec3(0.0),
                    vec3(0),
                    0.0},
+
+                  {vec3(0.1, 0.1, 0.3),
+                   vec3(0.6, 0.1, 0.1),
+                   vec3(0.1, 0.1, 0.7),
+                   20.0},
 };
 
 
@@ -231,6 +390,7 @@ vec3 g_lookAt;
 extern float g_time;
 extern mat4 g_proj;
 extern mat4 g_view;
+
 
 
 
@@ -275,7 +435,7 @@ void setViewFP() {
     camPos4f = Vinv * S * V * camPos4f;
     g_CamPos.x = camPos4f.x;
     // == No player y movement
-    // g_CamPos.y = camPos4f.y;
+    g_CamPos.y = camPos4f.y;
     g_CamPos.z = camPos4f.z;
 
     // printf("g_CamPos: %f, %f, %f\n", g_CamPos.x, g_CamPos.y, g_CamPos.z);
@@ -384,7 +544,7 @@ void initialize()
     // state
     g_action = DO_XLATE;
 
-    g_lightInfo.pos = glm::vec3(1, 0, 1);
+    g_lightInfo.pos = glm::vec3(1, 3, 1);
     g_lightInfo.color = glm::vec3(1.0f, 1.0f, 1.0f);
 
     g_materials[3].aColor = g_lightInfo.color;
@@ -411,7 +571,7 @@ void initGeom() {
     cube = new Mesh("cube.m");
 
     cube2 = new Mesh("cube.m");
-    
+
     /*
     particles = new TFBParticles();
     particles->init(vec3(g_flamePos));
@@ -423,7 +583,7 @@ void initGeom() {
     // rockets = new Rockets(phong);
     // planes = new Planes(phong, rockets);
 
-    bunnies = new Bunnies(phong);
+    // bunnies = new Bunnies(phong);
 
     LoadTexture("grass.bmp", bricksTex);
     // LoadTextureAlpha("smoke32.bmp", 1);
@@ -437,6 +597,16 @@ void initGeom() {
 
 
 void initGround() {
+
+    mat4 xl = translate(mat4(1.0f), vec3(0, -0.5, 0));
+    mat4 sc  = glm::scale(mat4(1.0f), vec3(g_groundSize, 0.1, g_groundSize));
+
+
+    cout << "mat4 xl: \n";
+
+    printMat4(xl, stdout);
+
+    g_ground_xform = xl * sc;
 
   // A x-z plane at y = g_groundY of dimension [-g_groundSize, g_groundSize]^2
     float GrndPos[] = { 
@@ -613,8 +783,10 @@ void drawTexts() {
     sprintf(fpsstr, "score: %d", g_score);
     render_text(fpsstr, -1 + 8 * sx, 1 - 30 * sy, sx, sy);
 
+    /*
     sprintf(fpsstr, "bunnies: %d", bunnies->get_num_bunnies());
     render_text(fpsstr, -1 + 8 * sx, 1 - 70 * sy, sx, sy);
+    */
 
     // TODO incoporate into other code
     // glutSwapBuffers();
@@ -661,22 +833,13 @@ void Draw(void)
     phong->setLight(g_lightInfo);
     phong->setShowNormals(g_showNormals);
 
-    // --- draw mesh
-
-    /*
-    setMaterial(g_material);
+    // --- draw floating mesh
+    setMaterial(g_current_material);
     setModel();
     drawMesh();
 
-    setModel(translate(mat4(1.0f), vec3(2, 0, 0)));
-    drawMesh();
-    */
 
-
-    phong->use();
-
-    // draw boxes
-
+    // draw world
     /*
     list<mat4>::iterator it;
     for (it=boxes_xt.begin(); it != boxes_xt.end(); it++) {
@@ -685,7 +848,18 @@ void Draw(void)
     }
     */
 
+    list<ExportObject>::iterator it;
+    for (it=g_export_objects.begin(); it != g_export_objects.end(); it++) {
+        setMaterial(it->materialIndex);
+        setModel(it->xt);
+        drawMesh();
+    }
+
     // --- end draw meshes
+    
+
+
+
 
     // --- draw light ---
     setMaterial(3);
@@ -694,19 +868,24 @@ void Draw(void)
     setModel(xl * sc);
     cube2->render();
     // -- end light
-    
 
-    // draw ground
 
+
+
+    /*
     // ground texture
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bricksTex);
-    phong->setTexture(bricksTex);
+    phong->setTexture(0);
+    */
+    
 
-    setModelI();
-    setMaterial(2);
-    drawGround();
+    // draw ground 
+    setMaterial(0);
+    setModel(g_ground_xform);
+    cube2->render();
+
 
     /*
     // --- render particles
@@ -738,9 +917,6 @@ void Draw(void)
     setMaterial(0);
     // rockets->render();
 
-
-    bunnies->render();
-
     // printOpenGLError();
 
     glUseProgram(0);
@@ -763,7 +939,7 @@ void updateScene(float t, float dt) {
     // rockets->update(t, dt);
     // planes->update(t, dt);
 
-    bunnies->update(t, dt, g_CamPos, &g_score);
+    // bunnies->update(t, dt, g_CamPos, &g_score);
 
 
     /*
@@ -916,6 +1092,7 @@ void transformObject(float x1, float y1) {
     case DO_SCALE:
         s = x1-x0 + y1-y0;
         g_scaleRotMat = glm::scale(g_scaleRotMat, glm::vec3(s + 1));
+        g_export_scale *= s+1;
         break;
     case DO_ROTATE:
         float r0 = sqrt(x0*x0 + y0*y0);
@@ -947,6 +1124,7 @@ void transformObject(float x1, float y1) {
         glm::vec4 worldRot = g_scaleRotMat * glm::vec4(rot.x,
                                                        rot.y,
                                                        rot.z, 0);
+        g_export_rot_vec3 = rot;
 
         if (angle > 0.05)
             g_scaleRotMat =  glm::rotate(glm::mat4(1), angle,
@@ -990,10 +1168,28 @@ void specialKeyboard(int key, int x, int y ) {
 
 void keyboard(unsigned char key, int x, int y ){
 
+    char fname[100];
+
+
+
     switch( key ) {
 
-    case 'b':
-        // rockets->boomAll();
+    case 'o':
+        printf("enter map name: \n");
+        scanf("%s", fname);
+        
+        printf("using '%s'.\n", fname);
+
+        exportMap(fname);
+        
+        break;
+
+    case 'j':
+        toggleMaterials(-1);
+        break;
+
+    case 'k':
+        toggleMaterials(1);
         break;
     
     case 'p':
@@ -1030,7 +1226,7 @@ void keyboard(unsigned char key, int x, int y ){
     // what to transform
     case 'c':
         g_xform++;
-        g_xform = (g_xform) % 4;
+        g_xform = (g_xform) % 2;
         
         if (g_xform == XT_VIEW) {
             glutSetCursor(GLUT_CURSOR_NONE);
@@ -1104,7 +1300,16 @@ void mouse(int button, int state, int x, int y) {
 
             if (g_xform == XT_OBJ) {
                 cout << "put" << endl;
-                boxes_xt.push_back(translate(mat4(1.0f), g_trans) * g_scaleRotMat);
+                // boxes_xt.push_back(translate(mat4(1.0f), g_trans) * g_scaleRotMat);
+                ExportObject o;
+                o.name = "world";
+                o.xt = translate(mat4(1.0f), g_trans) * g_scaleRotMat;
+                o.materialIndex = g_current_material;
+                o.t = vec3(g_trans);
+                o.s = vec3(g_export_scale);
+                o.r = vec3(g_export_rot_vec3);
+
+                g_export_objects.push_back(o);
             }
 
             // rockets->add(g_CamPos, g_lookAt);
@@ -1201,9 +1406,7 @@ int main(int argc, char *argv[]) {
 
     std::string fname;
     if (argc > 1) {
-        fname = argv[1];
-    } else {
-        fname = "cube.m";
+        loadMap(argv[1], g_export_objects);
     }
 
     initGeom();

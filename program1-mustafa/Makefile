@@ -1,6 +1,6 @@
 # Makefile by Mustafa Khafateh
 
-CFLAGS=-Wall
+CFLAGS=-Wall -g
 LDFLAGS=-DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -DCSL -lfreetype
 IFLAGS=-I../
 

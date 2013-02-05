@@ -53,6 +53,7 @@ using  glm::vec4;
 #include "DummyTextRenderer.h"
 #endif
 
+#include "loadMap.h"
 
 using namespace std;
 
@@ -355,7 +356,7 @@ void initObjects() {
    }
    
    GameKartObject *kart = new GameKartObject("cube");
-   kart->setPosition(vec3(0, 1, 5));
+   kart->setPosition(vec3(30, 1, 30));
    kart->setScale(vec3(1.0, 0.75, 1.0));
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
@@ -393,16 +394,15 @@ void initObjects() {
    kart_objects.push_back(kart);
    drawable_objects.push_back(kart);*/
 
-
 }
 
 
+void initMap(const char *filename) {
+
+   loadMap(filename, drawable_objects);
 
 
-void initMap() {
-   
 }
-
 
 
 void initialize()
@@ -523,6 +523,10 @@ int main(int argc, char** argv)
    glfwSetKeyCallback( keyboard_callback_key );
 
    initialize();
+
+   if (argc == 2) {
+      initMap(argv[1]);
+   }
 
    glfwSetTime(0.0);
 

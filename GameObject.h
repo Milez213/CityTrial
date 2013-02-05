@@ -14,6 +14,10 @@
 /* PhysX Object */
 #include "glm/glm.hpp"
 
+#include <string>
+
+using std::string;
+
 
 class GameObject {
 public:
@@ -32,21 +36,20 @@ public:
 	virtual glm::vec3 getScale() { return scl; };
 	virtual void setScale(glm::vec3 s) { scl = s; };
    
-	char *getName() { return name; };
+	char *getName() { return (char*) name.c_str(); };
     void setName(const char *new_name) {
-        // TODO - use c++ string or strncpy?
-        name = (char*) new_name;
+        name = string(new_name);
     }
 
 protected:
-   char *name;
-   
-	//glm::vec3 dir;
-	//float spd;
-   glm::vec3 vel;
-	glm::vec3 pos;
-	glm::vec3 rot;
-	glm::vec3 scl;	
+    string name;
+       
+    //glm::vec3 dir;
+    //float spd;
+    glm::vec3 vel;
+    glm::vec3 pos;
+    glm::vec3 rot;
+    glm::vec3 scl;	
 };
 
 #endif
