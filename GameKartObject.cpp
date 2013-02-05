@@ -254,11 +254,11 @@ void GameKartObject::update(float dt)
    short speedDirectionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
    
    if (joystickState[0] < 0.0) {
-      setDirection(oldDirection-speedDirectionMult*properties.getTurnSpeed());
+      setDirection(oldDirection-dt*speedDirectionMult*properties.getTurnSpeed());
       changeTireTurnAngle(-25.0); 
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      setDirection(oldDirection+speedDirectionMult*properties.getTurnSpeed());
+      setDirection(oldDirection+dt*speedDirectionMult*properties.getTurnSpeed());
       changeTireTurnAngle(25.0);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
