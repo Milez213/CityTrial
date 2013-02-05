@@ -369,6 +369,13 @@ void initObjects() {
    ramp->setScale(vec3(3.0, 2.0, 3.0));
    drawable_objects.push_back(ramp);
    
+
+   GamePhysicalObject *building = new GamePhysicalObject("cube");
+   building->setName("building");
+   building->setPosition(vec3(0, 2, 0));
+   building->setScale(vec3(1.0, 1.0, 1.0));
+   drawable_objects.push_back(building);
+   
    /*GameKartObject *kart = new GameKartObject("Kart");
    if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
       printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
