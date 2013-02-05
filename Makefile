@@ -23,17 +23,15 @@ ifeq ($(UNAME), Linux)
 	endif
 
     # uncomment to not compile with sound, and not use any real sound
-    # CFLAGS += -DUSE_DUMMY_SOUND
+    CFLAGS += -DUSE_DUMMY_SOUND
+# LIB += -lSDL_mixer
+# IFLAGS += -I/usr/include/SDL
 
-    # uncomment to compile with sdl_mixer for sound
-    LIB += -lSDL_mixer
 
-    IFLAGS += -I/usr/include/SDL
-
-    # uncomment to use TTF rendering
-    CFLAGS += -DMAIN_USE_TTF
-    LIB += -lfreetype
-    IFLAGS += -I/usr/include/freetype2
+# uncomment to use TTF rendering
+CFLAGS += -DMAIN_USE_TTF
+LIB += -lfreetype
+IFLAGS += -I/usr/include/freetype2
 
 
 LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)

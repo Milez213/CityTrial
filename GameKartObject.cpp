@@ -8,6 +8,7 @@
 using namespace std;
 
 extern SoundManager *g_sound_manager;
+extern int g_num_squashes;
 
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
@@ -36,6 +37,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    */
 
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
+
+   // collide_sound = g_sound_manager->getSample("sounds/ding.ogg");
 }
 
 void GameKartObject::onCollide(GameDrawableObject *other)
@@ -68,8 +71,10 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       }
    }
    else if (strcmp(other->getName(), "thingy") == 0) {
+       // Collided with cuby thing
        ding_sound->play();
        other->setName("squashed_thingy");
+       g_num_squashes++;
    }
    else {
       GamePhysicalObject::onCollide(other);

@@ -119,6 +119,11 @@ mat4 g_model;
 GameCamera *g_camera;
 
 
+// === game info ===
+
+int g_num_squashes = 0;
+
+
 // *** lights ***
 
 LightInfo g_lightInfo;
@@ -286,6 +291,10 @@ void draw()
    char text[100];
    sprintf(text, "speed: %.0f", kart_objects[0]->getSpeed());   
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_win_width, 2.0/g_win_height);
+
+   // draw squashes
+   sprintf(text, "squashes: %d", g_num_squashes);
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_win_width, 2.0/g_win_height);
    
 
    glfwSwapBuffers();
