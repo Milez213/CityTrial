@@ -150,14 +150,14 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.translate(glm::vec3(-2.2,0.0,-2.2));
    modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
-   modelViewMatrix.scale(5.0,2.0,6.0);
+   modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[0]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-2.2,0.0,2.2));
  modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
-   modelViewMatrix.scale(5.0,2.0,6.0);
+   modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[1]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
@@ -165,7 +165,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
  modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));   
-   modelViewMatrix.scale(5.0,2.0,6.0);
+   modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
@@ -174,7 +174,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
 
-   modelViewMatrix.scale(5.0,2.0,6.0);
+   modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    if (properties.hasWings())

@@ -25,7 +25,7 @@ GameDrawableObject::GameDrawableObject(const char *objFile)
    
    //pos = vec3(0.0, 0.0, 5.0);
    rot = vec3(0.0, 0.0, 0.0);
-   setScale(vec3(1.0, 3.0, 1.0));
+   setScale(vec3(1.0, 1.0, 1.0));
    
    /*glGenVertexArrays(1, &vertexArray);
    glBindVertexArray(vertexArray);
