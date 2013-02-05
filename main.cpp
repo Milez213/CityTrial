@@ -121,6 +121,11 @@ mat4 g_model;
 GameCamera *g_camera;
 
 
+// === game info ===
+
+int g_num_squashes = 0;
+
+
 // *** lights ***
 
 LightInfo g_lightInfo;
@@ -288,6 +293,10 @@ void draw()
    char text[100];
    sprintf(text, "speed: %.0f", kart_objects[0]->getSpeed());   
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_win_width, 2.0/g_win_height);
+
+   // draw squashes
+   sprintf(text, "squashes: %d", g_num_squashes);
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_win_width, 2.0/g_win_height);
    
 
    glfwSwapBuffers();
@@ -367,6 +376,13 @@ void initObjects() {
    GameBuilding *building = new GameBuilding();
    building->setPosition(vec3(-6, 2, -3));
    building->setScale(vec3(3.0, 2.0, 3.0));
+   drawable_objects.push_back(building);
+
+   
+   GamePhysicalObject *building = new GamePhysicalObject("cube");
+   building->setName("building");
+   building->setPosition(vec3(0, 2, 0));
+   building->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(building);
    
    /*GameKartObject *kart = new GameKartObject("Kart");

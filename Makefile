@@ -15,26 +15,26 @@ UNAME := $(shell uname)
 # For linux. Uses local glfw for now
 ifeq ($(UNAME), Linux)
 	LIB=./glfw/lib/x11/libglfw.a 
+	LIB +=-L./lib
 
 	# -lXrandr for csl
-	ifeq ($(shell uname -n), pack-nasa)
-		XRANDR=
-	else
+	ifeq ($(findstring 235, $(shell uname -n)), 235)
+		IFLAGS += -I./lib/SDL_mixer-1.2.12/
 		XRANDR=-lXrandr
+	else
+		XRANDR=
 	endif
 
     # uncomment to not compile with sound, and not use any real sound
-    # CFLAGS += -DUSE_DUMMY_SOUND
+	# CFLAGS += -DUSE_DUMMY_SOUND
+	LIB += -lSDL_mixer
+	IFLAGS += -I/usr/include/SDL
 
-    # uncomment to compile with sdl_mixer for sound
-    LIB += -lSDL_mixer
 
-    IFLAGS += -I/usr/include/SDL
-
-    # uncomment to use TTF rendering
-    CFLAGS += -DMAIN_USE_TTF
-    LIB += -lfreetype
-    IFLAGS += -I/usr/include/freetype2
+# uncomment to use TTF rendering
+CFLAGS += -DMAIN_USE_TTF
+LIB += -lfreetype
+IFLAGS += -I/usr/include/freetype2
 
 
 LDFLAGS= $(LIB) -lXxf86vm -lXext  -lrt -lX11 -lGLU -lGL -pthread -lm $(XRANDR)

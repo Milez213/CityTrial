@@ -67,6 +67,7 @@ private:
    char buttonState[32];
 
    GameSound *ding_sound;
+   GameSound *collide_sound;
 };
 
 #endif

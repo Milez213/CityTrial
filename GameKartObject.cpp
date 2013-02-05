@@ -8,11 +8,12 @@
 using namespace std;
 
 extern SoundManager *g_sound_manager;
+extern int g_num_squashes;
 
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject("cube");
+      GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
       GameDrawableObject *upgrade = new GameDrawableObject("cube");
@@ -36,6 +37,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    */
 
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
+
+   // collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
 }
 
 void GameKartObject::onCollide(GameDrawableObject *other)
@@ -72,9 +75,12 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       }
    }
    else if (strcmp(other->getName(), "thingy") == 0) {
+       // Collided with cuby thing
        ding_sound->play();
+
       other->setName("squashed_thingy");
       other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
+       g_num_squashes++;
    }
    else {
       GamePhysicalObject::onCollide(other);
@@ -141,30 +147,34 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    //modelViewMatrix.popMatrix();
    
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(-2.0,-1.0,-2.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
-   modelViewMatrix.scale(1.0,0.5,1.0);
+   modelViewMatrix.translate(glm::vec3(-2.2,0.0,-2.2));
+   modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
+   modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
+   modelViewMatrix.scale(5.0,2.0,6.0);
    wheels[0]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(-2.0,-1.0,2.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
-   modelViewMatrix.scale(1.0,0.5,1.0);
+   modelViewMatrix.translate(glm::vec3(-2.2,0.0,2.2));
+ modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
+   modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
+   modelViewMatrix.scale(5.0,2.0,6.0);
    wheels[1]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(2.0,-1.0,-2.0));
+   modelViewMatrix.translate(glm::vec3(2.2,0.0,-2.2));
+ modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));   
-   modelViewMatrix.scale(1.0,0.5,1.0);
+   modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));   
+   modelViewMatrix.scale(5.0,2.0,6.0);
    wheels[2]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(2.0,-1.0,2.0));
+   modelViewMatrix.translate(glm::vec3(2.2,0.0,2.2));
+ modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
-   modelViewMatrix.rotate(-tireAngle,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
 
-   modelViewMatrix.scale(1.0,0.5,1.0);
+   modelViewMatrix.scale(5.0,2.0,6.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    if (properties.hasWings())
