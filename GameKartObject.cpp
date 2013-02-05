@@ -11,8 +11,8 @@ extern SoundManager *g_sound_manager;
 extern int g_num_squashes;
 
 
-const float GameKartObject::maxTireTurnAngle = 25.0;
-const float GameKartObject::tireTurnAngleTime = 0.5;
+//const float GameKartObject::maxTireTurnAngle = 45.0;
+const float GameKartObject::tireTurnAngleTime = 1.0/4;
 
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
@@ -49,17 +49,23 @@ void GameKartObject::onCollide(GameDrawableObject *other)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (strcmp(other->getName(), "upgrade") == 0) {
-      properties.toggleWings();
-      GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
-      
-      // assert upgrade != NULL
-
-      upgrade->scheduleForRemoval();
-      
-      /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
-      upgrade->setPosition(vec3(0.0, 0.0, 0.0));
-      upgrades.push_back(upgrade);*/
+   if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
+      if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
+         properties.toggleWings();
+         GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
+         
+         // assert upgrade != NULL
+         
+         upgrade->scheduleForRemoval();
+         
+         /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
+          upgrade->setPosition(vec3(0.0, 0.0, 0.0));
+          upgrades.push_back(upgrade);*/
+         
+      }
+      else {
+         
+      }
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
@@ -211,23 +217,30 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
 void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
 {
-   if (targetAngle < 0.0)
+   if (tireTurnAngle < targetAngle) {
+      tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+   }
+   else if (tireTurnAngle > targetAngle) {
+      tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
+   }
+   
+   /*if (targetAngle < 0.0)
    {
       if(tireTurnAngle > targetAngle)
-       tireTurnAngle -= dt * maxTireTurnAngle/tireTurnAngleTime;
+       tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
    }
    else if(targetAngle > 0.0)
    {
       if(tireTurnAngle < targetAngle)
-         tireTurnAngle += dt * maxTireTurnAngle/tireTurnAngleTime;
+         tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
    }
    else
    {
       if(tireTurnAngle > 0.0)
-         tireTurnAngle -= dt * maxTireTurnAngle/tireTurnAngleTime;
+         tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
       else if(tireTurnAngle<0.0)
-         tireTurnAngle += dt * maxTireTurnAngle/tireTurnAngleTime;
-   }
+         tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+   }*/
 
 }
 
@@ -256,20 +269,21 @@ void GameKartObject::update(float dt)
    float oldDirection = getDirection();
    
    //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
+   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/30);
    
    if (joystickState[0] < 0.0) {
-      changeTireTurnAngle(dt, -maxTireTurnAngle);
+      changeTireTurnAngle(dt, -speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      changeTireTurnAngle(dt, maxTireTurnAngle);
+      changeTireTurnAngle(dt, speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
       changeTireTurnAngle(dt, 0.0);
    }
 
    
-   float directionMult = dt*tireTurnAngle/maxTireTurnAngle * getSpeed()/properties.getTopSpeed();
-   setDirection(oldDirection+directionMult*properties.getTurnSpeed());
+   float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
+   setDirection(oldDirection+directionMult);
  
    setRotation(vec3(0, getDirection(), 0 ));
    

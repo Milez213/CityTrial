@@ -20,8 +20,8 @@ void GamePhysicalObject::update(float dt)
 {
    cout << "physics update\n";
    
-   fallSpeed += gravity*dt;
-   fallSpeed -= speed*getLift()*dt;
+   fallSpeed += 2*gravity*dt;
+   fallSpeed -= 2*speed*getLift()*dt;
    
    if (getPosition().y < -10) {
       setPosition(vec3(0, 5, 0));

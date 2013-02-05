@@ -59,7 +59,7 @@ private:
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    
-   static const float maxTireTurnAngle;
+   //static const float maxTireTurnAngle;
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
    
