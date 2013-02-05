@@ -19,6 +19,7 @@ public:
    //parts
    bool hasWings() {return wings;}
    void toggleWings() {wings = !wings;}
+   void setWings() {wings = true;};
    
    //stats
    float getAcceleration() {return acceleration;}

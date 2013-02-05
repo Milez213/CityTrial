@@ -51,7 +51,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
-         properties.toggleWings();
+         properties.setWings();
          GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
          
          // assert upgrade != NULL

@@ -87,7 +87,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
 
 void GameDrawableObject::onCollide(GameDrawableObject *other)
 {
-   cout << "outch!" << other->getPosition().x << "\n";
+   // cout << "outch!" << other->getPosition().x << "\n";
 }
 
 
