@@ -1,4 +1,5 @@
 #include "GameKartObject.h"
+#include "GameUpgradeObject.h"
 #include "GameRamp.h"
 
 #include <cmath>
@@ -11,7 +12,7 @@ extern SoundManager *g_sound_manager;
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
     
    for (int i = 0; i < 4; i++) {
-      GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
+      GameDrawableObject *tire = new GameDrawableObject("cube");
       wheels.push_back(tire);
    }
       GameDrawableObject *upgrade = new GameDrawableObject("cube");
@@ -41,8 +42,14 @@ void GameKartObject::onCollide(GameDrawableObject *other)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
-   if (strcmp(other->getName(), "upgrade" ) == 0) {
+   if (strcmp(other->getName(), "upgrade") == 0) {
       properties.toggleWings();
+      GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
+      
+      // assert upgrade != NULL
+
+      upgrade->scheduleForRemoval();
+      
       /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
       upgrade->setPosition(vec3(0.0, 0.0, 0.0));
       upgrades.push_back(upgrade);*/

@@ -94,9 +94,8 @@ SoundManager *g_sound_manager;
 TextRenderer *g_ttf_text_renderer;
 
 
-#ifdef __unix__
 GameSound *g_music;
-#endif
+
 
 // test one object for now
 PhongShader *meshShader;
@@ -351,8 +350,8 @@ void initObjects() {
    
    
    wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(0, 3, -10));
-   wings->setScale(vec3(1.0, 2.0, 1.0));
+   wings->setPosition(vec3(5, 1, 2));
+   wings->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(wings);
    
    
@@ -408,8 +407,8 @@ void initialize()
    g_music->play();
 #else
    g_sound_manager = new SDLSoundManager();
-   // g_music = g_sound_manager->getMusic("music/raptor.ogg");   
-   // g_music->play();
+   g_music = g_sound_manager->getMusic("music/raptor.ogg");
+   g_music->play();
 #endif
 
    // initialize with default font
