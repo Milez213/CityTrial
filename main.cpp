@@ -139,10 +139,10 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
                    vec3(1, 1, 1),       // spec
                    20.0},               // shine
 
-                  {vec3(0.0, 0.0, 0.0),
+                  {vec3(0.1, 0.1, 0.1),
                    vec3(H2_3f(0xfff852)), //Hex color to rgb
                    vec3(1, 1, 1),
-                   10.0},
+                   5.0},
 
                   {vec3(0.1, 0.1, 0.3),
                    vec3(0.6, 0.1, 0.1),
@@ -340,7 +340,7 @@ void initObjects() {
    
    meshShader = new PhongShader();
    // Light 
-   g_lightInfo.pos = vec3(1, 5, 1);
+   g_lightInfo.pos = vec3(1, 15, 1);
    g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
 
    meshShader->setLight(g_lightInfo);
