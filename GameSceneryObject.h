@@ -17,7 +17,7 @@ class GameSceneryObject : public GameDrawableObject {
 public:
    GameSceneryObject(const char *objFile) : GameDrawableObject(objFile) {};
    
-   virtual void onCollide(GameDrawableObject *other) {}
+   virtual void onCollide(GameDrawableObject *other, float dt) {}
    
    virtual float getHeightAt(float x, float z) = 0;
    virtual float getBottomAt(float x, float z) { return getPosition().y-getScale().y; }

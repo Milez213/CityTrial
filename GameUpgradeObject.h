@@ -22,7 +22,7 @@ public:
    
    virtual void update(double time, double dt);
    
-   virtual void onCollide(GameDrawableObject *other) {}
+   virtual void onCollide(GameDrawableObject *other, float dt) {}
    
    Type upgradeType() { return type; };
 

@@ -33,7 +33,7 @@ public:
    virtual glm::vec3 getVelocity();
    
    virtual void update(float dt);
-   virtual void onCollide(GameDrawableObject *other);
+   virtual void onCollide(GameDrawableObject *other, float dt);
    
    GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile), direction(0), speed(0), fallSpeed(0) {} //, lift(0) {}
 };

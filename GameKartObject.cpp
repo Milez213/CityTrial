@@ -45,7 +45,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    // collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
 }
 
-void GameKartObject::onCollide(GameDrawableObject *other)
+void GameKartObject::onCollide(GameDrawableObject *other, float dt)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
@@ -93,7 +93,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
        g_num_squashes++;
    }
    else {
-      GamePhysicalObject::onCollide(other);
+      GamePhysicalObject::onCollide(other, dt);
    }
    
    //return true;
