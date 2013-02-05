@@ -233,7 +233,7 @@ void update(double dt)
    // test for collisions
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
-         if (g_model_manager->sphereOnSphere(drawable_objects[i]->getBoundingInfo(),
+         if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
             drawable_objects[i]->onCollide(drawable_objects[j]);
             drawable_objects[j]->onCollide(drawable_objects[i]);
@@ -341,7 +341,7 @@ void initObjects() {
 
    // Bunnie
    GameTerrain *floor = new GameTerrain();
-   floor->setScale(vec3(50.0, 1.0, 50.0));
+   floor->setScale(vec3(100.0, 0.9, 100.0));
    floor->setPosition(vec3(0, 0, 0));
    drawable_objects.push_back(floor);
    
@@ -369,14 +369,14 @@ void initObjects() {
    
    
    GameRamp *ramp = new GameRamp();
-   ramp->setPosition(vec3(-6, 2, -9));
+   ramp->setPosition(vec3(-25, 2, -25));
    ramp->setScale(vec3(3.0, 2.0, 3.0));
    drawable_objects.push_back(ramp);
    
    
    GameBuilding *buildin = new GameBuilding();
-   buildin->setPosition(vec3(-6, 2, -3));
-   buildin->setScale(vec3(3.0, 2.0, 3.0));
+   buildin->setPosition(vec3(-25, 2, 0));
+   buildin->setScale(vec3(10.0, 2.0, 10.0));
    drawable_objects.push_back(buildin);
 
    

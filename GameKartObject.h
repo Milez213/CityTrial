@@ -36,7 +36,6 @@ public:
    virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }
    
-   void changeTireTurnAngle(float targetAngle);
 
    bool isUsingController() {
        return usingController;
@@ -60,6 +59,8 @@ private:
    vector<GameDrawableObject *> wheels;
    vector <GameDrawableObject *> upgrades;
    
+   static const float maxTireTurnAngle;
+   static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
    
    bool usingController,wings;
@@ -68,6 +69,8 @@ private:
 
    GameSound *ding_sound;
    GameSound *collide_sound;
+   
+   void changeTireTurnAngle(float dt, float targetAngle);
 };
 
 #endif

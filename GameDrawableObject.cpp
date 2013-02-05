@@ -90,6 +90,30 @@ void GameDrawableObject::onCollide(GameDrawableObject *other)
    cout << "outch!" << other->getPosition().x << "\n";
 }
 
+
+void GameDrawableObject::setScale(vec3 s)
+{
+   GameObject::setScale(s);
+   updateBoundingInfo();
+}
+void GameDrawableObject::setPosition(vec3 p)
+{
+   GameObject::setPosition(p);
+   updateBoundingInfo();
+}
+
+void GameDrawableObject::updateBoundingInfo()
+{
+   
+   vec3 s = getScale();
+   vec3 p = getPosition();
+   
+   boundingInfo.bottomLeft = p-s;
+   boundingInfo.dimension = 2.0f * s;
+   boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);//glm::length(s);//
+   boundingInfo.center = p;
+}
+
 bound GameDrawableObject::getBoundingInfo()
 {
    /*bound chgBound;
@@ -112,6 +136,7 @@ bound GameDrawableObject::getBoundingInfo()
    }
    
    return chgBound;*/
-   boundingInfo.center = this->getPosition();
+   
+   
    return boundingInfo;
 }
