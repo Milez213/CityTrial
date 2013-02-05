@@ -38,7 +38,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
 
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 
-   // collide_sound = g_sound_manager->getSample("sounds/ding.ogg");
+   collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
 }
 
 void GameKartObject::onCollide(GameDrawableObject *other)
@@ -77,6 +77,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
        g_num_squashes++;
    }
    else {
+      collide_sound->play();
       GamePhysicalObject::onCollide(other);
    }
    
