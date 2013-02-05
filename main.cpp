@@ -304,7 +304,7 @@ void draw(float dt)
    g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_win_width, 2.0/g_win_height);
    
    // draw height
-   sprintf(text, "height: %.1f", kart_objects[0]->getPosition().y);
+   sprintf(text, "height: %.1f", kart_objects[0]->getPosition().y-kart_objects[0]->getRideHeight());
    g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_win_width, 2.0/g_win_height);
    
 

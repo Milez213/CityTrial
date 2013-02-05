@@ -71,6 +71,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
       
       vec3 oldPos = getPosition();
+      float oldSpeed = getSpeed();
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
@@ -78,6 +79,8 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          if (oldPos.y - getRideHeight() + 1.5 > top) {
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             fallSpeed = 0;
+            //fallSpeed = (oldPos.y-getRideHeight() - top)/dt;
+            //setSpeed(oldSpeed + (oldSpeed > 0 ? fallSpeed : -fallSpeed));
          }
          else  {
             setSpeed(0);
