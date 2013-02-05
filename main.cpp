@@ -351,8 +351,8 @@ void initObjects() {
    
    
    wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(0, 3, -10));
-   wings->setScale(vec3(1.0, 2.0, 1.0));
+   wings->setPosition(vec3(5, 1, 2));
+   wings->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(wings);
    
    
