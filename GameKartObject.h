@@ -31,7 +31,7 @@ public:
    virtual void update(float dt);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
-   virtual void onCollide(GameDrawableObject *collide, float dt);
+   virtual void onCollide(GameDrawableObject *collide);
    
    virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }

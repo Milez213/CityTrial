@@ -235,8 +235,8 @@ void update(double dt)
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
          if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
-            drawable_objects[i]->onCollide(drawable_objects[j], dt);
-            drawable_objects[j]->onCollide(drawable_objects[i], dt);
+            drawable_objects[i]->onCollide(drawable_objects[j]);
+            drawable_objects[j]->onCollide(drawable_objects[i]);
          }
       }
    }

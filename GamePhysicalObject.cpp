@@ -33,7 +33,7 @@ void GamePhysicalObject::update(float dt)
    
    GameDrawableObject::update(dt); //updates position
 }
-void GamePhysicalObject::onCollide(GameDrawableObject *other, float dt)
+void GamePhysicalObject::onCollide(GameDrawableObject *other)
 {
    cout << "collision!\n";
    if (dynamic_cast<GamePhysicalObject *>(other) != NULL) setSpeed(0);
