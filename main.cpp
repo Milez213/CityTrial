@@ -358,6 +358,7 @@ void initObjects() {
    GameKartObject *kart = new GameKartObject("cube");
    kart->setPosition(vec3(30, 1, 30));
    kart->setScale(vec3(1.0, 0.75, 1.0));
+   kart->setDirection(180);
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
    
