@@ -219,9 +219,13 @@ void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
 {
    if (tireTurnAngle < targetAngle) {
       tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      if (tireTurnAngle > targetAngle)
+         tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
       tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      if (tireTurnAngle < targetAngle)
+         tireTurnAngle = targetAngle;
    }
    
    /*if (targetAngle < 0.0)
@@ -269,7 +273,7 @@ void GameKartObject::update(float dt)
    float oldDirection = getDirection();
    
    //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
-   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/30);
+   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/properties.getTurnSpeed());
    
    if (joystickState[0] < 0.0) {
       changeTireTurnAngle(dt, -speedDampedTurnAngle);
