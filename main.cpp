@@ -131,11 +131,16 @@ int g_num_squashes = 0;
 
 LightInfo g_lightInfo;
 
-#define NUM_MATERIALS 4
+#define NUM_MATERIALS 5
 
 PhongMaterial g_materials[NUM_MATERIALS] = {
                   {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(0.7, 0.4, 0.4), // diff
+                   vec3(H2_3f(0x9d5900)), // diff
+                   vec3(1, 0, 0),       // spec
+                   20.0},               // shine
+
+                  {vec3(0.2, 0.2, 0.2), // amb
+                   vec3(H2_3f(0xe4000c)), // diff
                    vec3(1, 1, 1),       // spec
                    20.0},               // shine
 
@@ -144,14 +149,14 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
                    vec3(1, 1, 1),
                    5.0},
 
-                  {vec3(0.1, 0.1, 0.3),
-                   vec3(0.6, 0.1, 0.1),
+                  {vec3(0.3, 0.3, 0.3),
+                   vec3(0, 0, 1),
                    vec3(0.1, 0.1, 0.7),
+                   30.0},
+                  {vec3(.1, .8, .1),  // for drawing light
+                   vec3(0.1, 0.9, .1),
+                   vec3(3),
                    20.0},
-                  {vec3(0, 1, 1),  // for drawing light
-                   vec3(0.0),
-                   vec3(0),
-                   0.0},
 };
 
 /* helper function to set up material for shading */
@@ -166,6 +171,12 @@ void setPhongMaterial(int i) {
 // *** end lights ***
 
 // === end Globals ==============================
+
+
+// returns in range -1, 1 (not sure if incusive)
+float randFloat() {
+       return ((float) rand() / RAND_MAX);
+}
 
 
 /* projection matrix */
@@ -274,13 +285,10 @@ void draw(float dt)
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 
-   // choose from materials
-   
-      setPhongMaterial(0);
-
+   // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      setPhongMaterial(i%NUM_MATERIALS);
       drawable_objects[i]->draw(meshShader, g_model_trans);
-      setPhongMaterial(1);
    }
 
 
@@ -353,14 +361,13 @@ void initObjects() {
    floor->setPosition(vec3(0, 0, 0));
    drawable_objects.push_back(floor);
    
-   for (int i = -10; i < 11; i++) {
-      for (int j = 5; j < 11; j++) {
-         GameDrawableObject *object = new GameDrawableObject("cube");
-         object->setName("thingy");
-         object->setPosition(vec3(2*i, 1.0, 2*j));
-         object->setScale(vec3(0.1, 0.5, 0.1));
-         drawable_objects.push_back(object);
-      }
+   for (int i = 0; i < 20; i++) {
+      GameDrawableObject *object = new GameDrawableObject("cube");
+      object->setName("thingy");
+      object->setPosition(vec3(i + 20*randFloat(), 1.0, 2*i +
+               30*randFloat()));
+      object->setScale(vec3(0.1, 0.5, 0.1));
+      drawable_objects.push_back(object);
    }
    
    GameKartObject *kart = new GameKartObject("cube");
