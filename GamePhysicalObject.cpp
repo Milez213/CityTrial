@@ -18,8 +18,6 @@ glm::vec3 GamePhysicalObject::getVelocity()
 
 void GamePhysicalObject::update(float dt)
 {
-   cout << "physics update\n";
-   
    fallSpeed += 2*gravity*dt;
    fallSpeed -= 2*speed*getLift()*dt;
    

@@ -36,12 +36,17 @@ public:
    virtual void setScale(vec3 s);
    virtual void setPosition(vec3 p);
    
+   void scheduleForRemoval() { toRemove = true; };
+   bool isScheduledForRemoval() { return toRemove; };
+   
    void updateBoundingInfo();
    bound getBoundingInfo();
     
 protected:
    bufferStore meshStorage;
    bound boundingInfo;
+   
+   bool toRemove;
    
    //bound boundInfo;
 };

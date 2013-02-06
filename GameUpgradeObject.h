@@ -22,16 +22,11 @@ public:
    
    virtual void update(double time, double dt);
    
-   virtual void onCollide(GameDrawableObject *other) {}
+   virtual void onCollide(GameDrawableObject *other);
    
    Type upgradeType() { return type; };
-
-   void scheduleForRemoval() { toRemove = true; };
-
-   bool isScheduledForRemoval() { return toRemove; };
    
 private:
-   bool toRemove;
    Type type;
 };
 #endif /* defined(____GameUpgradeObject__) */

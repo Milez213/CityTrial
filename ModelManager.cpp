@@ -108,10 +108,10 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
       printf("      Mesh %d has %d index\n", i, (int)meshes->indexBuffer[i]);
    }
    
-   boundingInfo->bottomLeft = vec3(-1.0, -1.0, -1.0);
-   boundingInfo->dimension = vec3(2.0, 2.0, 2.0);
-   boundingInfo->center = vec3(0.0, 0.0, 0.0);
-   boundingInfo->radius = 1.0;
+   boundingInfo->bottomLeft = boundStorage[index].bottomLeft;
+   boundingInfo->dimension = boundStorage[index].dimension;
+   boundingInfo->center = boundStorage[index].center;
+   boundingInfo->radius = boundStorage[index].radius;
 
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Given Pointer Location: %d\n", (int)*vertexBuffer);
@@ -125,12 +125,33 @@ void ModelManager::loadObject(const char *filename)
    if (file == "ramp") {
       printf("Ramp\n");
       storage.push_back(rampMesh());
+      
+      bound newBound;
+      newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
+      newBound.dimension = vec3(2.0, 2.0, 2.0);
+      newBound.center = vec3(0.0, 0.0, 0.0);
+      newBound.radius = 1.0;
+      boundStorage.push_back(newBound);
    } else if (file == "floor") {
       printf("Floor\n");
       storage.push_back(floorMesh());
+      
+      bound newBound;
+      newBound.bottomLeft = vec3(-1.0, 0.0, -1.0);
+      newBound.dimension = vec3(2.0, 0.01, 2.0);
+      newBound.center = vec3(0.0, 0.0, 0.0);
+      newBound.radius = 1.0;
+      boundStorage.push_back(newBound);
    } else if (file == "cube") {
       printf("Cube\n");
       storage.push_back(cubeMesh());
+      
+      bound newBound;
+      newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
+      newBound.dimension = vec3(2.0, 2.0, 2.0);
+      newBound.center = vec3(0.0, 0.0, 0.0);
+      newBound.radius = 1.0;
+      boundStorage.push_back(newBound);
    } else {
    
       vector<glm::vec3> vertices;
@@ -265,7 +286,10 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    vector<vec3> normals;
    bound meshBound;
    float verts[v.size()*3];
-   printf("Loading Verticies:\n");
+   
+   vec3 topRight = vec3(-100.0, -100.0, -100.0);
+   
+   //printf("Loading Verticies:\n");
    for (int i = 0; i < (int)v.size(); i++) {
       verts[i * 3] = v.at(i).x;
       verts[i * 3 + 1] = v.at(i).y;
@@ -275,24 +299,34 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       meshBound.center.y += verts[i*3+1];
       meshBound.center.z += verts[i*3+2];
       
-      /*if (verts[i*3] > boundingBoxMax.x) {
-         boundingBoxMax.x = verts[i*3];
-      } else if (verts[i*3] < boundingBoxMin.x) {
-			boundingBoxMin.x = verts[i*3];
+      if (verts[i*3] < meshBound.bottomLeft.x) {
+         meshBound.bottomLeft.x = verts[i*3];
+      } else if (verts[i*3] > topRight.x) {
+			topRight.x = verts[i*3];
       }
-      if (verts[i*3+1] > boundingBoxMax.y) {
-         boundingBoxMax.y = verts[i*3+1];
-      } else if (verts[i*3+1] < boundingBoxMin.y) {
-			boundingBoxMin.y = verts[i*3+1];
+      if (verts[i*3+1] < meshBound.bottomLeft.y) {
+         meshBound.bottomLeft.y = verts[i*3+1];
+      } else if (verts[i*3+1] > topRight.y) {
+			topRight.y = verts[i*3+1];
       }
-      if (verts[i*3+2] > boundingBoxMax.z) {
-         boundingBoxMax.z = verts[i*3+2];
-      } else if (verts[i*3+2] < boundingBoxMin.z) {
-			boundingBoxMin.z = verts[i*3+2];
-      }*/
+      if (verts[i*3+2] < meshBound.bottomLeft.z) {
+         meshBound.bottomLeft.z = verts[i*3+2];
+      } else if (verts[i*3+2] > topRight.z) {
+			topRight.z = verts[i*3+2];
+      }
       
-       printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
+      //printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
    }
+   
+   meshBound.dimension.x = topRight.x - meshBound.bottomLeft.x;
+   meshBound.dimension.y = topRight.y - meshBound.bottomLeft.y;
+   meshBound.dimension.z = topRight.z - meshBound.bottomLeft.z;
+   
+   meshBound.center.x = meshBound.center.x / v.size();
+   meshBound.center.y = meshBound.center.y / v.size();
+   meshBound.center.z = meshBound.center.z / v.size();
+   
+   meshBound.radius = length(meshBound.center - meshBound.bottomLeft);
    
    glGenBuffers(1, &store->vertexBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
@@ -307,7 +341,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    for (int i = 0; i < (int)f.size(); i++) {
       faces = new GLushort[f[i].size()];
       store->indexBufferLength[i] = f[i].size();
-      printf("   Mesh %d: %d faces\n", i, store->indexBufferLength[i]/3);
+      //printf("   Mesh %d: %d faces\n", i, store->indexBufferLength[i]/3);
       for (int j = 0; j < (int)f[i].size(); j+=3) {
          GLushort ia = f[i][j];
          GLushort ib = f[i][j+1];
@@ -321,14 +355,14 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
          faces[j] = f[i][j];
          faces[j+1] = f[i][j+1];
          faces[j+2] = f[i][j+2];
-         printf("   Face %d: (%d, %d, %d)\n", j/3, faces[j], faces[j+1], faces[j+2]);
+         //printf("   Face %d: (%d, %d, %d)\n", j/3, faces[j], faces[j+1], faces[j+2]);
       }
        
-      printf("Index Buffer %d Before: %d\n", i, (int)store->indexBuffer[i]);
+      //printf("Index Buffer %d Before: %d\n", i, (int)store->indexBuffer[i]);
       glGenBuffers(1, &store->indexBuffer[i]);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, store->indexBuffer[i]);
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * f[i].size(), faces, GL_STATIC_DRAW);
-      printf("Index Buffer %d After: %d\n", i, (int)store->indexBuffer[i]);
+      //printf("Index Buffer %d After: %d\n", i, (int)store->indexBuffer[i]);
       
       delete[] faces;
    }
@@ -345,6 +379,8 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, norms, GL_STATIC_DRAW);
    
    store->textureBuffer = 0;
+   
+   boundStorage.push_back(meshBound);
    
    /*
    printf("Mesh Info:\n");

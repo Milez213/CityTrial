@@ -51,7 +51,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
-         properties.toggleWings();
+         properties.setWings();
          GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
          
          // assert upgrade != NULL
@@ -71,6 +71,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
       
       vec3 oldPos = getPosition();
+      float oldSpeed = getSpeed();
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
@@ -78,6 +79,8 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          if (oldPos.y - getRideHeight() + 1.5 > top) {
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             fallSpeed = 0;
+            //fallSpeed = (oldPos.y-getRideHeight() - top)*abs(getSpeed());
+            //setSpeed(oldSpeed + (oldSpeed > 0 ? fallSpeed : -fallSpeed));
          }
          else  {
             setSpeed(0);
@@ -219,9 +222,13 @@ void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
 {
    if (tireTurnAngle < targetAngle) {
       tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      if (tireTurnAngle > targetAngle)
+         tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
       tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      if (tireTurnAngle < targetAngle)
+         tireTurnAngle = targetAngle;
    }
    
    /*if (targetAngle < 0.0)
@@ -269,7 +276,7 @@ void GameKartObject::update(float dt)
    float oldDirection = getDirection();
    
    //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
-   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/30);
+   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/properties.getTurnSpeed());
    
    if (joystickState[0] < 0.0) {
       changeTireTurnAngle(dt, -speedDampedTurnAngle);

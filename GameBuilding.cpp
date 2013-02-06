@@ -15,5 +15,5 @@ GameBuilding::GameBuilding() : GameSceneryObject("cube")
 
 float GameBuilding::getHeightAt(float x, float z)
 {
-   return scl.y*2;
+   return getPosition().y + getScale().y;
 }
