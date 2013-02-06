@@ -17,9 +17,9 @@ ifeq ($(UNAME), Linux)
 	LIB=./glfw/lib/x11/libglfw.a 
 	LIB +=-L./lib
 
-	# -lXrandr for csl
+	# For csl (room 235)
 	ifeq ($(findstring 235, $(shell uname -n)), 235)
-		IFLAGS += -I./lib/SDL_mixer-1.2.12/
+		IFLAGS += -I./include/SDL_mixer
 		XRANDR=-lXrandr
 	else
 		XRANDR=
