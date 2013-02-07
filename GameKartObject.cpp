@@ -1,6 +1,8 @@
 #include "GameKartObject.h"
-#include "GamePartUpgrade.h"
 #include "GameSceneryObject.h"
+#include "GameUpgradeObject.h"
+
+#include "GamePartUpgrade.h"
 #include "GamePartWings.h"
 
 #include <cmath>
@@ -21,8 +23,9 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
       GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
-      GamePartUpgrade *part = new GamePartWings();
-      parts.push_back(part);
+      //GamePartUpgrade *part = new GamePartWings();
+      //sideParts.push_back(part);
+   
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
    wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
@@ -51,7 +54,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    //Need some way of telling if PhysicsActor came from upgrade
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
-      upgrade->apply(&properties);
+      upgrade->addToKart(this);
       /*if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
          properties.setWings();
          GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
@@ -189,13 +192,25 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
-   if (properties.hasWings())
-   {
+   
+   if (frontParts.size()) {
+      modelViewMatrix.pushMatrix();
+      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+      frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }
+   
+   if (sideParts.size()) {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
-      modelViewMatrix.scale(0.1,0.1,5.0);
-      modelViewMatrix.rotate(80.0,vec3(0.0,0.0,1.0));
-      parts[0]->draw(meshShader,modelViewMatrix);
+      sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
+      modelViewMatrix.popMatrix();
+   }
+   
+   if (backParts.size()) {
+      modelViewMatrix.pushMatrix();
+      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+      backParts.front()->drawOnKart(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }
 

@@ -7,7 +7,6 @@
 //
 
 #include "GameUpgradeObject.h"
-#include "GameKartObject.h"
 
 
 /*GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")

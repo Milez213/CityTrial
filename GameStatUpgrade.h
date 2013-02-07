@@ -15,7 +15,9 @@
 class GameStatUpgrade : public GameUpgradeObject
 {
 public:
-   GameStatUpgrade() : GameUpgradeObject("cube") {}
+   GameStatUpgrade() : GameUpgradeObject("ramp") {}
+   
+   virtual void addToKart(GameKartObject *kart) {applyStat( &kart->properties); }
 };
 
 #endif /* defined(____GameStatUpgrade__) */

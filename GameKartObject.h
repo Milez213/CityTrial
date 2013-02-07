@@ -6,14 +6,13 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <cstring>
 #include <stdlib.h>
 #include <stdarg.h>
 
 #include "GamePhysicalObject.h"
 #include "GameKartProperties.h"
-#include "GamePartUpgrade.h"
-#include "GameStatUpgrade.h"
 
 #include "SoundManager.h"
 
@@ -23,10 +22,15 @@ using glm::translate;
 using glm::scale;
 using glm::rotate;
 
+class GamePartUpgrade;
+class GameStatUpgrade;
 
 class GameKartObject : public GamePhysicalObject {
    
 public:
+   GameKartProperties properties;
+   
+   
    GameKartObject(const char *fileName);
    ~GameKartObject();
 
@@ -39,8 +43,9 @@ public:
    float getRideHeight() { return getScale().y; }
    
    
-   void addPart(GamePartUpgrade *part) { parts.push_back(part); }
-   void addStat(GameStatUpgrade *stat) { stat->apply(&properties); }
+   void addFrontPart(GamePartUpgrade *part) { frontParts.push_front(part); }
+   void addSidePart(GamePartUpgrade *part) { sideParts.push_front(part); }
+   void addBackPart(GamePartUpgrade *part) { backParts.push_front(part); }
    
 
    bool isUsingController() {
@@ -60,10 +65,11 @@ public:
    
 private:
    PhongShader *meshShader;
-   GameKartProperties properties;
    
    vector<GameDrawableObject *> wheels;
-   vector<GamePartUpgrade *> parts;
+   list<GamePartUpgrade *> frontParts;
+   list<GamePartUpgrade *> sideParts;
+   list<GamePartUpgrade *> backParts;
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;

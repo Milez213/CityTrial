@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "GameDrawableObject.h"
-#include "GameKartProperties.h"
+#include "GameKartObject.h"
 
 class GameUpgradeObject : public GameDrawableObject
 {
@@ -23,10 +23,10 @@ public:
    GameUpgradeObject(const char *objFile);
    
    virtual void update(float dt);
-   
    virtual void onCollide(GameDrawableObject *other);
    
-   virtual void apply(GameKartProperties *props) = 0;
+   virtual void addToKart(GameKartObject *kart) = 0;
+   virtual void applyStat(GameKartProperties *props) = 0;
    
    //Type upgradeType() { return type; };
    
