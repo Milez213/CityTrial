@@ -1,6 +1,7 @@
 #include "GameKartObject.h"
-#include "GameUpgradeObject.h"
-#include "GameRamp.h"
+#include "GamePartUpgrade.h"
+#include "GameSceneryObject.h"
+#include "GamePartWings.h"
 
 #include <cmath>
 
@@ -20,8 +21,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
       GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
-      GameDrawableObject *upgrade = new GameDrawableObject("cube");
-      upgrades.push_back(upgrade);
+      GamePartUpgrade *part = new GamePartWings();
+      parts.push_back(part);
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
    wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
@@ -50,28 +51,24 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    //Need some way of telling if PhysicsActor came from upgrade
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
-      if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
+      upgrade->apply(&properties);
+      /*if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
          properties.setWings();
          GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
          
          // assert upgrade != NULL
          
          upgrade->scheduleForRemoval();
-         
-         /*GameDrawableObject *upgrade = new GameDrawableObject("wings");
-          upgrade->setPosition(vec3(0.0, 0.0, 0.0));
-          upgrades.push_back(upgrade);*/
-         
       }
       else {
          
-      }
+      }*/
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
       
       vec3 oldPos = getPosition();
-      float oldSpeed = getSpeed();
+      //float oldSpeed = getSpeed();
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
@@ -111,11 +108,11 @@ GameKartObject::~GameKartObject()
    cout << "Kart Object Deleted\n";
 }
 
-void GameKartObject::stop()
+/*void GameKartObject::stop()
 {
    // cout << "bunnie stop\n";
    //stage = STILL;
-}
+}*/
 
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
@@ -196,7 +193,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
       modelViewMatrix.scale(0.1,0.1,5.0);
       modelViewMatrix.rotate(80.0,vec3(0.0,0.0,1.0));
-      upgrades[0]->draw(meshShader,modelViewMatrix);
+      parts[0]->draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }
 
@@ -218,15 +215,16 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 }
 
 
-void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
+void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle)
 {
+   float targetAngle = mult*speedDampedTurnAngle;
    if (tireTurnAngle < targetAngle) {
-      tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      tireTurnAngle += dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle > targetAngle)
          tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
-      tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      tireTurnAngle -= dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
@@ -279,13 +277,13 @@ void GameKartObject::update(float dt)
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/properties.getTurnSpeed());
    
    if (joystickState[0] < 0.0) {
-      changeTireTurnAngle(dt, -speedDampedTurnAngle);
+      changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      changeTireTurnAngle(dt, speedDampedTurnAngle);
+      changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
-      changeTireTurnAngle(dt, 0.0);
+      changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
    }
 
    

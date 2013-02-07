@@ -12,6 +12,8 @@
 
 #include "GamePhysicalObject.h"
 #include "GameKartProperties.h"
+#include "GamePartUpgrade.h"
+#include "GameStatUpgrade.h"
 
 #include "SoundManager.h"
 
@@ -36,6 +38,10 @@ public:
    virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }
    
+   
+   void addPart(GamePartUpgrade *part) { parts.push_back(part); }
+   void addStat(GameStatUpgrade *stat) { stat->apply(&properties); }
+   
 
    bool isUsingController() {
        return usingController;
@@ -48,8 +54,8 @@ public:
    void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
    //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
     
-   void stop();
-   void done();
+   //void stop();
+   //void done();
    
    
 private:
@@ -57,9 +63,8 @@ private:
    GameKartProperties properties;
    
    vector<GameDrawableObject *> wheels;
-   vector <GameDrawableObject *> upgrades;
+   vector<GamePartUpgrade *> parts;
    
-   //static const float maxTireTurnAngle;
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
    
@@ -70,7 +75,7 @@ private:
    GameSound *ding_sound;
    GameSound *collide_sound;
    
-   void changeTireTurnAngle(float dt, float targetAngle);
+   void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
 };
 
 #endif

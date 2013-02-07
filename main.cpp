@@ -39,13 +39,14 @@ using  glm::vec4;
 #endif
 
 #include "GameDrawableObject.h"
-#include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
 #include "GameRamp.h"
 #include "GameBuilding.h"
 #include "GameTerrain.h"
 
+#include "GamePartWings.h"
+#include "GameStatSpeed.h"
 
 #ifdef MAIN_USE_TTF
 #include "TTFRenderer.h"
@@ -108,12 +109,12 @@ PhongShader *meshShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
-GameUpgradeObject *wings;
 
 RenderingHelper g_model_trans;
 
 // GLFW Window
 int g_win_height, g_win_width;
+int g_current_height, g_current_width;
 
 double g_time;
 double g_last_time;
@@ -185,19 +186,19 @@ float randFloat() {
 /* projection matrix */
 void setProjectionMatrix() {
    g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 0.5f + 90.0f,
-         (float)g_win_width/g_win_height, 0.1f, 100.f);
+         (float)g_current_width/g_current_height, 0.1f, 100.f);
 }
 
 
 /* camera controls */
-void setView() {
-   vec3 kartDir = kart_objects[0]->getDirectionVector();
-   vec3 kartPos = kart_objects[0]->getPosition();
+void setView(int kartIndex) {
+   vec3 kartDir = kart_objects[kartIndex]->getDirectionVector();
+   vec3 kartPos = kart_objects[kartIndex]->getPosition();
 
    // move camera back and up
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
 
-   g_camera->setLookAtTarget(kart_objects[0]->getPosition());
+   g_camera->setLookAtTarget(kart_objects[kartIndex]->getPosition());
    g_camera->setPosition(kartPos - kartDir);
 
    g_view = g_camera->getViewMat();
@@ -239,8 +240,8 @@ void update(double dt)
 {
    getInputState();
    
-   for (int i = 0; i < (int)kart_objects.size(); i++) {
-      kart_objects[i]->update(dt);
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      drawable_objects[i]->update(dt);
    }
 
 
@@ -261,9 +262,6 @@ void update(double dt)
       }
    }
    
-   wings->update(g_time, dt);
-   
-   
    
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
@@ -274,14 +272,12 @@ void update(double dt)
 
 
 
-void draw(float dt)
+void draw(float dt, int kartIndex)
 {
-
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
+   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+   
    setProjectionMatrix();
-   setView();
+   setView(kartIndex);
 
    // set once for this shader
    meshShader->use();
@@ -289,8 +285,8 @@ void draw(float dt)
    meshShader->setViewMatrix(g_view);
 
    // get camera position
-   vec3 kartPos = kart_objects[0]->getPosition();
-   vec3 kartDir = normalize(kart_objects[0]->getDirectionVector());
+   vec3 kartPos = kart_objects[kartIndex]->getPosition();
+   vec3 kartDir = normalize(kart_objects[kartIndex]->getDirectionVector());
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 
@@ -310,26 +306,48 @@ void draw(float dt)
    // draw text
    char text[100];
    sprintf(text, "speed: %.1f", kart_objects[0]->getSpeed());   
-   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_win_width, 2.0/g_win_height);
+   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);
 
    // draw squashes
    sprintf(text, "squashes: %d", g_num_squashes);
-   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_win_width, 2.0/g_win_height);
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
    
    // draw fps
    sprintf(text, "fps: %.0f", 1/dt);
-   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_win_width, 2.0/g_win_height);
+   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);
    
    // draw height
    sprintf(text, "height: %.1f", kart_objects[0]->getPosition().y-kart_objects[0]->getRideHeight());
-   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_win_width, 2.0/g_win_height);
+   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
    
-
-   glfwSwapBuffers();
 }
 
-
-
+void drawMultipleViews(double dt, int numViews)
+{
+   if (numViews == 1) {
+      g_current_height = g_win_height;
+      g_current_width = g_win_width;
+   } else if (numViews == 2) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width;
+   } else if (numViews == 3 || numViews == 4) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width/2;
+   }
+   
+   int kartIndex = 0;
+   for (int i = 0; i * g_current_height < g_win_height; i++) {
+      for (int j = 0; j * g_current_width < g_win_width; j++) {
+         glViewport( j * g_current_width, i * g_current_height, g_current_width, g_current_height );
+         glScissor( j * g_current_width, i * g_current_height, g_current_width, g_current_height );
+         
+         if (kartIndex < (int)kart_objects.size())
+            draw(dt, kartIndex++);
+         else
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+      }
+   }
+}
 
 void gameLoop()
 {
@@ -340,8 +358,10 @@ void gameLoop()
    dt = g_time - g_last_time;
 
    update(dt);
-
-   draw(dt);
+   
+   drawMultipleViews(dt, kart_objects.size());
+   
+   glfwSwapBuffers();
 
    g_last_time = g_time;   	
 }
@@ -386,11 +406,29 @@ void initObjects() {
    drawable_objects.push_back(kart);
    kart_objects.push_back(kart);
    
+   /*GameKartObject *otherKart = new GameKartObject("cube");
+   otherKart->setPosition(vec3(45, 1, 30));
+   otherKart->setScale(vec3(1.0, 0.75, 1.0));
+   otherKart->setDirection(0);
+   drawable_objects.push_back(otherKart);
+   kart_objects.push_back(otherKart);
    
-   wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(5, 1, 2));
-   wings->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(wings);
+   GameKartObject *thirdKart = new GameKartObject("cube");
+   thirdKart->setPosition(vec3(30, 1, 45));
+   thirdKart->setScale(vec3(1.0, 0.75, 1.0));
+   thirdKart->setDirection(0);
+   drawable_objects.push_back(thirdKart);
+   kart_objects.push_back(thirdKart);*/ 
+   
+   GamePartUpgrade *part = new GamePartWings();
+   part->setPosition(vec3(5, 1, 2));
+   part->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(part);
+   
+   GameStatUpgrade *stat = new GameStatSpeed();
+   stat->setPosition(vec3(10, 1, 10));
+   stat->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(stat);
    
    
    GameRamp *ramp = new GameRamp();
@@ -438,6 +476,7 @@ void initialize()
    glClearDepth (1.0f);    // Depth Buffer Setup
    glDepthFunc (GL_LEQUAL);    // The Type Of Depth Testing
    glEnable (GL_DEPTH_TEST);// Enable Depth Testing
+   glEnable( GL_SCISSOR_TEST );// Enable Scissor Test
    /* texture specific settings */
    glEnable(GL_TEXTURE_2D);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -497,6 +536,9 @@ void reshape(int width, int height)
 {
    g_win_width = width;
    g_win_height = height;
+   
+   g_time = glfwGetTime();
+   g_last_time = glfwGetTime();
 }
 
 

@@ -14,17 +14,21 @@
 class GameKartProperties
 {
 public:
-   GameKartProperties() : wings(false), acceleration(10), topSpeed(25), brakeSpeed(20), turnSpeed(45) {}
+   GameKartProperties() : wings(false), jets(false), acceleration(10), topSpeed(25), brakeSpeed(20), turnSpeed(45) {}
    
    //parts
    bool hasWings() {return wings;}
    void toggleWings() {wings = !wings;}
-   void setWings() {wings = true;};
+   void setWings(bool on) {wings = on;};
+   
+   bool hasJets() {return jets;}
+   void toggleJets() {jets = !jets;}
+   void setJets(bool on) {jets = on;};
    
    //stats
    float getAcceleration() {return acceleration;}
    void upgradeAcceleration() {acceleration += 1;}
-   float getTopSpeed() {return topSpeed;}
+   float getTopSpeed() {return topSpeed + (hasJets() ? 10 : 0);}
    void upgradeTopSpeed() {topSpeed += 5;}
    float getBrakeSpeed() {return brakeSpeed;}
    void upgradeBrakeSpeed() {brakeSpeed += 5;}
@@ -34,6 +38,7 @@ public:
 private:
    //parts
    bool wings;
+   bool jets;
    
    //stats
    float acceleration;
