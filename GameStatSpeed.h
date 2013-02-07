@@ -13,7 +13,7 @@
 
 class GameStatSpeed : public GameStatUpgrade
 {
-   virtual void apply(GameKartProperties *props) { props->upgradeTopSpeed(); }
+   virtual void applyStat(GameKartProperties *props) { props->upgradeTopSpeed(); }
 };
 
 #endif

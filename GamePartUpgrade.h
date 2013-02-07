@@ -15,10 +15,10 @@
 class GamePartUpgrade : public GameUpgradeObject
 {
 public:
-   GamePartUpgrade() : GameUpgradeObject("ramp") {}
+   GamePartUpgrade() : GameUpgradeObject("cube") {}
    
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
-   virtual void unApply(GameKartProperties *props) = 0;
+   virtual void unApplyStat(GameKartProperties *props) = 0;
 };
 
 #endif /* defined(____GamePartUpgrade__) */
