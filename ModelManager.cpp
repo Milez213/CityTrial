@@ -102,11 +102,13 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
       // meshes->specularity[i] = storage[index].specularity[i];
    }
    
+   /*
    printf("Mesh Info:\n");
    printf("   Number of Meshes: %d\n", meshes->numMeshes);
    for (int i = 0; i < meshes->numMeshes; i++) {
       printf("      Mesh %d has %d index\n", i, (int)meshes->indexBuffer[i]);
    }
+   */
    
    boundingInfo->bottomLeft = boundStorage[index].bottomLeft;
    boundingInfo->dimension = boundStorage[index].dimension;

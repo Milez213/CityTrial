@@ -10,7 +10,7 @@ class DummyGameSoundSample : public GameSound {
 
 public:
 
-    DummyGameSoundSample(char* filename) { }
+    DummyGameSoundSample(const char* filename) { }
 
     ~DummyGameSoundSample() { }
 
@@ -40,11 +40,11 @@ public:
     ~DummySoundManager() {
     }
 
-    virtual GameSound* getMusic(char* filename) {
+    virtual GameSound* getMusic(const char* filename) {
         return getSample(filename);
     }
 
-    virtual GameSound* getSample(char* filename) {
+    virtual GameSound* getSample(const char* filename) {
         return new DummyGameSoundSample(filename);
     }
 };

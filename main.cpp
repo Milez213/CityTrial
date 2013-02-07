@@ -55,6 +55,8 @@ using  glm::vec4;
 
 #include "loadMap.h"
 
+#include "GameSettings.h"
+
 using namespace std;
 
 //-----------------------------------------------
@@ -95,8 +97,9 @@ using namespace std;
 ModelManager *g_model_manager;
 SoundManager *g_sound_manager;
 TextRenderer *g_ttf_text_renderer;
+GameSettings g_settings;
 
-
+// just for the music
 GameSound *g_music;
 
 
@@ -448,14 +451,21 @@ void initialize()
 
    g_model_manager = new ModelManager();
 
+
+
 #ifdef USE_DUMMY_SOUND
    g_sound_manager = new DummySoundManager();
-   g_music = g_sound_manager->getMusic("music/raptor.ogg");   
+   g_music = g_sound_manager->getMusic("no music");   
    g_music->play();
 #else
+
    g_sound_manager = new SDLSoundManager();
-   g_music = g_sound_manager->getMusic("music/raptor.ogg");
-   g_music->play();
+
+   if (g_settings["play_music"] == 1) {
+      printf("Music enabled\n");
+      g_music = g_sound_manager->getMusic("music/raptor.ogg");
+      g_music->play();
+   }
 #endif
 
    // initialize with default font
@@ -466,6 +476,9 @@ void initialize()
 #endif
 
    
+   printf("one: %d\n", g_settings["one"]);
+   printf("void: %d\n", g_settings["lol"]);
+   printf("three: %d\n", g_settings["three"]);
 
    initObjects();
 }
@@ -517,6 +530,7 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
 
 int main(int argc, char** argv) 
 {
+   // default values. Will be overwritten by game settings
    g_win_width = 640;
    g_win_height = 480;
    
@@ -530,6 +544,14 @@ int main(int argc, char** argv)
       fprintf( stderr, "Failed to initialize GLFW\n" );
       exit( EXIT_FAILURE );
    }
+
+   
+   g_settings.load("game_settings.ini");
+   int new_width = g_settings["win_width"];
+   int new_height = g_settings["win_height"];
+
+   g_win_width = new_width == -1 ? g_win_width : new_width;
+   g_win_height = new_height == -1 ? g_win_height : new_height;
 
    if (!glfwOpenWindow(g_win_width, g_win_height, 0, 0, 0, 0, 16, 0, GLFW_WINDOW)) {
       fprintf( stderr, "Failed to open GLFW window\n" );
