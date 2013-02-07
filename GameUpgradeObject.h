@@ -20,7 +20,7 @@ public:
    
    GameUpgradeObject(Type initType);
    
-   virtual void update(double time, double dt);
+   virtual void update(float dt);
    
    virtual void onCollide(GameDrawableObject *other);
    

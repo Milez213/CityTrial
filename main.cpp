@@ -105,7 +105,6 @@ PhongShader *meshShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
-GameUpgradeObject *wings;
 
 RenderingHelper g_model_trans;
 
@@ -236,8 +235,8 @@ void update(double dt)
 {
    getInputState();
    
-   for (int i = 0; i < (int)kart_objects.size(); i++) {
-      kart_objects[i]->update(dt);
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      drawable_objects[i]->update(dt);
    }
 
 
@@ -257,9 +256,6 @@ void update(double dt)
          drawable_objects.erase(it);
       }
    }
-   
-   wings->update(g_time, dt);
-   
    
    
    /*for (int i = 0; i < kart_objects.size(); i++) {

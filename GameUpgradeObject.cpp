@@ -17,9 +17,9 @@ GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
    toRemove = false;
 }
 
-void GameUpgradeObject::update(double time, double dt)
+void GameUpgradeObject::update(float dt)
 {
-   setPosition(vec3(getPosition().x, 1 + 0.5 * cos(time), getPosition().z));
+   //setPosition(vec3(getPosition().x, getPosition().y + 0.01 * cos(time), getPosition().z));
    
    float yRot = getRotation().y + 90 * dt;
    if (yRot > 360) 
