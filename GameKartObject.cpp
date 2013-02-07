@@ -215,15 +215,16 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 }
 
 
-void GameKartObject::changeTireTurnAngle(float dt, float targetAngle)
+void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle)
 {
+   float targetAngle = mult*speedDampedTurnAngle;
    if (tireTurnAngle < targetAngle) {
-      tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      tireTurnAngle += dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle > targetAngle)
          tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
-      tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
+      tireTurnAngle -= dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
@@ -276,13 +277,13 @@ void GameKartObject::update(float dt)
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/properties.getTurnSpeed());
    
    if (joystickState[0] < 0.0) {
-      changeTireTurnAngle(dt, -speedDampedTurnAngle);
+      changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
-      changeTireTurnAngle(dt, speedDampedTurnAngle);
+      changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
       //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
-      changeTireTurnAngle(dt, 0.0);
+      changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
    }
 
    

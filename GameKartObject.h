@@ -75,7 +75,7 @@ private:
    GameSound *ding_sound;
    GameSound *collide_sound;
    
-   void changeTireTurnAngle(float dt, float targetAngle);
+   void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
 };
 
 #endif
