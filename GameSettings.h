@@ -8,6 +8,23 @@
  * Stores game options/settings, such as if playing music, screen resolution,
  * etc.
  *
+ *
+ * load: settings.load("settings file.ini")
+ *  
+ *
+ *  settings file has the format:
+ *
+ *  property = value
+ *
+ *  property is a string, value is an int now.
+ *
+ *  
+ * to get properties
+ * settings["property"]
+ * 
+ * if it doesn't exist, it returns -1
+ *
+ *
  */
  
 #ifndef GAME_SETTINGS_H

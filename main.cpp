@@ -109,6 +109,8 @@ PhongShader *meshShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
+int g_num_players = 1;
+
 
 RenderingHelper g_model_trans;
 
@@ -399,26 +401,39 @@ void initObjects() {
       drawable_objects.push_back(object);
    }
    
-   GameKartObject *kart = new GameKartObject("cube");
-   kart->setPosition(vec3(30, 1, 30));
-   kart->setScale(vec3(1.0, 0.75, 1.0));
-   kart->setDirection(180);
-   drawable_objects.push_back(kart);
-   kart_objects.push_back(kart);
-   
-   /*GameKartObject *otherKart = new GameKartObject("cube");
-   otherKart->setPosition(vec3(45, 1, 30));
-   otherKart->setScale(vec3(1.0, 0.75, 1.0));
-   otherKart->setDirection(0);
-   drawable_objects.push_back(otherKart);
-   kart_objects.push_back(otherKart);
-   
-   GameKartObject *thirdKart = new GameKartObject("cube");
-   thirdKart->setPosition(vec3(30, 1, 45));
-   thirdKart->setScale(vec3(1.0, 0.75, 1.0));
-   thirdKart->setDirection(0);
-   drawable_objects.push_back(thirdKart);
-   kart_objects.push_back(thirdKart);*/ 
+
+   int num_players_from_settings = g_settings["num_players"];
+
+   if (num_players_from_settings > 0) {
+      g_num_players = num_players_from_settings;
+   }
+
+   // hax
+   // 1st kart
+   if (g_num_players >= 1) {
+      GameKartObject *kart = new GameKartObject("cube");
+      kart->setPosition(vec3(30, 1, 30));
+      kart->setScale(vec3(1.0, 0.75, 1.0));
+      kart->setDirection(180);
+      drawable_objects.push_back(kart);
+      kart_objects.push_back(kart);
+   }
+   if (g_num_players >= 2) {
+      GameKartObject *otherKart = new GameKartObject("cube");
+      otherKart->setPosition(vec3(45, 1, 30));
+      otherKart->setScale(vec3(1.0, 0.75, 1.0));
+      otherKart->setDirection(0);
+      drawable_objects.push_back(otherKart);
+      kart_objects.push_back(otherKart);
+   }
+   if (g_num_players >= 3) {
+      GameKartObject *thirdKart = new GameKartObject("cube");
+      thirdKart->setPosition(vec3(30, 1, 45));
+      thirdKart->setScale(vec3(1.0, 0.75, 1.0));
+      thirdKart->setDirection(0);
+      drawable_objects.push_back(thirdKart);
+      kart_objects.push_back(thirdKart); 
+   }
    
    GamePartUpgrade *part = new GamePartWings();
    part->setPosition(vec3(5, 1, 2));
