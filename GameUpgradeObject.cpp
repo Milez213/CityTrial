@@ -10,11 +10,15 @@
 #include "GameKartObject.h"
 
 
-GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
+/*GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
 {
    type = initType;
    name = "upgrade";
    toRemove = false;
+}*/
+GameUpgradeObject::GameUpgradeObject(const char *objFile) : GameDrawableObject(objFile)
+{
+   
 }
 
 void GameUpgradeObject::update(float dt)
@@ -30,7 +34,17 @@ void GameUpgradeObject::update(float dt)
 
 void GameUpgradeObject::onCollide(GameDrawableObject *other)
 {
-   if (GameKartObject *upgrade =  dynamic_cast<GameKartObject *>(other)) {
+   if (GameKartObject *kart =  dynamic_cast<GameKartObject *>(other)) {
+      /*switch (type) {
+         case SPEED:
+            kart->properties.upgradeSPeed();
+            break;
+            
+         case WINGS:
+            kart->addPart(new GamePartWingObject())
+         default:
+            break;
+      }*/
       scheduleForRemoval();
    }
 }
