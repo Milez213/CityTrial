@@ -39,13 +39,14 @@ using  glm::vec4;
 #endif
 
 #include "GameDrawableObject.h"
-#include "GameUpgradeObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
 #include "GameRamp.h"
 #include "GameBuilding.h"
 #include "GameTerrain.h"
 
+#include "GamePartWings.h"
+#include "GameStatSpeed.h"
 
 #ifdef MAIN_USE_TTF
 #include "TTFRenderer.h"
@@ -380,10 +381,15 @@ void initObjects() {
    kart_objects.push_back(kart);
    
    
-   wings = new GameUpgradeObject(GameUpgradeObject::FLIGHT);
-   wings->setPosition(vec3(5, 1, 2));
-   wings->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(wings);
+   GamePartUpgrade *part = new GamePartWings();
+   part->setPosition(vec3(5, 1, 2));
+   part->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(part);
+   
+   GameStatUpgrade *stat = new GameStatSpeed();
+   stat->setPosition(vec3(10, 1, 10));
+   stat->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(stat);
    
    
    GameRamp *ramp = new GameRamp();
