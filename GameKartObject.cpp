@@ -80,9 +80,11 @@ void GameKartObject::onCollide(GameDrawableObject *other)
             //setSpeed(oldSpeed + (oldSpeed > 0 ? fallSpeed : -fallSpeed));
          }
          else  {
-            setSpeed(0);
+            // bounce off
+            setSpeed(-getSpeed());
+            setPosition(oldPos);
          }
-      }
+      } 
    }
    else if (strcmp(other->getName(), "thingy") == 0) {
        // Collided with cuby thing
