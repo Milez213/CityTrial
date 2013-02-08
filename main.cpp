@@ -401,7 +401,6 @@ void initObjects() {
       drawable_objects.push_back(object);
    }
    
-
    int num_players_from_settings = g_settings["num_players"];
 
    if (num_players_from_settings > 0) {
