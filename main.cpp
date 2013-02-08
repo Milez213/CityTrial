@@ -217,15 +217,15 @@ void getInputState()
          glfwGetJoystickPos(i, joy, 4);
          glfwGetJoystickButtons(i, button, 32);
       } else {
-         if (glfwGetKey('W') == GLFW_PRESS)
+         if (glfwGetKey(kart_objects[i]->getInput(0)) == GLFW_PRESS)
             joy[3] = 1.0;
-         else if (glfwGetKey('S') == GLFW_PRESS)
+         else if (glfwGetKey(kart_objects[i]->getInput(1)) == GLFW_PRESS)
             joy[3] = -1.0;
          else
             joy[3] = 0.0;
-         if (glfwGetKey('A') == GLFW_PRESS)
+         if (glfwGetKey(kart_objects[i]->getInput(2)) == GLFW_PRESS)
             joy[0] = 1.0;
-         else if (glfwGetKey('D') == GLFW_PRESS)
+         else if (glfwGetKey(kart_objects[i]->getInput(3)) == GLFW_PRESS)
             joy[0] = -1.0;
          else
             joy[0] = 0.0;
@@ -414,6 +414,7 @@ void initObjects() {
       kart->setPosition(vec3(30, 1, 30));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
+      kart->setInputMap('W', 'S', 'A', 'D');
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -422,6 +423,7 @@ void initObjects() {
       otherKart->setPosition(vec3(45, 1, 30));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
+      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }

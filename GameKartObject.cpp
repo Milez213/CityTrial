@@ -49,6 +49,19 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    // collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
 }
 
+int GameKartObject::getInput(int request) {
+   switch (request) {
+      case 0:
+         return input.up;
+      case 1:
+         return input.down;
+      case 2:
+         return input.left;
+      case 3:
+         return input.right;
+   }
+}
+
 void GameKartObject::onCollide(GameDrawableObject *other)
 {
    //Need some way of telling if PhysicsActor came from upgrade

@@ -16,6 +16,10 @@
 
 #include "SoundManager.h"
 
+struct inputMap {
+   int up, down, left, right;
+};
+
 // global variables
 using std::vector;
 using glm::translate;
@@ -58,6 +62,10 @@ public:
    
    void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
    //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
+   
+   void setInputMap(int up, int down, int left, int right) { input.up = up; input.down = down; input.left = left; input.right = right; };
+   int getInput(int request);
+   
     
    //void stop();
    //void done();
@@ -77,6 +85,8 @@ private:
    bool usingController,wings;
    float joystickState[4];
    char buttonState[32];
+   
+   inputMap input;
 
    GameSound *ding_sound;
    GameSound *collide_sound;
