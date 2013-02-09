@@ -66,6 +66,8 @@ public:
    void setInputMap(int up, int down, int left, int right) { input.up = up; input.down = down; input.left = left; input.right = right; };
    int getInput(int request);
    
+   int getPoints() { return points; };
+   
     
    //void stop();
    //void done();
@@ -87,6 +89,8 @@ private:
    char buttonState[32];
    
    inputMap input;
+   
+   int points;
 
    GameSound *ding_sound;
    GameSound *collide_sound;

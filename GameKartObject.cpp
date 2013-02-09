@@ -35,6 +35,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 0.0;
+   
+   points = 0;
     
    //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
    
@@ -68,6 +70,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       upgrade->addToKart(this);
+      points += 100;
       /*if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
          properties.setWings();
          GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
@@ -108,7 +111,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
 
       other->setName("squashed_thingy");
       other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
-       g_num_squashes++;
+      points += 10;
    }
    else {
       GamePhysicalObject::onCollide(other);
