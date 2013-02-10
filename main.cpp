@@ -432,7 +432,7 @@ void update(double dt)
    }
    
 
-   wings->update(g_time, dt);
+
 
    
 
@@ -495,8 +495,9 @@ void draw(float dt, int kartIndex)
  ExtractFrustum(); 
    // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      if(SphereInFrustum(drawable_objects[i]->getPosition(),drawable_objects[i]->getBoundingInfo().radius * 1.5) >0){
       setPhongMaterial(i%NUM_MATERIALS);
+      if(SphereInFrustum(drawable_objects[i]->getPosition(),drawable_objects[i]->getBoundingInfo().radius * 1.5) >0){
+      
       drawable_objects[i]->draw(meshShader, g_model_trans);
       }
       else
