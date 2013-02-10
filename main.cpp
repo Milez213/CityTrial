@@ -47,6 +47,7 @@ using  glm::vec4;
 
 #include "GamePartWings.h"
 #include "GameStatSpeed.h"
+#include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF
 #include "TTFRenderer.h"
@@ -127,6 +128,8 @@ mat4 g_model;
 
 GameCamera *g_camera;
 
+GLuint fbo;
+
 
 // === game info ===
 
@@ -186,9 +189,13 @@ float randFloat() {
 
 
 /* projection matrix */
-void setProjectionMatrix() {
-   g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 0.5f + 90.0f,
+void setProjectionMatrix(int kartIndex) {
+   g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 0.5f + 90.0f,
          (float)g_current_width/g_current_height, 0.1f, 100.f);
+}
+
+void setOrthographicMatrix() {
+   g_proj = glm::ortho(0.0f, (float)g_current_width, (float)g_current_height, 0.0f, -1.0f, 1.0f);
 }
 
 
@@ -205,6 +212,10 @@ void setView(int kartIndex) {
 
    g_view = g_camera->getViewMat();
    
+}
+
+void setHUDView() {
+   g_view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 2.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
 }
 
 void getInputState()
@@ -276,9 +287,10 @@ void update(double dt)
 
 void draw(float dt, int kartIndex)
 {
+   glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    
-   setProjectionMatrix();
+   setProjectionMatrix(kartIndex);
    setView(kartIndex);
 
    // set once for this shader
@@ -319,8 +331,64 @@ void draw(float dt, int kartIndex)
    g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);
    
    // draw height
-   sprintf(text, "height: %.1f", kart_objects[0]->getPosition().y-kart_objects[0]->getRideHeight());
+   sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
    g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+   
+}
+
+void drawHUD (int kartIndex)
+{
+   glDisable(GL_DEPTH_TEST);
+   glAlphaFunc(GL_GREATER,0.1f);
+   glEnable(GL_ALPHA_TEST);
+   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   //glEnable(GL_BLEND);
+   
+   setOrthographicMatrix();
+   setHUDView();
+   
+   meshShader->use();
+   meshShader->setProjMatrix(g_proj);
+   meshShader->setViewMatrix(g_view);
+   
+   GLuint textureId;
+   glGenTextures(1, &textureId);
+   glBindTexture(GL_TEXTURE_2D, textureId);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, g_current_width, g_current_height, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, 0);
+   glBindTexture(GL_TEXTURE_2D, 0);
+   
+   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+   
+   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                          GL_TEXTURE_2D, textureId, 0);
+   
+   glClearColor (0.5f, 0.7f, 0.1f, 1.0f);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   
+   glClearColor (1.0f, 1.0f, 0.1f, 0.0f);
+   //glClear(GL_COLOR_BUFFER_BIT);
+   
+   g_model_trans.pushMatrix();
+   g_model_trans.loadIdentity();
+   
+   GameHUD *hud = new GameHUD(g_current_width, g_current_height);
+   hud->drawSpeed(meshShader, g_model_trans, kart_objects[kartIndex]->getSpeed());
+   
+   g_model_trans.popMatrix();
+   
+   glDeleteTextures(1, &textureId);
+   
+   //glDisable(GL_BLEND);
+   glDisable(GL_ALPHA_TEST);
+   glEnable(GL_DEPTH_TEST);
    
 }
 
@@ -343,10 +411,14 @@ void drawMultipleViews(double dt, int numViews)
          glViewport( j * g_current_width, i * g_current_height, g_current_width, g_current_height );
          glScissor( j * g_current_width, i * g_current_height, g_current_width, g_current_height );
          
-         if (kartIndex < (int)kart_objects.size())
-            draw(dt, kartIndex++);
-         else
+         if (kartIndex < (int)kart_objects.size()) {
+            draw(dt, kartIndex);
+            drawHUD(kartIndex);
+            kartIndex++;
+         } else {
+            glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+         }
       }
    }
 }
@@ -457,7 +529,8 @@ void initObjects() {
    buildin->setPosition(vec3(-25, 2, 0));
    buildin->setScale(vec3(10.0, 2.0, 10.0));
    drawable_objects.push_back(buildin);
-
+   
+   glGenFramebuffers(1, &fbo);
    
   /* GamePhysicalObject *building = new GamePhysicalObject("cube");
    building->setName("building");
@@ -631,6 +704,7 @@ int main(int argc, char** argv)
    }
 
    glfwSetTime(0.0);
+   g_last_time = glfwGetTime();
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
       gameLoop();

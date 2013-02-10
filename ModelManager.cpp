@@ -144,6 +144,16 @@ void ModelManager::loadObject(const char *filename)
       newBound.center = vec3(0.0, 0.0, 0.0);
       newBound.radius = 1.0;
       boundStorage.push_back(newBound);
+   } else if (file == "plane") {
+      printf("Plane\n");
+      storage.push_back(planeMesh());
+      
+      bound newBound;
+      newBound.bottomLeft = vec3(-0.5, -0.5, 1.0);
+      newBound.dimension = vec3(1.0, 1.0, 0.01);
+      newBound.center = vec3(0.0, 0.0, 1.0);
+      newBound.radius = 1.0;
+      boundStorage.push_back(newBound);
    } else if (file == "cube") {
       printf("Cube\n");
       storage.push_back(cubeMesh());
@@ -818,6 +828,88 @@ bufferStore ModelManager::floorMesh()
    store.specularity[0] = 0.4;
    
    store.name = "floor";
+   
+#ifdef DEBUG_VBO
+   printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
+#endif
+   return store;
+}
+
+bufferStore ModelManager::planeMesh()
+{
+	bufferStore store;
+	
+   float verticies[12] = {
+		-0.5, -0.5, 0.0,
+      -0.5, 0.5, 0.0,
+      0.5, -0.5, 0.0,
+		0.5, 0.5, 0.0
+   };
+   
+   float normals[12] = {
+		0.0, 0.0, 1.0,
+      0.0, 0.0, 1.0,
+      0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0
+   };
+   
+   /*GLuint faces[36] = {
+    1, 3, 0,
+    1, 2, 3,
+    5, 1, 0,
+    5, 0, 4,
+    6, 2, 3,
+    6, 3, 7,
+    5, 6, 7,
+    5, 7, 4,
+    1, 2, 6,
+    1, 6, 5,
+    0, 3, 7,
+    0, 7, 4
+    };*/
+   
+   GLushort floor[6] = {
+		0, 3, 1,
+		0, 3, 2
+   };
+   
+   GLuint vbo, ibo, nbo;
+   
+   int ibl = 6;
+#ifdef DEBUG_VBO
+   printf("VBO Pre-Initialization: %d\n", (int)vbo);
+#endif
+   glGenBuffers(1, &vbo);
+   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+   
+   glGenBuffers(1, &ibo);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(floor), floor, GL_STATIC_DRAW);
+   
+   glGenBuffers(1, &nbo);
+   glBindBuffer(GL_ARRAY_BUFFER, nbo);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+#ifdef DEBUG_VBO
+   printf("VBO Post-Initialization: %d\n", (int)vbo);
+#endif
+   store.vertexBuffer = vbo;
+   store.normalBuffer = nbo;
+   store.textureBuffer = 0;
+   
+   store.indexBuffer = new GLuint[1];
+   store.indexBufferLength = new int[1];
+   store.diffuseColor = new vec3[1];
+   store.specularity = new float[1];
+   
+   store.numMeshes = 1;
+   
+   store.indexBuffer[0] = ibo;
+   store.indexBufferLength[0] = ibl;
+   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
+   store.specularity[0] = 0.4;
+   
+   store.name = "plane";
    
 #ifdef DEBUG_VBO
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
