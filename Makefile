@@ -2,7 +2,7 @@
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 	ModelManager.o GameObject.o GameDrawableObject.o \
 	GameKartObject.o GameUpgradeObject.o GamePhysicalObject.o \
-	GameRamp.o GameBuilding.o GameTerrain.o loadMap.o
+	GameRamp.o GameBuilding.o GameTerrain.o loadMap.o 
 
 # where to find .h files
 IFLAGS=-I./glfw/include 

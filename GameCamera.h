@@ -23,6 +23,10 @@ public:
         return m_lookAtTarget;
     }
 
+    glm::vec3 getUp() {
+       return m_up;
+    }
+
     void setLookAtTarget(glm::vec3 l) {
         m_lookAtTarget = l;
     }

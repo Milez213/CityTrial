@@ -6,11 +6,11 @@
 
 #include "AABox.h"
 
-#include "glm/glm.hpp"
+#include "Vec3.h"
 
 
 
-AABox::AABox( vec3 &corner,  float x, float y, float z) {
+AABox::AABox( Vec3 &corner,  float x, float y, float z) {
 
 	setBox(corner,x,y,z);
 }
@@ -33,7 +33,7 @@ AABox::~AABox() {}
 
 	
 
-void AABox::setBox( vec3 &corner,  float x, float y, float z) {
+void AABox::setBox( Vec3 &corner,  float x, float y, float z) {
 
 
 	this->corner.copy(corner);
@@ -59,9 +59,9 @@ void AABox::setBox( vec3 &corner,  float x, float y, float z) {
 
 
 
-vec3 AABox::getVertexP(vec3 &normal) {
+Vec3 AABox::getVertexP(Vec3 &normal) {
 
-	vec3 res = corner;
+	Vec3 res = corner;
 
 	if (normal.x > 0)
 		res.x += x;
@@ -77,9 +77,9 @@ vec3 AABox::getVertexP(vec3 &normal) {
 
 
 
-vec3 AABox::getVertexN(vec3 &normal) {
+Vec3 AABox::getVertexN(Vec3 &normal) {
 
-	vec3 res = corner;
+	Vec3 res = corner;
 
 	if (normal.x < 0)
 		res.x += x;

@@ -8,30 +8,30 @@
 #ifndef _AABOX_
 #define _AABOX_
 
-#ifndef _vec3_
-#include "vec3.h"
+#ifndef _Vec3_
+#include "Vec3.h"
 #endif
 
-class vec3;
+class Vec3;
 
 class AABox 
 {
 
 public:
 
-	vec3 corner;
+	Vec3 corner;
 	float x,y,z;
 
 
-	AABox::AABox( vec3 &corner, float x, float y, float z);
-	AABox::AABox(void);
-	AABox::~AABox();
+	AABox( Vec3 &corner, float x, float y, float z);
+	AABox(void);
+	~AABox();
 
-	void AABox::setBox( vec3 &corner, float x, float y, float z);
+	void setBox( Vec3 &corner, float x, float y, float z);
 
 	// for use in frustum computations
-	vec3 AABox::getVertexP(vec3 &normal);
-	vec3 AABox::getVertexN(vec3 &normal);
+	Vec3 getVertexP(Vec3 &normal);
+	Vec3 getVertexN(Vec3 &normal);
 
 
 };

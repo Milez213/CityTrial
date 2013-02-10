@@ -54,6 +54,7 @@ using  glm::vec4;
 #endif
 
 #include "loadMap.h"
+//#include "frustum/FrustumG.h"
 
 using namespace std;
 
@@ -120,7 +121,7 @@ mat4 g_view;
 mat4 g_model;
 
 GameCamera *g_camera;
-
+//FrustumG frust;
 
 // === game info ===
 
@@ -161,6 +162,155 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
 
 /* helper function to set up material for shading */
 
+float fr[6][4];
+
+void ExtractFrustum()
+{
+   float   clip[16];
+   float   t;
+
+
+  mat4 tpose = g_proj * g_view;
+  tpose = glm::transpose(tpose);
+
+  mat4 g_mView =  tpose * g_model;
+
+
+   clip[ 0] = g_mView[ 0][0]; 
+   clip[ 1] = g_mView[ 1][0] ;
+   clip[ 2] = g_mView[ 2][0] ;
+   clip[ 3] = g_mView[ 3][0] ;
+
+   clip[ 4] = g_mView[ 0][1] ;
+   clip[ 5] = g_mView[ 1][1] ;
+   clip[ 6] = g_mView[ 2][1] ;
+   clip[ 7] = g_mView[ 3][1] ;
+
+   clip[ 8] = g_mView[ 0][2];
+   clip[ 9] = g_mView[ 1][2] ;
+   clip[10] = g_mView[ 2][2];
+   clip[11] = g_mView[ 3][2] ;
+
+   clip[12] = g_mView[0][3] ;
+   clip[13] = g_mView[1][3] ;
+   clip[14] = g_mView[2][3] ;
+   clip[15] = g_mView[3][3] ;
+   
+
+   /* Combine the two matrices (multiply projection by modelview) */
+   /*clip[ 0] = g_mView[ 0][0] * g_proj[ 0][0] + g_mView[ 1][0] * g_proj[ 1][0] + g_mView[ 2][0] * g_proj[ 2][0] + g_mView[ 3][0] * g_proj[3][0];
+   clip[ 1] = g_mView[ 0][0] * g_proj[ 0][1] + g_mView[ 1][0] * g_proj[ 1][1] + g_mView[ 2][0] * g_proj[ 2][1] + g_mView[ 3][0] * g_proj[3][1];
+   clip[ 2] = g_mView[ 0][0] * g_proj[ 0][2] + g_mView[ 1][0] * g_proj[ 1][2] + g_mView[ 2][0] * g_proj[2][2] + g_mView[ 3][0] * g_proj[3][2];
+   clip[ 3] = g_mView[ 0][0] * g_proj[ 0][3] + g_mView[ 1][0] * g_proj[ 1][3] + g_mView[ 2][0] * g_proj[2][3] + g_mView[ 3][0] * g_proj[3][3];
+
+   clip[ 4] = g_mView[ 0][1] * g_proj[ 0][0] + g_mView[ 1][1] * g_proj[ 1][0] + g_mView[ 2][1] * g_proj[ 2][0] + g_mView[ 3][1] * g_proj[3][0];
+   clip[ 5] = g_mView[ 0][1] * g_proj[ 0][1] + g_mView[ 1][1] * g_proj[ 1][1] + g_mView[ 2][1] * g_proj[ 2][1] + g_mView[ 3][1] * g_proj[3][1];
+   clip[ 6] = g_mView[ 0][1] * g_proj[ 0][2] + g_mView[ 1][1] * g_proj[ 1][2] + g_mView[ 2][1] * g_proj[2][2] + g_mView[ 3][1] * g_proj[3][2];
+   clip[ 7] = g_mView[ 0][1] * g_proj[ 0][3] + g_mView[ 1][1] * g_proj[ 1][3] + g_mView[ 2][1] * g_proj[2][3] + g_mView[ 3][1] * g_proj[3][3];
+
+   clip[ 8] = g_mView[ 0][2] * g_proj[0][0] + g_mView[ 1][2] * g_proj[ 1][0] + g_mView[2][2] * g_proj[ 2][0] + g_mView[3][2] * g_proj[3][0];
+   clip[ 9] = g_mView[ 0][2] * g_proj[0][1] + g_mView[ 1][2] * g_proj[ 1][1] + g_mView[2][2] * g_proj[ 2][1] + g_mView[3][2] * g_proj[3][1];
+   clip[10] = g_mView[ 0][2] * g_proj[0][2] + g_mView[ 1][2] * g_proj[ 1][2] + g_mView[2][2] * g_proj[2][2] + g_mView[3][2] * g_proj[3][2];
+   clip[11] = g_mView[ 0][2] * g_proj[0][3] + g_mView[ 1][2] * g_proj[ 1][3] + g_mView[2][2] * g_proj[2][3] + g_mView[3][2] * g_proj[3][3];
+
+   clip[12] = g_mView[0][3] * g_proj[0][0] + g_mView[1][3] * g_proj[ 1][0] + g_mView[2][3] * g_proj[ 2][0] + g_mView[3][3] * g_proj[3][0];
+   clip[13] = g_mView[0][3] * g_proj[0][1] + g_mView[1][3] * g_proj[ 1][1] + g_mView[2][3] * g_proj[ 2][1] + g_mView[3][3] * g_proj[3][1];
+   clip[14] = g_mView[0][3] * g_proj[0][2] + g_mView[1][3] * g_proj[ 1][2] + g_mView[2][3] * g_proj[2][2] + g_mView[3][3] * g_proj[3][2];
+   clip[15] = g_mView[0][3] * g_proj[0][ 3] + g_mView[1][3] * g_proj[ 1][3] + g_mView[2][3] * g_proj[2][3] + g_mView[3][3] * g_proj[3][3];
+   
+   /* Extract the numbers for the RIGHT plane */
+   fr[0][0] = clip[ 3] - clip[ 0];
+   fr[0][1] = clip[ 7] - clip[ 4];
+   fr[0][2] = clip[11] - clip[ 8];
+   fr[0][3] = clip[15] - clip[12];
+
+   /* Normalize the result */
+   t = sqrt( fr[0][0] * fr[0][0] + fr[0][1] * fr[0][1] + fr[0][2] * fr[0][2] );
+   fr[0][0] /= t;
+   fr[0][1] /= t;
+   fr[0][2] /= t;
+   fr[0][3] /= t;
+   
+   /* Extract the numbers for the LEFT plane */
+   fr[1][0] = clip[ 3] + clip[ 0];
+   fr[1][1] = clip[ 7] + clip[ 4];
+   fr[1][2] = clip[11] + clip[ 8];
+   fr[1][3] = clip[15] + clip[12];
+
+   /* Normalize the result */
+   t = sqrt( fr[1][0] * fr[1][0] + fr[1][1] * fr[1][1] + fr[1][2] * fr[1][2] );
+   fr[1][0] /= t;
+   fr[1][1] /= t;
+   fr[1][2] /= t;
+   fr[1][3] /= t;
+
+   /* Extract the BOTTOM plane */
+   fr[2][0] = clip[ 3] + clip[ 1];
+   fr[2][1] = clip[ 7] + clip[ 5];
+   fr[2][2] = clip[11] + clip[ 9];
+   fr[2][3] = clip[15] + clip[13];
+
+   /* Normalize the result */
+   t = sqrt( fr[2][0] * fr[2][0] + fr[2][1] * fr[2][1] + fr[2][2] * fr[2][2] );
+   fr[2][0] /= t;
+   fr[2][1] /= t;
+   fr[2][2] /= t;
+   fr[2][3] /= t;
+
+   /* Extract the TOP plane */
+   fr[3][0] = clip[ 3] - clip[ 1];
+   fr[3][1] = clip[ 7] - clip[ 5];
+   fr[3][2] = clip[11] - clip[ 9];
+   fr[3][3] = clip[15] - clip[13];
+
+   /* Normalize the result */
+   t = sqrt( fr[3][0] * fr[3][0] + fr[3][1] * fr[3][1] + fr[3][2] * fr[3][2] );
+   fr[3][0] /= t;
+   fr[3][1] /= t;
+   fr[3][2] /= t;
+   fr[3][3] /= t;
+
+   /* Extract the FAR plane */
+   fr[4][0] = clip[ 3] - clip[ 2];
+   fr[4][1] = clip[ 7] - clip[ 6];
+   fr[4][2] = clip[11] - clip[10];
+   fr[4][3] = clip[15] - clip[14];
+
+   /* Normalize the result */
+   t = sqrt( fr[4][0] * fr[4][0] + fr[4][1] * fr[4][1] + fr[4][2] * fr[4][2] );
+   fr[4][0] /= t;
+   fr[4][1] /= t;
+   fr[4][2] /= t;
+   fr[4][3] /= t;
+
+   /* Extract the NEAR plane */
+   fr[5][0] = clip[ 3] + clip[ 2];
+   fr[5][1] = clip[ 7] + clip[ 6];
+   fr[5][2] = clip[11] + clip[10];
+   fr[5][3] = clip[15] + clip[14];
+
+   /* Normalize the result */
+   t = sqrt( fr[5][0] * fr[5][0] + fr[5][1] * fr[5][1] + fr[5][2] * fr[5][2] );
+   fr[5][0] /= t;
+   fr[5][1] /= t;
+   fr[5][2] /= t;
+   fr[5][3] /= t;
+
+
+/*for (int i = 0; i<6;i++)
+{
+   for (int d = 0; d<4; d++)
+   {
+      printf("%f ",fr[i][d]);
+   }
+   printf("\n");
+}
+printf("\n");*/
+}
+
+
+
+
 void setPhongMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
         meshShader->setMaterial(g_materials[i]);
@@ -183,6 +333,7 @@ float randFloat() {
 void setProjectionMatrix() {
    g_proj = glm::perspective( (float) kart_objects[0]->getSpeed() * 0.5f + 90.0f,
          (float)g_win_width/g_win_height, 0.1f, 100.f);
+   //frust.setCamInternals((float) kart_objects[0]->getSpeed() * 0.5f + 90.0f,(float)g_win_width/g_win_height,0.1f,100.0f);
 }
 
 
@@ -235,11 +386,13 @@ void getInputState()
 void update(double dt)
 {
    getInputState();
+
+	//ExtractFrustum();
    
    for (int i = 0; i < (int)kart_objects.size(); i++) {
       kart_objects[i]->update(dt);
    }
-
+   
 
    // test for collisions
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
@@ -259,17 +412,44 @@ void update(double dt)
    }
    
    wings->update(g_time, dt);
-   
-   
-   
+   /*vec3 pos = kart_objects[0]->getPosition();
+   printf("%f %f %f\n",pos.x,pos.y,pos.z);
+   */
    /*for (int i = 0; i < kart_objects.size(); i++) {
       kart_objects[i]->update(dt);                  // What loop for moving karts should look like, please test *****
    }*/
    
 }
 
+   bool checkFrust(vec3 pos)
+   {
+   int p;
+
+   for( p = 0; p < 6; p++ )
+      if( fr[p][0] * pos.x + fr[p][1] * pos.y + fr[p][2] * pos.z + fr[p][3] < 0.0 ){
+         //printf("%d\n",p);
+         return false;
+      }
+   return true;
+   }
 
 
+float SphereInFrustum( vec3 pos, float radius    )
+{
+  int p;
+  float d;
+int c = 0;
+
+  for( p = 0; p < 6; p++ )
+  {
+    d = fr[p][0] * pos.x + fr[p][1] * pos.y + fr[p][2] * pos.z + fr[p][3];
+    if( d <= -radius )
+      return 0;
+    if( d > radius )
+      c++;
+  }
+  return (c == 6) ? 2 : 1;
+}
 
 void draw(float dt)
 {
@@ -284,6 +464,7 @@ void draw(float dt)
    meshShader->use();
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
+  
 
    // get camera position
    vec3 kartPos = kart_objects[0]->getPosition();
@@ -291,10 +472,17 @@ void draw(float dt)
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 
+ ExtractFrustum(); 
    // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      if(SphereInFrustum(drawable_objects[i]->getPosition(),drawable_objects[i]->getBoundingInfo().radius * 1.5) >0){
       setPhongMaterial(i%NUM_MATERIALS);
       drawable_objects[i]->draw(meshShader, g_model_trans);
+      }
+      else
+      {
+      printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+      }
    }
 
 
@@ -377,7 +565,7 @@ void initObjects() {
    }
    
    GameKartObject *kart = new GameKartObject("cube");
-   kart->setPosition(vec3(30, 1, 30));
+   kart->setPosition(vec3(0, 0, 0));
    kart->setScale(vec3(1.0, 0.75, 1.0));
    kart->setDirection(180);
    drawable_objects.push_back(kart);
@@ -474,7 +662,7 @@ void initialize()
 
 void shutdown() {
 
-   delete g_sound_manager;
+   //delete g_sound_manager;
    exit(0);
 }
 

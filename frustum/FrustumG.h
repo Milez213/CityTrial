@@ -8,26 +8,27 @@
 #ifndef _FRUSTUMG_
 #define _FRUSTUMG_
 
-/*#ifndef _VEC3_
+#ifndef _VEC3_
 #include "Vec3.h"
 #endif
 
 class Vec3;
-*/
+
 #ifndef _PLANE_
 #include "Plane.h"
 #endif
 
 class Plane;
 
-/*#ifndef _AABOX_
+#ifndef _AABOX_
 #include "AABox.h"
 #endif
 
 class AABox;
-*/
 
-#include "glm/glm.hpp"
+
+#include "../include_glm.h"
+
 
 class FrustumG 
 {
@@ -45,7 +46,7 @@ private:
 
 public:
 
-	static enum {OUTSIDE, INTERSECT, INSIDE};
+	//static enum {OUTSIDE, INTERSECT, INSIDE};
 
 	Plane pl[6];
 
@@ -54,16 +55,24 @@ public:
 	float nearD, farD, ratio, angle,tang;
 	float nw,nh,fw,fh;
 
-	FrustumG::FrustumG();
-	FrustumG::~FrustumG();
+	FrustumG();
+	~FrustumG();
 
-	void FrustumG::setCamInternals(float angle, float ratio, float nearD, float farD);
-	void FrustumG::setCamDef(vec3 &p, vec3 &l, vec3 &u);
-	bool FrustumG::pointInFrustum(vec3 &p);
-	//int FrustumG::sphereInFrustum(vec3 &p, float raio);
-	//int FrustumG::boxInFrustum(AABox &b);
+	void setCamInternals(float angle, float ratio, float nearD, float farD);
+	void setCamDef(Vec3 &p, Vec3 &l, Vec3 &u);
+	int pointInFrustum(Vec3 &p);
+	int sphereInFrustum(Vec3 &p, float raio);
+	int boxInFrustum(AABox &b);
 
 
+   void cam(vec3 p,vec3 l,vec3 u);
+
+   int sphere(vec3 p,float ratio);
+
+	void drawPoints();
+	void drawLines();
+	void drawPlanes();
+	void drawNormals();
 };
 
 

@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-Plane::Plane( vec3 &v1,  vec3 &v2,  vec3 &v3) {
+Plane::Plane( Vec3 &v1,  Vec3 &v2,  Vec3 &v3) {
 
 	set3Points(v1,v2,v3);
 }
@@ -17,33 +17,30 @@ Plane::Plane() {}
 Plane::~Plane() {}
 
 
-void Plane::set3Points( vec3 &v1,  vec3 &v2,  vec3 &v3) {
+void Plane::set3Points( Vec3 &v1,  Vec3 &v2,  Vec3 &v3) {
 
 
-	vec3 aux1, aux2;
+	Vec3 aux1, aux2;
 
 	aux1 = v1 - v2;
 	aux2 = v3 - v2;
 
 	normal = aux2 * aux1;
 
-	normal = glm::normalize(normal);
-	point.x = v2.x;
-   point.y = v2.y;
-   point.z = v2.z;
-
-	d = -(normal.x*point.x + normal.y * point.y + normal.z * point.z);
+	normal.normalize();
+	point.copy(v2);
+	d = -(normal.innerProduct(point));
 }
 
-void Plane::setNormalAndPoint(vec3 &normal, vec3 &point) {
+void Plane::setNormalAndPoint(Vec3 &normal, Vec3 &point) {
 
-	/*this->normal.copy(normal);
+	this->normal.copy(normal);
 	this->normal.normalize();
-	d = -(this->normal.innerProduct(point));*/
+	d = -(this->normal.innerProduct(point));
 }
 
 void Plane::setCoefficients(float a, float b, float c, float d) {
-/*
+
 	// set the normal vector
 	normal.set(a,b,c);
 	//compute the lenght of the vector
@@ -51,20 +48,18 @@ void Plane::setCoefficients(float a, float b, float c, float d) {
 	// normalize the vector
 	normal.set(a/l,b/l,c/l);
 	// and divide d by th length as well
-	this->d = d/l;*/
+	this->d = d/l;
 }
 
 
 	
 
-float Plane::distance(vec3 &p) {
+float Plane::distance(Vec3 &p) {
 
-   float c = normal.x*p.x + normal.y * p.y + normal.z * p.z;
-	return (d + c);
+	return (d + normal.innerProduct(p));
 }
 
 void Plane::print() {
 
-	printf("Plane(");
-   //normal.print();printf("# %f)",d);
+	printf("Plane(");normal.print();printf("# %f)",d);
 }

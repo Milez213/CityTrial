@@ -6,27 +6,29 @@
 #ifndef _PLANE_
 #define _PLANE_
 
+#ifndef _Vec3_
+#include "Vec3.h"
+#endif
 
-
-#include "glm/glm.hpp"
+class Vec3;
 
 class Plane  
 {
 
 public:
 
-	vec3 normal,point;
+	Vec3 normal,point;
 	float d;
 
 
-	Plane::Plane( vec3 &v1,  vec3 &v2,  vec3 &v3);
-	Plane::Plane(void);
-	Plane::~Plane();
+	Plane( Vec3 &v1,  Vec3 &v2,  Vec3 &v3);
+	Plane(void);
+	~Plane();
 
-	void set3Points( vec3 &v1,  vec3 &v2,  vec3 &v3);
-	void setNormalAndPoint(vec3 &normal, vec3 &point);
+	void set3Points( Vec3 &v1,  Vec3 &v2,  Vec3 &v3);
+	void setNormalAndPoint(Vec3 &normal, Vec3 &point);
 	void setCoefficients(float a, float b, float c, float d);
-	float distance(vec3 &p);
+	float distance(Vec3 &p);
 
 	void print();
 

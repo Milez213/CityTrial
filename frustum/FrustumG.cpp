@@ -34,15 +34,15 @@ void FrustumG::setCamInternals(float angle, float ratio, float nearD, float farD
 }
 
 
-void FrustumG::setCamDef(vec3 &p, vec3 &l, vec3 &u) {
+void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u) {
 
-	vec3 dir,nc,fc,X,Y,Z;
+	Vec3 dir,nc,fc,X,Y,Z;
 
 	Z = p - l;
-	Z = glm::normalize(Z);
+	Z.normalize();
 
 	X = u * Z;
-	X = glm::normalize(X);
+	X.normalize();
 
 	Y = Z * X;
 
@@ -68,30 +68,34 @@ void FrustumG::setCamDef(vec3 &p, vec3 &l, vec3 &u) {
 }
 
 
-bool FrustumG::pointInFrustum(vec3 &p) {
+int FrustumG::pointInFrustum(Vec3 &p) {
 
-	bool result = true;
+/*	int result = INSIDE;
 	for(int i=0; i < 6; i++) {
 
 		if (pl[i].distance(p) < 0)
-			return true;
+			return OUTSIDE;
 	}
 	return(result);
-
+*/
 }
 
+int sphere(vec3 p, float ratio)
+{
+   return sphereInFrustum(Vec3(p.x,p.y,p.z),ratio);
+}
 
-/**int FrustumG::sphereInFrustum(vec3 &p, float raio) {
+int FrustumG::sphereInFrustum(Vec3 &p, float raio) {
 
-	int result = INSIDE;
+	int result = 2;
 	float distance;
 
 	for(int i=0; i < 6; i++) {
 		distance = pl[i].distance(p);
 		if (distance < -raio)
-			return OUTSIDE;
+			return 0;
 		else if (distance < raio)
-			result =  INTERSECT;
+			result =  1;
 	}
 	return(result);
 
@@ -100,7 +104,7 @@ bool FrustumG::pointInFrustum(vec3 &p) {
 
 int FrustumG::boxInFrustum(AABox &b) {
 
-	int result = INSIDE;
+/*	int result = INSIDE;
 	for(int i=0; i < 6; i++) {
 
 		if (pl[i].distance(b.getVertexP(pl[i].normal)) < 0)
@@ -109,11 +113,179 @@ int FrustumG::boxInFrustum(AABox &b) {
 			result =  INTERSECT;
 	}
 	return(result);
-
+*/
  }
 
 
 
+   void cam(vec3 p,vec3 l,vec3 u)
+   {
+   Vec3 pos = Vec3(p.x,p.y,p.z);
+   Vec3 los = Vec3(l.x,l.y,l.z);
+   Vec3 dos = Vec3(u.x,u.y,u.z);
+   setCamDef(pos,los,dos);
+   }
+
+void FrustumG::drawPoints() {
 
 
+	glBegin(GL_POINTS);
 
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+
+	glEnd();
+}
+
+
+void FrustumG::drawLines() {
+
+	glBegin(GL_LINE_LOOP);
+	//near plane
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	//far plane
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	//bottom plane
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	//top plane
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	//left plane
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	// right plane
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+
+	glEnd();
+}
+
+
+void FrustumG::drawPlanes() {
+
+	glBegin(GL_QUADS);
+
+	//near plane
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+
+	//far plane
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+
+	//bottom plane
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+
+	//top plane
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+
+	//left plane
+
+		glVertex3f(ntl.x,ntl.y,ntl.z);
+		glVertex3f(nbl.x,nbl.y,nbl.z);
+		glVertex3f(fbl.x,fbl.y,fbl.z);
+		glVertex3f(ftl.x,ftl.y,ftl.z);
+
+	// right plane
+		glVertex3f(nbr.x,nbr.y,nbr.z);
+		glVertex3f(ntr.x,ntr.y,ntr.z);
+		glVertex3f(ftr.x,ftr.y,ftr.z);
+		glVertex3f(fbr.x,fbr.y,fbr.z);
+
+	glEnd();
+
+}
+
+void FrustumG::drawNormals() {
+
+	Vec3 a,b;
+
+	glBegin(GL_LINES);
+
+		// near
+		a = (ntr + ntl + nbr + nbl) * 0.25;
+		b = a + pl[NEARP].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+
+		// far
+		a = (ftr + ftl + fbr + fbl) * 0.25;
+		b = a + pl[FARP].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+
+		// left
+		a = (ftl + fbl + nbl + ntl) * 0.25;
+		b = a + pl[LEFT].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+		
+		// right
+		a = (ftr + nbr + fbr + ntr) * 0.25;
+		b = a + pl[RIGHT].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+		
+		// top
+		a = (ftr + ftl + ntr + ntl) * 0.25;
+		b = a + pl[TOP].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+		
+		// bottom
+		a = (fbr + fbl + nbr + nbl) * 0.25;
+		b = a + pl[BOTTOM].normal;
+		glVertex3f(a.x,a.y,a.z);
+		glVertex3f(b.x,b.y,b.z);
+
+	glEnd();
+
+
+}
