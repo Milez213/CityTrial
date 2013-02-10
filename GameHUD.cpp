@@ -30,7 +30,7 @@ void GameHUD::drawSpeed(PhongShader *meshShader, RenderingHelper modelViewMatrix
    meshShader->use();
    
    modelViewMatrix.translate(vec3(hudWidth - 50.0, hudHeight - 50.0, 1.0));
-   modelViewMatrix.scale(30.0 * speed/50.0);
+   modelViewMatrix.scale(30.0 * speed/30.0);
    //modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    //modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    //modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
