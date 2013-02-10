@@ -13,7 +13,7 @@
 
 extern ModelManager *g_model_manager;
 
-GameDrawableObject::GameDrawableObject(const char *objFile)
+GameDrawableObject::GameDrawableObject(const char *objFile) : toRemove(false)
 {
    g_model_manager->getObject(objFile, &meshStorage, &boundingInfo);
 

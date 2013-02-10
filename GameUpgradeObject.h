@@ -12,21 +12,25 @@
 #include <iostream>
 
 #include "GameDrawableObject.h"
+#include "GameKartObject.h"
 
 class GameUpgradeObject : public GameDrawableObject
 {
 public:
-   enum Type {FLIGHT, GRIP, TURNING};
+   //enum Type {FLIGHT, GRIP, TURNING, SPEED};
    
-   GameUpgradeObject(Type initType);
+   //GameUpgradeObject(Type initType);
+   GameUpgradeObject(const char *objFile);
    
-   virtual void update(double time, double dt);
-   
+   virtual void update(float dt);
    virtual void onCollide(GameDrawableObject *other);
    
-   Type upgradeType() { return type; };
+   virtual void addToKart(GameKartObject *kart) = 0;
+   virtual void applyStat(GameKartProperties *props) = 0;
+   
+   //Type upgradeType() { return type; };
    
 private:
-   Type type;
+   //Type type;
 };
 #endif /* defined(____GameUpgradeObject__) */

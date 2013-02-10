@@ -11,7 +11,7 @@ class SDLGameSoundSample : public GameSound {
 
 public:
 
-    SDLGameSoundSample(char* filename) {
+    SDLGameSoundSample(const char* filename) {
         m_channel = -1;
         m_loops = 0; // play once
         m_sound = Mix_LoadWAV(filename);
@@ -61,7 +61,7 @@ class SDLGameSoundMusic : public GameSound {
 
 public:
 
-    SDLGameSoundMusic(char* filename) {
+    SDLGameSoundMusic(const char* filename) {
         m_loops = 0;
         m_music = Mix_LoadMUS(filename);
         if (NULL == m_music) {
@@ -140,14 +140,14 @@ public:
     }
 
     // loads the sound. may cache it.
-    virtual GameSound* getMusic(char* filename) {
+    virtual GameSound* getMusic(const char* filename) {
         // TODO - cache?
         GameSound *sound = new SDLGameSoundMusic(filename);
         return sound;
     }
 
     // loads the sound. may cache it.
-    virtual GameSound* getSample(char* filename) {
+    virtual GameSound* getSample(const char* filename) {
         // TODO - cache?
         SDLGameSoundSample *sound = new SDLGameSoundSample(filename);
 

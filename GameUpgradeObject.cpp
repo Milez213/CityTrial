@@ -7,19 +7,22 @@
 //
 
 #include "GameUpgradeObject.h"
-#include "GameKartObject.h"
 
 
-GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
+/*GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
 {
    type = initType;
    name = "upgrade";
    toRemove = false;
+}*/
+GameUpgradeObject::GameUpgradeObject(const char *objFile) : GameDrawableObject(objFile)
+{
+   
 }
 
-void GameUpgradeObject::update(double time, double dt)
+void GameUpgradeObject::update(float dt)
 {
-   setPosition(vec3(getPosition().x, 1 + 0.5 * cos(time), getPosition().z));
+   //setPosition(vec3(getPosition().x, getPosition().y + 0.01 * cos(time), getPosition().z));
    
    float yRot = getRotation().y + 90 * dt;
    if (yRot > 360) 
@@ -30,7 +33,17 @@ void GameUpgradeObject::update(double time, double dt)
 
 void GameUpgradeObject::onCollide(GameDrawableObject *other)
 {
-   if (GameKartObject *upgrade =  dynamic_cast<GameKartObject *>(other)) {
+   if (GameKartObject *kart =  dynamic_cast<GameKartObject *>(other)) {
+      /*switch (type) {
+         case SPEED:
+            kart->properties.upgradeSPeed();
+            break;
+            
+         case WINGS:
+            kart->addPart(new GamePartWingObject())
+         default:
+            break;
+      }*/
       scheduleForRemoval();
    }
 }
