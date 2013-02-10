@@ -105,6 +105,9 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          }
       } 
    }
+   else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+      setSpeed(-getSpeed());
+   }
    else if (strcmp(other->getName(), "thingy") == 0) {
        // Collided with cuby thing
        ding_sound->play();
