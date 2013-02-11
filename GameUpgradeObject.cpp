@@ -34,16 +34,7 @@ void GameUpgradeObject::update(float dt)
 void GameUpgradeObject::onCollide(GameDrawableObject *other)
 {
    if (GameKartObject *kart =  dynamic_cast<GameKartObject *>(other)) {
-      /*switch (type) {
-         case SPEED:
-            kart->properties.upgradeSPeed();
-            break;
-            
-         case WINGS:
-            kart->addPart(new GamePartWingObject())
-         default:
-            break;
-      }*/
+      
       scheduleForRemoval();
    }
 }

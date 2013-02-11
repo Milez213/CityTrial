@@ -27,10 +27,10 @@ class GamePartWings : public GamePartUpgrade
       setScale(glm::vec3(1.0));
       setRotation(glm::vec3(0.0));
       kart->addSidePart(this);
-      applyStat(&kart->properties);
+      //cycleStatOn(&kart->properties);
    }
-   virtual void applyStat(GameKartProperties *props) { props->setWings(true); }
-   virtual void unApplyStat(GameKartProperties *props) { props->setWings(false); }
+   virtual void cycleStatOn(GameKartProperties *props) { props->setLift(props->getLift()+10.0/25); }
+   virtual void cycleStatOff(GameKartProperties *props) { props->setLift(props->getLift()-10.0/25); }
 };
 
 

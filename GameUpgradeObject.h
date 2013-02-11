@@ -26,7 +26,6 @@ public:
    virtual void onCollide(GameDrawableObject *other);
    
    virtual void addToKart(GameKartObject *kart) = 0;
-   virtual void applyStat(GameKartProperties *props) = 0;
    
    //Type upgradeType() { return type; };
    
