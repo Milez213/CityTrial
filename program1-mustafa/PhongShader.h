@@ -7,6 +7,8 @@
 #include "Shader.h"
 #include "defines.h"
 
+#include <stdlib.h>
+
 using glm::vec3;
 using glm::mat4;
 using glm::value_ptr;
@@ -27,10 +29,46 @@ class PhongShader : public Shader {
 
 public:
 
-    PhongShader();
+    PhongShader() : Shader("shaders/phong_vert.glsl", "shaders/phong_frag.glsl") {
+        if (m_installed) {
+            // matrices
+            h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
+            h_uViewMatrix = safe_glGetUniformLocation(m_shaderProg, "uViewMatrix");
+            h_uModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uModelMatrix");
+            h_uiModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uiModelMatrix");
+
+            // attributes
+            h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
+            h_aColor = safe_glGetAttribLocation(m_shaderProg, "aColor");
+            h_aNormal = safe_glGetAttribLocation(m_shaderProg, "aNormal");
+
+            // TODO - add texture coordinates handle in shader
+
+            // light  stuff
+            h_uLightPos = safe_glGetUniformLocation(m_shaderProg, "uLightPos");
+            h_uLightColor = safe_glGetUniformLocation(m_shaderProg, "uLColor");
+            h_uMatAmb = safe_glGetUniformLocation(m_shaderProg, "uMat.aColor");
+            h_uMatDif = safe_glGetUniformLocation(m_shaderProg, "uMat.dColor");
+            h_uMatSpec = safe_glGetUniformLocation(m_shaderProg, "uMat.sColor");
+            h_uMatShine = safe_glGetUniformLocation(m_shaderProg, "uMat.shine");
+            h_uShowNormals = safe_glGetUniformLocation(m_shaderProg, "uShowNormals");
+            h_uCamPos = safe_glGetUniformLocation(m_shaderProg, "uCamPos");
+        } else {
+            fprintf(stderr, "PhongShader(): Couldn't install shaders\n");
+            exit(1);
+        }
+    }
 
     void setShowNormals(int show) {
         safe_glUniform1i(h_uShowNormals, show);
+    }
+
+    GLuint getNormLocation() {
+        return h_aNormal;
+    }
+
+    GLuint getPosLocation() {
+        return h_aPosition;
     }
 
     void setMaterial(PhongMaterial &mat) {
@@ -61,6 +99,11 @@ public:
 
     void setModelMatrix(mat4 mat) {
         safe_glUniformMatrix4fv(h_uModelMatrix, value_ptr(mat));
+        setiModelMatrix(glm::inverse(mat));
+    }
+
+    void setiModelMatrix(mat4 mat) {
+        safe_glUniformMatrix4fv(h_uiModelMatrix, value_ptr(mat));
     }
 
     void setViewMatrix(mat4 mat) {
@@ -81,6 +124,7 @@ private:
 
     // matrices
     GLint h_uModelMatrix;
+    GLint h_uiModelMatrix;
     GLint h_uViewMatrix;
     GLint h_uProjMatrix;
 

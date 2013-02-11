@@ -202,11 +202,6 @@ void getGLversion() {
     printf("GL Version (integer): %d.%d\n", major, minor);
     printf("GLSL Version: %s\n", glslVersion);
 
-
-    if (major < 3) {
-        printf("This program requires at least GLSL 3.3\n");
-      //  exit(0);
-    }
 }
 
 // textfile.cpp

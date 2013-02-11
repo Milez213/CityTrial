@@ -905,9 +905,8 @@ int main(int argc, char** argv)
       glfwTerminate();
       exit( EXIT_FAILURE );
    } else {
-   		int major, minor, rev;
-		glfwGetGLVersion(&major, &minor, &rev);
- 		fprintf(stderr, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
+      // in GLSL_helper
+      getGLversion();
 	}
 
    glfwSetWindowSizeCallback( reshape );

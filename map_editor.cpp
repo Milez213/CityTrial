@@ -107,11 +107,19 @@ vec3 g_playerDir;
 float g_playerMoveSpeed = 4;
 
 
+
+
+int g_current_object = 0;
+
+
 // *** lights ***
 
 LightInfo g_lightInfo;
 
 #define NUM_MATERIALS 5
+
+
+int g_current_material = 0;
 
 PhongMaterial g_materials[NUM_MATERIALS] = {
                   {vec3(0.2, 0.2, 0.2), // amb
@@ -149,6 +157,45 @@ void setPhongMaterial(int i) {
 
 // *** end lights ***
 
+
+
+// ===== Export Objects =====
+struct ExportObject {
+    string name;
+    mat4 xt;
+    int materialIndex;
+    vec3 t;
+    vec3 s;
+    vec3 r;
+};
+
+// list of meshes
+// list<mat4> boxes_xt;
+
+list<ExportObject> g_export_objects;
+
+int g_current_material = 0;
+
+void toggleMaterials(int pos) {
+
+    if (pos == -1) {
+        if (g_current_material == 0) {
+            g_current_material = NUM_MATERIALS - 1;
+        }
+    }
+    g_current_material = (g_current_material + pos) % NUM_MATERIALS;
+}
+
+
+
+
+
+
+
+
+
+
+
 // === end Globals ==============================
 
 
@@ -179,38 +226,6 @@ void setView() {
 }
 
 
-
-/* TODO - put in keyboard callback
-void getInputState()
-{
-   for (int i = 0; i < (int)kart_objects.size(); i++) {
-      float joy[4]; //should vary from -1.0 to 1.0
-      unsigned char button[32]; //either GLFW_PRESSED or GLFW_RELEASED
-      
-      if (kart_objects[i]->isUsingController()) {
-         glfwGetJoystickPos(i, joy, 4);
-         glfwGetJoystickButtons(i, button, 32);
-      } else {
-         if (glfwGetKey(kart_objects[i]->getInput(0)) == GLFW_PRESS)
-            joy[3] = 1.0;
-         else if (glfwGetKey(kart_objects[i]->getInput(1)) == GLFW_PRESS)
-            joy[3] = -1.0;
-         else
-            joy[3] = 0.0;
-         if (glfwGetKey(kart_objects[i]->getInput(2)) == GLFW_PRESS)
-            joy[0] = 1.0;
-         else if (glfwGetKey(kart_objects[i]->getInput(3)) == GLFW_PRESS)
-            joy[0] = -1.0;
-         else
-            joy[0] = 0.0;
-      }
-      
-      //printf("Joy: %0.3f\n", joy[3]);
-      kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
-      //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
-   }
-}
-*/
 
 void rotateCamera() {
    g_camera->angle.x += 50 * g_mousePos.y;
@@ -297,6 +312,7 @@ void initObjects() {
    g_camera->setPosition(vec3(0, 5, 0));
    
    meshShader = new PhongShader();
+
    // Light 
    g_lightInfo.pos = vec3(1, 15, 1);
    g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
@@ -305,7 +321,7 @@ void initObjects() {
    meshShader->setShowNormals(0);
 
 
-   // Bunnie
+   // ground
    GameTerrain *floor = new GameTerrain();
    floor->setScale(vec3(100.0, 0.9, 100.0));
    floor->setPosition(vec3(0, 0, 0));
@@ -482,6 +498,12 @@ void GLFWCALL mouseMove(int x, int y) {
 
 }
 
+void GLFWCALL mouseWheelCallback(int pos) {
+
+   printf("wheel: %d\n", pos);
+
+}
+
 
 int main(int argc, char** argv) 
 {
@@ -501,7 +523,7 @@ int main(int argc, char** argv)
    }
 
    
-   g_settings.load("game_settings.ini");
+   g_settings.load("editor_settings.ini");
    int new_width = g_settings["win_width"];
    int new_height = g_settings["win_height"];
 
@@ -521,6 +543,7 @@ int main(int argc, char** argv)
    glfwSetWindowSizeCallback( reshape );
    glfwSetKeyCallback( keyboard_callback_key );
    glfwSetMousePosCallback( mouseMove );
+   glfwSetMouseWheelCallback( mouseWheelCallback );
 
    initialize();
 

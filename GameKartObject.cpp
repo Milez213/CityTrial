@@ -402,6 +402,7 @@ void GameKartObject::update(float dt)
       }
    }
    else if (actionOn) { //GLFW_RELEASE
+      printf("activeEnd()\n");
       if (!activeUpgrades.empty())
          activeUpgrades.front()->activeEnd(this);
       actionOn = false;

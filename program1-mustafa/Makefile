@@ -1,8 +1,11 @@
 # Makefile by Mustafa Khafateh
 
+# vim modeline
+# vim: set noexpandtab :
+
 CFLAGS=-Wall -g
 LDFLAGS=-DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -DCSL -lfreetype
-IFLAGS=-I../
+IFLAGS=-I../ -I
 
 FT2=-I/usr/include/freetype2
 
@@ -14,6 +17,24 @@ main:	main.o helper.o mesh_loader.o shader.o phongShader.o torus.o drawable.o \
 		mesh.o texture.o sparks.o bunnie.o bunnies.o
 		echo "Linking "$^
 		g++  $(CFLAGS) $^ -o $@ $(FT2) $(LDFLAGS)
+
+
+
+make_test:	../lol.ext
+	echo "testing"
+
+
+../%.ext:  $(wildcard noneexistant)
+	echo $@
+
+map_editor2:	map_editor2.o texture.o helper.o shader.o phongShader.o
+		echo "Linking "$^
+		g++  $(CFLAGS) $^ -o $@ $(FT2) $(LDFLAGS)
+
+
+map_editor2.o:	map_editor2.cpp
+		g++ $(IFLAGS) $(CFLAGS) $(LDFLAGS)  $< -c  $(FT2)
+
 
 main.o:	main.cpp
 		g++ $(IFLAGS) $(CFLAGS) $(LDFLAGS)  $< -c  $(FT2)
