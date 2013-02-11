@@ -100,6 +100,8 @@ mat4 g_model;
 
 GameCameraFirstPerson *g_camera;
 
+glm::vec2 g_mousePos;
+
 // which direction player is moving?
 vec3 g_playerDir;
 float g_playerMoveSpeed = 4;
@@ -210,6 +212,10 @@ void getInputState()
 }
 */
 
+void rotateCamera() {
+   g_camera->angle.x += 50 * g_mousePos.x;
+   g_camera->angle.y -= 50 * g_mousePos.y;
+}
 
 
 void update(double dt)
@@ -221,7 +227,6 @@ void update(double dt)
       drawable_objects[i]->update(dt);
    }
    
-
    g_camera->update(dt, g_playerDir, g_playerMoveSpeed);
 
 }
@@ -282,7 +287,6 @@ void gameLoop()
 
    g_last_time = g_time;   	
 }
-
 
 
 
@@ -376,6 +380,9 @@ void initialize()
 
 
 
+
+
+
 void shutdown() {
 
    //delete g_sound_manager;
@@ -441,16 +448,38 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       shutdown();
       break;
    }
+}
 
-   /*
-   switch (action) {
-   case GLFW_PRESS:
-      break;
 
-   case GLFW_RELEASE:
-      break;
-   }
-   */
+
+// pixel coords to window coords
+float p2wx(int in_x) {
+  //fill in with the correct return value
+  return ((2.0 / (g_win_width - 1)) * in_x) - 1;
+}
+
+
+float p2wy(int in_y) {
+  // flip glut's y
+  in_y = g_win_height - in_y - 1;
+
+  // fill in with the correct return value
+  return ((2.0 / (g_win_height - 1)) * in_y) - 1;;
+}
+
+
+void GLFWCALL mouseMove(int x, int y) {
+
+   g_mousePos.y = p2wx(x);
+   g_mousePos.x = p2wy(y);
+
+   if (g_camera) 
+      rotateCamera();
+   
+   glfwSetMousePos(g_win_width/2, g_win_height/2);
+   
+   printf("x: %f, y: %f\n", g_mousePos.x, g_mousePos.y);
+
 }
 
 
@@ -491,6 +520,7 @@ int main(int argc, char** argv)
 
    glfwSetWindowSizeCallback( reshape );
    glfwSetKeyCallback( keyboard_callback_key );
+   glfwSetMousePosCallback( mouseMove );
 
    initialize();
 
