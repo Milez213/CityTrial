@@ -285,6 +285,22 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
 
 }
 
+void GameKartObject::addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part)
+{
+   if (!list.empty())
+      list.front()->cycleStatOff(&properties);
+   list.push_front(part);
+   part->cycleStatOn(&properties);
+}
+void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
+{
+   if (list.size() >= 2) {
+      list.front()->cycleStatOff(&properties);
+      list.push_back(list.front());
+      list.pop_front();
+      list.front()->cycleStatOn(&properties);
+   }
+}
 void GameKartObject::update(float dt)
 {
    glm::vec3 vel = getVelocity();

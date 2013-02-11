@@ -47,9 +47,13 @@ public:
    float getRideHeight() { return getScale().y; }
    
    
-   void addFrontPart(GamePartUpgrade *part) { frontParts.push_front(part); }
-   void addSidePart(GamePartUpgrade *part) { sideParts.push_front(part); }
-   void addBackPart(GamePartUpgrade *part) { backParts.push_front(part); }
+   void addFrontPart(GamePartUpgrade *part) { addPartToList(frontParts, part); }
+   void addSidePart(GamePartUpgrade *part) { addPartToList(sideParts, part); }
+   void addBackPart(GamePartUpgrade *part) { addPartToList(backParts, part); }
+   
+   void cycleFrontParts() { cyclePartList(frontParts); }
+   void cycleSideParts() { cyclePartList(sideParts); }
+   void cycleBackParts() { cyclePartList(backParts); }
    
 
    bool isUsingController() {
@@ -96,6 +100,8 @@ private:
    GameSound *collide_sound;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
+   void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
+   void cyclePartList(list<GamePartUpgrade *> &list);
 };
 
 #endif
