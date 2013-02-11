@@ -58,7 +58,7 @@ public:
          return false;
       }
    }
-   bool useEnergyOnce(float cost) {
+   bool useEnergyCost(float cost) {
       if (energy - cost > 0) {
          energy -= cost;
          return true;

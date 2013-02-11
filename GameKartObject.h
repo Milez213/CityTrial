@@ -17,7 +17,7 @@
 #include "SoundManager.h"
 
 struct inputMap {
-   int up, down, left, right;
+   int up, down, left, right, action;
 };
 
 // global variables
@@ -69,10 +69,11 @@ public:
    }
    
    void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
-   //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
+   void setButtonState(unsigned char butState[]) { memcpy(buttonState, butState, sizeof(unsigned char) * 32); }; //"  " of buttons to "  "
    
-   void setInputMap(int up, int down, int left, int right) { input.up = up; input.down = down; input.left = left; input.right = right; };
+   void setInputMap(int up, int down, int left, int right, int action) { input.up = up; input.down = down; input.left = left; input.right = right; input.action = action; };
    int getInput(int request);
+   const inputMap getInputMap() { return input; }
    
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }
@@ -94,9 +95,10 @@ private:
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
    
-   bool usingController,wings;
+   bool usingController;//,wings;
    float joystickState[4];
-   char buttonState[32];
+   unsigned char buttonState[32];
+   bool actionOn;
    
    inputMap input;
    

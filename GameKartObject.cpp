@@ -1,9 +1,12 @@
+#include <GL/glfw.h>
+
 #include "GameKartObject.h"
 #include "GameSceneryObject.h"
 #include "GameUpgradeObject.h"
 
 #include "GamePartUpgrade.h"
 #include "GamePartWings.h"
+#include "GameActiveUpgrade.h"
 
 #include <cmath>
 
@@ -35,6 +38,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 0.0;
+   actionOn = false;
    
    points = 0;
     
@@ -61,6 +65,8 @@ int GameKartObject::getInput(int request) {
          return input.left;
       case 3:
          return input.right;
+      case 4:
+         return input.action;
    }
 }
 
@@ -304,10 +310,9 @@ void GameKartObject::cycleActives()
 
 void GameKartObject::update(float dt)
 {
-   glm::vec3 vel = getVelocity();
+   /*glm::vec3 vel = getVelocity();
    glm::vec3 pos = getPosition();
    
-   /*
    printf("\nbefore\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
@@ -371,10 +376,10 @@ void GameKartObject::update(float dt)
    
    //}
    
-   vel = getVelocity();
+   /*vel = getVelocity();
    pos = getPosition();
    
-   /*
+   
    printf("after\n");
    printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
    printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
@@ -383,5 +388,23 @@ void GameKartObject::update(float dt)
    */
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+   
+   
    properties.regenEnergy(dt);
+   if (buttonState[0] == GLFW_PRESS) {
+      cout << "action press\n";
+      if (!actionOn) {
+         if (!activeUpgrades.empty())
+            activeUpgrades.front()->activeStart(this);
+         actionOn = true;
+      }
+      else if (!activeUpgrades.empty()){
+         activeUpgrades.front()->activeUpdate(this, dt);
+      }
+   }
+   else if (actionOn) { //GLFW_RELEASE
+      if (!activeUpgrades.empty())
+         activeUpgrades.front()->activeEnd(this);
+      actionOn = false;
+   }
 }

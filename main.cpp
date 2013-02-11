@@ -47,6 +47,7 @@ using  glm::vec4;
 
 #include "GamePartWings.h"
 #include "GameStatSpeed.h"
+#include "GameActiveBoost.h"
 #include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF
@@ -388,17 +389,22 @@ void getInputState()
             joy[3] = -1.0;
          else
             joy[3] = 0.0;
+         
          if (glfwGetKey(kart_objects[i]->getInput(2)) == GLFW_PRESS)
             joy[0] = 1.0;
          else if (glfwGetKey(kart_objects[i]->getInput(3)) == GLFW_PRESS)
             joy[0] = -1.0;
          else
             joy[0] = 0.0;
+         
+         button[0] = glfwGetKey(kart_objects[i]->getInputMap().action);
+         if (button[0] == GLFW_PRESS)
+            cout << "button[0] press\n";
       }
       
       //printf("Joy: %0.3f\n", joy[3]);
       kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
-      //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
+      kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
    }
 }
 
@@ -693,7 +699,7 @@ void initObjects() {
       kart->setPosition(vec3(30, 1, 30));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
-      kart->setInputMap('W', 'S', 'A', 'D');
+      kart->setInputMap('W', 'S', 'A', 'D', ' ');
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -702,7 +708,7 @@ void initObjects() {
       otherKart->setPosition(vec3(45, 1, 30));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
-      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER);
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
@@ -715,7 +721,7 @@ void initObjects() {
       kart_objects.push_back(thirdKart); 
    }
 
-   
+   //upgrades
    GamePartUpgrade *part = new GamePartWings();
    part->setPosition(vec3(5, 1, 2));
    part->setScale(vec3(2.0, 1.0, 1.0));
@@ -726,12 +732,16 @@ void initObjects() {
    stat->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(stat);
    
+   GameActiveUpgrade *active = new GameActiveBoost();
+   active->setPosition(vec3(10, 1, 5));
+   active->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
    
    GameRamp *ramp = new GameRamp();
    ramp->setPosition(vec3(-25, 2, -25));
    ramp->setScale(vec3(3.0, 2.0, 3.0));
    drawable_objects.push_back(ramp);
-   
    
    GameBuilding *buildin = new GameBuilding();
    buildin->setPosition(vec3(-25, 2, 0));
