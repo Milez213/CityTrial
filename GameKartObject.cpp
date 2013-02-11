@@ -71,17 +71,6 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       upgrade->addToKart(this);
       points += 100;
-      /*if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
-         properties.setWings();
-         GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
-         
-         // assert upgrade != NULL
-         
-         upgrade->scheduleForRemoval();
-      }
-      else {
-         
-      }*/
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
@@ -285,6 +274,34 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
 
 }
 
+void GameKartObject::addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part)
+{
+   if (!list.empty())
+      list.front()->cycleStatOff(&properties);
+   list.push_front(part);
+   part->cycleStatOn(&properties);
+}
+void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
+{
+   if (list.size() >= 2) {
+      list.front()->cycleStatOff(&properties);
+      list.push_back(list.front());
+      list.pop_front();
+      list.front()->cycleStatOn(&properties);
+   }
+}
+void GameKartObject::addActive(GameActiveUpgrade *active)
+{
+   activeUpgrades.push_back(active);
+}
+void GameKartObject::cycleActives()
+{
+   if (activeUpgrades.size() >= 2) {
+      activeUpgrades.push_back(activeUpgrades.front());
+      activeUpgrades.pop_front();
+   }
+}
+
 void GameKartObject::update(float dt)
 {
    glm::vec3 vel = getVelocity();
@@ -366,4 +383,5 @@ void GameKartObject::update(float dt)
    */
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+   properties.regenEnergy(dt);
 }

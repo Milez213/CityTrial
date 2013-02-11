@@ -18,7 +18,8 @@ public:
    GamePartUpgrade() : GameUpgradeObject("cube") {}
    
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
-   virtual void unApplyStat(GameKartProperties *props) = 0;
+   virtual void cycleStatOn(GameKartProperties *props) = 0;
+   virtual void cycleStatOff(GameKartProperties *props) = 0;
 };
 
 #endif /* defined(____GamePartUpgrade__) */

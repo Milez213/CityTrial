@@ -26,11 +26,13 @@ using glm::translate;
 using glm::scale;
 using glm::rotate;
 
+//class GameStatUpgrade;
 class GamePartUpgrade;
-class GameStatUpgrade;
+class GameActiveUpgrade;
+
+
 
 class GameKartObject : public GamePhysicalObject {
-   
 public:
    GameKartProperties properties;
    
@@ -43,19 +45,25 @@ public:
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    virtual void onCollide(GameDrawableObject *collide);
    
-   virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
+   virtual float getLift() { return properties.getLift(); } //{return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }
    
    
-   void addFrontPart(GamePartUpgrade *part) { frontParts.push_front(part); }
-   void addSidePart(GamePartUpgrade *part) { sideParts.push_front(part); }
-   void addBackPart(GamePartUpgrade *part) { backParts.push_front(part); }
+   void addFrontPart(GamePartUpgrade *part) { addPartToList(frontParts, part); }
+   void addSidePart(GamePartUpgrade *part) { addPartToList(sideParts, part); }
+   void addBackPart(GamePartUpgrade *part) { addPartToList(backParts, part); }
+   
+   void cycleFrontParts() { cyclePartList(frontParts); }
+   void cycleSideParts() { cyclePartList(sideParts); }
+   void cycleBackParts() { cyclePartList(backParts); }
+   
+   void addActive(GameActiveUpgrade *active);
+   void cycleActives();
    
 
    bool isUsingController() {
        return usingController;
    }
-
    void setUsingController(bool cont) {
        usingController = cont;
    }
@@ -67,6 +75,7 @@ public:
    int getInput(int request);
    
    int getPoints() { return points; };
+   float getEnergy() { return properties.getEnergy(); }
    
     
    //void stop();
@@ -80,6 +89,7 @@ private:
    list<GamePartUpgrade *> frontParts;
    list<GamePartUpgrade *> sideParts;
    list<GamePartUpgrade *> backParts;
+   list<GameActiveUpgrade *> activeUpgrades;
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
@@ -96,6 +106,8 @@ private:
    GameSound *collide_sound;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
+   void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
+   void cyclePartList(list<GamePartUpgrade *> &list);
 };
 
 #endif
