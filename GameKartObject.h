@@ -26,14 +26,13 @@ using glm::translate;
 using glm::scale;
 using glm::rotate;
 
+//class GameStatUpgrade;
 class GamePartUpgrade;
-class GameStatUpgrade;
 class GameActiveUpgrade;
 
 
 
 class GameKartObject : public GamePhysicalObject {
-   
 public:
    GameKartProperties properties;
    
@@ -65,7 +64,6 @@ public:
    bool isUsingController() {
        return usingController;
    }
-
    void setUsingController(bool cont) {
        usingController = cont;
    }

@@ -71,17 +71,6 @@ void GameKartObject::onCollide(GameDrawableObject *other)
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       upgrade->addToKart(this);
       points += 100;
-      /*if (upgrade->upgradeType() == GameUpgradeObject::FLIGHT) {
-         properties.setWings();
-         GameUpgradeObject *upgrade = dynamic_cast<GameUpgradeObject *>(other);
-         
-         // assert upgrade != NULL
-         
-         upgrade->scheduleForRemoval();
-      }
-      else {
-         
-      }*/
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
