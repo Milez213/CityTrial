@@ -46,7 +46,7 @@ public:
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    virtual void onCollide(GameDrawableObject *collide);
    
-   virtual float getLift() {return properties.hasWings() ? 10.0/25 : 0;}
+   virtual float getLift() { return properties.getLift(); } //{return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }
    
    
@@ -77,6 +77,7 @@ public:
    int getInput(int request);
    
    int getPoints() { return points; };
+   float getEnergy() { return properties.getEnergy(); }
    
     
    //void stop();

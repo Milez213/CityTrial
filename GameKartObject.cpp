@@ -394,4 +394,5 @@ void GameKartObject::update(float dt)
    */
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+   properties.regenEnergy(dt);
 }
