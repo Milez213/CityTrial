@@ -213,8 +213,8 @@ void getInputState()
 */
 
 void rotateCamera() {
-   g_camera->angle.x += 50 * g_mousePos.x;
-   g_camera->angle.y -= 50 * g_mousePos.y;
+   g_camera->angle.x += 50 * g_mousePos.y;
+   g_camera->angle.y -= 50 * g_mousePos.x;
 }
 
 
@@ -470,8 +470,8 @@ float p2wy(int in_y) {
 
 void GLFWCALL mouseMove(int x, int y) {
 
-   g_mousePos.y = p2wx(x);
-   g_mousePos.x = p2wy(y);
+   g_mousePos.x = p2wx(x);
+   g_mousePos.y = p2wy(y);
 
    if (g_camera) 
       rotateCamera();
