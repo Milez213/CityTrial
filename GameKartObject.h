@@ -28,6 +28,9 @@ using glm::rotate;
 
 class GamePartUpgrade;
 class GameStatUpgrade;
+class GameActiveUpgrade;
+
+
 
 class GameKartObject : public GamePhysicalObject {
    
@@ -54,6 +57,9 @@ public:
    void cycleFrontParts() { cyclePartList(frontParts); }
    void cycleSideParts() { cyclePartList(sideParts); }
    void cycleBackParts() { cyclePartList(backParts); }
+   
+   void addActive(GameActiveUpgrade *active);
+   void cycleActives();
    
 
    bool isUsingController() {
@@ -84,6 +90,7 @@ private:
    list<GamePartUpgrade *> frontParts;
    list<GamePartUpgrade *> sideParts;
    list<GamePartUpgrade *> backParts;
+   list<GameActiveUpgrade *> activeUpgrades;
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;

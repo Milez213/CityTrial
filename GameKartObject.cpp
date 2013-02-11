@@ -301,6 +301,18 @@ void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
       list.front()->cycleStatOn(&properties);
    }
 }
+void GameKartObject::addActive(GameActiveUpgrade *active)
+{
+   activeUpgrades.push_back(active);
+}
+void GameKartObject::cycleActives()
+{
+   if (activeUpgrades.size() >= 2) {
+      activeUpgrades.push_back(activeUpgrades.front());
+      activeUpgrades.pop_front();
+   }
+}
+
 void GameKartObject::update(float dt)
 {
    glm::vec3 vel = getVelocity();
