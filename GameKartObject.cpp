@@ -392,7 +392,6 @@ void GameKartObject::update(float dt)
    
    properties.regenEnergy(dt);
    if (buttonState[0] == GLFW_PRESS) {
-      cout << "action press\n";
       if (!actionOn) {
          if (!activeUpgrades.empty())
             activeUpgrades.front()->activeStart(this);

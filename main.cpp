@@ -398,8 +398,6 @@ void getInputState()
             joy[0] = 0.0;
          
          button[0] = glfwGetKey(kart_objects[i]->getInputMap().action);
-         if (button[0] == GLFW_PRESS)
-            cout << "button[0] press\n";
       }
       
       //printf("Joy: %0.3f\n", joy[3]);
