@@ -119,7 +119,7 @@ RenderingHelper g_model_trans;
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
-
+int motionBlur = 0;
 double g_time;
 double g_last_time;
 
@@ -502,7 +502,7 @@ void draw(float dt, int kartIndex)
       }
       else
       {
-      printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+      //printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
       }
    }
 
@@ -529,6 +529,9 @@ void draw(float dt, int kartIndex)
    // draw height
    sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
    g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+
+
+   
    
 }
 
@@ -609,8 +612,15 @@ void drawMultipleViews(double dt, int numViews)
          
          if (kartIndex < (int)kart_objects.size()) {
             draw(dt, kartIndex);
+if(motionBlur == 1)
+{glAccum(GL_MULT, .9);
+glAccum(GL_ACCUM, 1-.9);
+glAccum(GL_RETURN, 1.0);
+glFlush();
+}
             drawHUD(kartIndex);
             kartIndex++;
+               glfwSwapBuffers();
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -631,7 +641,7 @@ void gameLoop()
    
    drawMultipleViews(dt, kart_objects.size());
    
-   glfwSwapBuffers();
+
 
    g_last_time = g_time;   	
 }
