@@ -18,8 +18,6 @@ using namespace std;
 extern SoundManager *g_sound_manager;
 extern int g_num_squashes;
 
-
-//const float GameKartObject::maxTireTurnAngle = 45.0;
 const float GameKartObject::tireTurnAngleTime = 1.0/4;
 
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
@@ -38,27 +36,12 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    sideParts.push_front(part);
    backParts.push_front(part);
    activeUpgrades.push_front(new GameActiveNone());
-   
-   /*glm::vec3 pos = position();
-   wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
-   wheels[1]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z - 12.0));
-   wheels[2]->setPosition(vec3(pos.x + 12.0, pos.y-6, pos.z + 12.0));
-   wheels[3]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z + 12.0));*/
     
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 0.0;
    actionOn = false;
-   
    points = 0;
-    
-   //object->setPosition(vec3(pos.x - 5.0,pos.y - 5.0,pos.z));
-   
-   /*&drawable_objects->push_back(wheel[1]);
-   &drawable_objects->push_back(wheel[2]);
-   &drawable_objects->push_back(wheel[3]);
-   &drawable_objects->push_back(chassis);
-   */
 
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 
@@ -219,26 +202,23 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    
-   //if (frontParts.size()) {
-      modelViewMatrix.pushMatrix();
-      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
-      frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
-      modelViewMatrix.popMatrix();
-   //}
+   // draw parts
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
+   sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
+
+   modelViewMatrix.pushMatrix();
+   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   backParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   modelViewMatrix.popMatrix();
    
-   //if (sideParts.size()) {
-      modelViewMatrix.pushMatrix();
-      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
-      sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
-      modelViewMatrix.popMatrix();
-   //}
-   
-   //if (backParts.size()) {
-      modelViewMatrix.pushMatrix();
-      modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
-      backParts.front()->drawOnKart(meshShader,modelViewMatrix);
-      modelViewMatrix.popMatrix();
-   //}
+   //draw action effect
    if (actionOn) {
       activeUpgrades.front()->drawEffect(meshShader, modelViewMatrix);
    }
@@ -312,37 +292,16 @@ void GameKartObject::cycleActives()
 }
 
 void GameKartObject::update(float dt)
-{
-   /*glm::vec3 vel = getVelocity();
-   glm::vec3 pos = getPosition();
-   
-   printf("\nbefore\n");
-   printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
-   printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
-   printf(" direction: %f\n", getDirection());
-   printf(" speed: %f\n", getSpeed());
-   */
-   
-    // Update Actor parameters based on current input from joystickState and buttonState
-   //if(usingController == true){
-   
-   /*vec3 up = vec3(0.0, 1.0, 0.0);
-   glm::vec3 oldDir = direction();
-   vec3 move = normalize(cross(up, oldDir));
-   move = vec3(move.x * turningRadius * dt, move.y * turningRadius * dt, move.z * turningRadius * dt);*/
-   
+{   
    float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
-   //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
    
    if (joystickState[0] < 0.0) {
       changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
-      //setDirection(glm::vec3(oldDir.x - move.x,oldDir.y,oldDir.z - move.z));
    } else if(joystickState[0] > 0.0) {
       changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
-      //setDirection(glm::vec3(oldDir.x + move.x,oldDir.y,oldDir.z + move.z));
    } else if (joystickState[0] == 0.0){
       changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
    }
@@ -372,18 +331,7 @@ void GameKartObject::update(float dt)
       
    setSpeed(newSpeed);
    
-   //}
    
-   /*vel = getVelocity();
-   pos = getPosition();
-   
-   
-   printf("after\n");
-   printf(" position: %f,%f,%f\n", pos.x, pos.y, pos.z);
-   printf(" velocity: %f,%f,%f\n", vel.x, vel.y, vel.z);
-   printf(" direction: %f\n", getDirection());
-   printf(" speed: %f\n", getSpeed());
-   */
    
    if (buttonState[1] == GLFW_PRESS) { //inputMap.cycleActive
       if (!buttonDown[1]) {
@@ -423,20 +371,19 @@ void GameKartObject::update(float dt)
    }
    
    
+   
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
-         //if (!activeUpgrades.empty())
-            activeUpgrades.front()->activeStart(this);
+         activeUpgrades.front()->activeStart(this);
          actionOn = true;
       }
-      else {//if (!activeUpgrades.empty()){
+      else {
          activeUpgrades.front()->activeUpdate(this, dt);
       }
    }
    else { //GLFW_RELEASE
       if (actionOn) {
-         //if (!activeUpgrades.empty())
-            activeUpgrades.front()->activeEnd(this);
+         activeUpgrades.front()->activeEnd(this);
          actionOn = false;
       }
       else {
