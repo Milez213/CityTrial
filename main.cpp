@@ -263,12 +263,30 @@ void update(double dt)
    
 
    // test for collisions
+   /*
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
          if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
             drawable_objects[i]->onCollide(drawable_objects[j]);
             drawable_objects[j]->onCollide(drawable_objects[i]);
+         }
+      }
+   }
+   */
+
+   // only test kart objects with drawable objects
+   for (int k = 0; k < (int)kart_objects.size(); k++) {
+      for (int j = 0; j < (int)drawable_objects.size(); j++) {
+         // don't test collision with self
+         if (kart_objects[k] == drawable_objects[j]) {
+            continue;
+         }
+
+         if (g_model_manager->boxOnBox(kart_objects[k]->getBoundingInfo(),
+                drawable_objects[j]->getBoundingInfo())) {
+            kart_objects[k]->onCollide(drawable_objects[j]);
+            drawable_objects[j]->onCollide(kart_objects[k]);
          }
       }
    }
