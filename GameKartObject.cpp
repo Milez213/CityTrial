@@ -362,7 +362,6 @@ void GameKartObject::update(float dt)
       changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
    }
 
-   
    float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
    setDirection(oldDirection+directionMult); 
    setRotation(vec3(0, getDirection(), 0 ));
@@ -401,10 +400,6 @@ void GameKartObject::update(float dt)
    printf(" speed: %f\n", getSpeed());
    */
    
-   GamePhysicalObject::update(dt); //actually move the cart with these updated values
-   
-   
-   properties.regenEnergy(dt);
    if (buttonState[0] == GLFW_PRESS) {
       if (!actionOn) {
          if (!activeUpgrades.empty())
@@ -415,9 +410,16 @@ void GameKartObject::update(float dt)
          activeUpgrades.front()->activeUpdate(this, dt);
       }
    }
-   else if (actionOn) { //GLFW_RELEASE
-      if (!activeUpgrades.empty())
-         activeUpgrades.front()->activeEnd(this);
-      actionOn = false;
+   else { //GLFW_RELEASE
+      if (actionOn) {
+         if (!activeUpgrades.empty())
+            activeUpgrades.front()->activeEnd(this);
+         actionOn = false;
+      }
+      else {
+         properties.regenEnergy(dt);
+      }
    }
+   
+   GamePhysicalObject::update(dt); //actually move the cart with these updated values
 }
