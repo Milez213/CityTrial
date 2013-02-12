@@ -8,8 +8,10 @@ varying vec2 vTexture;
 void main(void) {
    vec4 color;
    color = texture2D(uTexUnit, vTexture);
-   
-   gl_FragColor = vec4(color.gbr, 1.0);
+   if (color.r < 0.9 || color.g < 0.9 || color.b < 0.9)
+      gl_FragColor = vec4(color.rgb, 1.0);
+   else
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 0.0);
 }
 
 

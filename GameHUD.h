@@ -40,6 +40,8 @@ protected:
 private:
    void setOrthographicMatrix();
    void setHUDView();
+   
+   float currentSpeed;
 };
 
 
