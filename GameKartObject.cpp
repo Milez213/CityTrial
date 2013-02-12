@@ -400,7 +400,45 @@ void GameKartObject::update(float dt)
    printf(" speed: %f\n", getSpeed());
    */
    
-   if (buttonState[0] == GLFW_PRESS) {
+   if (buttonState[1] == GLFW_PRESS) { //inputMap.cycleActive
+      if (!buttonDown[1]) {
+         cycleActives();
+         buttonDown[1] = true;
+      }
+   }
+   else {
+      buttonDown[1] = false;
+   }
+   if (buttonState[2] == GLFW_PRESS) { //inputMap.cycleFront
+      if (!buttonDown[2]) {
+         cycleFrontParts();
+         buttonDown[2] = true;
+      }
+   }
+   else {
+      buttonDown[2] = false;
+   }
+   if (buttonState[3] == GLFW_PRESS) { //inputMap.cycleSide
+      if (!buttonDown[3]) {
+         cycleSideParts();
+         buttonDown[3] = true;
+      }
+   }
+   else {
+      buttonDown[3] = false;
+   }
+   if (buttonState[4] == GLFW_PRESS) { //inputMap.cycleBack
+      if (!buttonDown[4]) {
+         cycleBackParts();
+         buttonDown[4] = true;
+      }
+   }
+   else {
+      buttonDown[4] = false;
+   }
+   
+   
+   if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
          if (!activeUpgrades.empty())
             activeUpgrades.front()->activeStart(this);
