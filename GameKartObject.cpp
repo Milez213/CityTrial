@@ -21,6 +21,8 @@ extern int g_num_squashes;
 const float GameKartObject::tireTurnAngleTime = 1.0/4;
 
 GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
+   
+   hud = new GameHUD();
     
    for (int i = 0; i < 4; i++) {
       GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
@@ -68,6 +70,8 @@ int GameKartObject::getInput(int request) {
       case 4:
          return input.action;
    }
+   
+   return -1;
 }
 
 void GameKartObject::onCollide(GameDrawableObject *other)
@@ -243,6 +247,10 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
       upgrades[i]->draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }*/
+}
+
+void GameKartObject::drawHUD() {
+   hud->drawSpeed(getSpeed());
 }
 
 

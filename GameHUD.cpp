@@ -8,97 +8,54 @@
 
 #include "GameHUD.h"
 
-extern ModelManager *g_model_manager;
+extern HUDShader *hudShader;
 
-GameHUD::GameHUD(float width, float height)
-{
-   bound boundingInfo;
-   g_model_manager->getObject("plane", &meshStorage, &boundingInfo);
+GameHUD::GameHUD()
+{   
+   modelMatrix.useModelViewMatrix();
+   modelMatrix.loadIdentity();
    
-   hudWidth = width;
-   hudHeight = height;
+   setOrthographicMatrix();
+   setHUDView();
    
 #ifdef DEBUG_VBO
    //printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
 #endif
 }
 
-void GameHUD::drawSpeed(PhongShader *meshShader, RenderingHelper modelViewMatrix, float speed)
+void GameHUD::setOrthographicMatrix() {
+   proj = glm::ortho(0.0f, (float)hudWidth, (float)hudHeight, 0.0f, -1.0f, 1.0f);
+}
+
+void GameHUD::setHUDView() {
+   view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 1.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
+}
+
+void GameHUD::setScreen(float width, float height)
 {
-   GLuint h_aPos, h_aNorm;
-   h_aPos = meshShader->getPosLocation();
-   h_aNorm = meshShader->getNormLocation();
-   meshShader->use();
+   hudWidth = width;
+   hudHeight = height;
+
+   setOrthographicMatrix();
+}
+
+#define SPD 75.0
+void GameHUD::drawSpeed(float speed)
+{
+   hudShader->use();
    
-   modelViewMatrix.pushMatrix();
-      modelViewMatrix.loadIdentity();
+   hudShader->makeActive();
+   hudShader->useTexture();
    
-      modelViewMatrix.translate(vec3(hudWidth - 50.0, hudHeight - 50.0, 1.0));
-      modelViewMatrix.scale(100.0);
-      //modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
-      //modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
-      //modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
-      meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(hudWidth - SPD, hudHeight - SPD, 0.0));
+   modelMatrix.scale(SPD, SPD, 1.0);
    
-      safe_glEnableVertexAttribArray(h_aPos);
-      glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
-      safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   hudShader->setViewMatrix(view);
+   hudShader->setProjectionMatrix(proj);
    
-      safe_glEnableVertexAttribArray(h_aNorm);
-      glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
-      safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   
-      for (int i = 0; i < meshStorage.numMeshes; i++) {
-         //printf("We are drawing, right? %d\n", indexBufferLength[i]);
-      
-         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-      
-         //printf("Number of Faces: %d\n", meshStorage.indexBuffer[i]);
-         glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
-      }
-   
-      safe_glDisableVertexAttribArray(h_aPos);
-      safe_glDisableVertexAttribArray(h_aNorm);
-   
-   modelViewMatrix.popMatrix();
-   
-   PhongMaterial mat;
-   mat.dColor = vec3(1.0, 0.0, 0.0);
-   mat.sColor = vec3(1.0, 1.0, 1.0);
-   mat.aColor = vec3(1.0, 0.0, 0.0);
-   mat.shine = 0.0;
-   
-   meshShader->setMaterial(mat);
-   
-   modelViewMatrix.pushMatrix();
-      modelViewMatrix.loadIdentity();
-   
-      modelViewMatrix.translate(vec3(hudWidth - 50.0, hudHeight - 50.0, 1.0));
-      modelViewMatrix.scale(75.0);
-      //modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
-      //modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
-      modelViewMatrix.rotate(180 * (speed/50.0), vec3(0.0, 0.0, 1.0));
-      meshShader->setModelMatrix(modelViewMatrix.getMatrix());
-   
-      safe_glEnableVertexAttribArray(h_aPos);
-      glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
-      safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   
-      safe_glEnableVertexAttribArray(h_aNorm);
-      glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
-      safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
-   
-      for (int i = 0; i < meshStorage.numMeshes; i++) {
-         //printf("We are drawing, right? %d\n", indexBufferLength[i]);
-      
-         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-      
-         //printf("Number of Faces: %d\n", meshStorage.indexBuffer[i]);
-         glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
-      }
-   
-      safe_glDisableVertexAttribArray(h_aPos);
-      safe_glDisableVertexAttribArray(h_aNorm);
-   
-   modelViewMatrix.popMatrix();
+   hudShader->draw();
+
+   hudShader->deactivate();
 }

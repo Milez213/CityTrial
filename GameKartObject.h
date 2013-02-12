@@ -13,6 +13,7 @@
 
 #include "GamePhysicalObject.h"
 #include "GameKartProperties.h"
+#include "GameHUD.h"
 
 #include "SoundManager.h"
 
@@ -75,6 +76,9 @@ public:
    int getInput(int request);
    const inputMap getInputMap() { return input; }
    
+   void resize(float width, float height) { hud->setScreen(width, height); };
+   void drawHUD();
+   
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }
    
@@ -106,6 +110,8 @@ private:
 
    GameSound *ding_sound;
    GameSound *collide_sound;
+   
+   GameHUD *hud;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
