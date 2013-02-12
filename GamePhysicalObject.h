@@ -27,6 +27,8 @@ public:
 	virtual void setDirection(float dir) { direction = TO_RADIANS(-dir); };
 	virtual float getSpeed() { return speed; };
 	virtual void setSpeed(float spd) { speed = spd; }
+   virtual float getFallSpeed() { return fallSpeed; }
+   virtual void setFallSpeed(float fallSpd) { fallSpeed = fallSpd; }
    virtual float getLift() { return 0; }
    
    virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(direction), 0, sin(direction)); };
