@@ -528,7 +528,9 @@ void draw(float dt, int kartIndex)
    sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
    g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
 
-
+   // draw energy
+   sprintf(text, "energy: %.1f", kart_objects[kartIndex]->getEnergy());
+   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);
    
    
 }
