@@ -39,7 +39,7 @@ void GameHUD::setScreen(float width, float height)
    setOrthographicMatrix();
 }
 
-#define SPD 75.0
+#define SPD 150.0
 void GameHUD::drawSpeed(float speed)
 {
    hudShader->use();

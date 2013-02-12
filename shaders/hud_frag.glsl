@@ -9,7 +9,7 @@ void main(void) {
    vec4 color;
    color = texture2D(uTexUnit, vTexture);
    
-   gl_FragColor = vec4(color.rgb, 0.5);
+   gl_FragColor = vec4(color.gbr, 1.0);
 }
 
 

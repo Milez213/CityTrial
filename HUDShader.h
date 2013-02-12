@@ -33,19 +33,19 @@ public:
             // TODO - add texture coordinates handle in shader
             h_aTexture = safe_glGetAttribLocation(m_shaderProg, "aTexture");
            
-           /*GLfloat verticies[12] = {
+           GLfloat verticies[12] = {
               0.0, 0.0, 0.0,
               0.0, 1.0, 0.0,
               1.0, 0.0, 0.0,
               1.0, 1.0, 0.0
-           };*/
+           };
            
-           GLfloat verticies[12] = {
+           /*GLfloat verticies[12] = {
               -1.0, -1.0, 0.0,
               -1.0, 1.0, 0.0,
               1.0, -1.0, 0.0,
               1.0, 1.0, 0.0
-           };
+           };*/
            
            GLfloat text[8] = {
               0.0, 0.0,
@@ -109,7 +109,7 @@ public:
        glEnable(GL_TEXTURE_2D);
        glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture);
-       setTexture(texture);
+       //setTexture(texture);
        
        safe_glEnableVertexAttribArray(h_aPosition);
        glBindBuffer(GL_ARRAY_BUFFER, planeCoord);
