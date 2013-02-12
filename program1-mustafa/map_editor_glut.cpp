@@ -1,6 +1,32 @@
 /*
     Mustafa Khafateh
+
+
+
+
+    map editor for kpp
+
+
+    How to use
+
+    Move mode: in first-person: a w s d, space, z, and mouse
+
+    Press 'c' to transform object
+
+    t   - translate
+    s   - scale
+    r   - rotate
+
+    note that you can still move while in transform mode.
+
+    press , and . (the keys with < and >) to toggle object.
+    press j and k to toggle material (doesn't get set in kpp now.)
+
+
+    Right now there's 2 object types: ramps and buildings.
+
 */
+
 
 #include <iostream>
 
@@ -69,7 +95,7 @@ GLuint bricksTex = 0;
 GLuint bricksNormTex = 1;
 
 int g_GiboLen;
-const float g_groundY = -0.5;      // y coordinate of the ground
+const float g_groundY = 0.0f;      // y coordinate of the ground
 const float g_groundSize = 50.0;
 
 
@@ -99,10 +125,10 @@ float g_CamangleX = 0;
 float g_CamDx;
 float g_CamDz;
 float g_CamDy;
-vec3 g_CamPos(-0.4, 0.5 ,3);
+vec3 g_CamPos(-0.4, 2 ,3);
 
 // units / second
-static float moveSpeed = 30;
+static float moveSpeed = 10;
 
 // +1, 0, or -1
 struct objectMovement_t {
@@ -146,7 +172,6 @@ glm::mat4 g_ground_xform(1.0f);
 
 
 
-#define NUM_MATERIALS 5
 
 // ===== Export Objects =====
 struct ExportObject {
@@ -179,12 +204,24 @@ int g_current_object = 0;
 GameDrawableObject *g_cube;
 
 
-void toggleMaterials(int pos) {
+void toggleObjects(int pos) {
 
-    if (pos == -1 && g_current_material == 0) {
-        g_current_material = NUM_MATERIALS - 1;
+    if (pos == -1 && g_current_object == 0) {
+        g_current_object = g_object_palette.size() - 1;
+    } else {
+        g_current_object = (g_current_object + pos) % g_object_palette.size();
     }
-    g_current_material = (g_current_material + pos) % NUM_MATERIALS;
+
+    // reset -- edited for use in drawing
+    g_object_palette[g_current_object].model->setScale(vec3(1.0f));
+    bound boundBox =
+        g_object_palette[g_current_object].model->getBoundingInfo();
+
+    
+    // place object above ground. 0.01 so it won't 100% touch
+    g_export_trans.y = boundBox.dimension.y / 2 + 0.01;
+    g_export_scale = vec3(1.0f);
+    g_export_rot_vec3 = vec3(0.0f);
 }
 
 
@@ -222,34 +259,45 @@ LightInfo g_lightInfo;
 GLuint g_showNormals;
 PhongShader *phong;
 
+#define NUM_MATERIALS 5
+
 PhongMaterial g_materials[NUM_MATERIALS] = {
                   {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(0.7, 0.4, 0.4), // diff
+                   vec3(H2_3f(0x9d5900)), // diff
+                   vec3(1, 0, 0),       // spec
+                   20.0},               // shine
+
+                  {vec3(0.2, 0.2, 0.2), // amb
+                   vec3(H2_3f(0xe4000c)), // diff
                    vec3(1, 1, 1),       // spec
                    20.0},               // shine
 
-                  {vec3(0.5, 0.5, 0.5),
-                   vec3(H2_3f(0xfff852)),
+                  {vec3(0.1, 0.1, 0.1),
+                   vec3(H2_3f(0xfff852)), //Hex color to rgb
                    vec3(1, 1, 1),
-                   10.0},
+                   5.0},
 
-                  {vec3(0.5, 0.1, 0.1),
-                   vec3(0.6, 0.1, 0.1),
+                  {vec3(0.3, 0.3, 0.3),
+                   vec3(0, 0, 1),
                    vec3(0.1, 0.1, 0.7),
-                   20.0},
-
-                  {vec3(0, 1, 1),  // for drawing light
-                   vec3(0.0),
-                   vec3(0),
-                   0.0},
-
-                  {vec3(0.1, 0.1, 0.3),
-                   vec3(0.6, 0.1, 0.1),
-                   vec3(0.1, 0.1, 0.7),
+                   30.0},
+                  {vec3(.1, .8, .1),  // for drawing light
+                   vec3(0.1, 0.9, .1),
+                   vec3(3),
                    20.0},
 };
 
 
+void toggleMaterials(int pos) {
+    printf("tmb: %d\n", g_current_material);
+
+    if (pos == -1 && g_current_material == 0) {
+        g_current_material = NUM_MATERIALS - 1;
+    } else {
+        g_current_material = (g_current_material + pos) % NUM_MATERIALS;
+    }
+    printf("tma: %d\n\n", g_current_material);
+}
 
 
 // function prototypes
@@ -488,14 +536,15 @@ void initGeom() {
     // dummy  model
     g_cube = building;
 
-
+    toggleObjects(0);
 }
 
 
 
 void initGround() {
 
-    mat4 xl = translate(mat4(1.0f), vec3(0, -0.5, 0));
+    // TODO - option to change ground pos?
+    mat4 xl = translate(mat4(1.0f), vec3(0, 0, 0));
     // mat4 sc  = glm::scale(mat4(1.0f), vec3(g_groundSize, 0.1, g_groundSize));
 
 
@@ -567,7 +616,7 @@ void drawGround() {
     phong->setTexture(0);
     */
 
-    setMaterial(1);
+    setMaterial(0);
     setModel(g_ground_xform);
 
     // bind buffers
@@ -726,6 +775,14 @@ void drawTexts() {
     sprintf(fpsstr, "Cam pos: x: %3.2f y: %3.2f z: %3.2f",
                      g_CamPos.x, g_CamPos.y, g_CamPos.z);
     render_text(fpsstr, -1 + 8 * sx, -0.8, sx, sy);
+
+
+    // selected Pos
+    sprintf(fpsstr, "selected pos: x: %3.2f y: %3.2f z: %3.2f",
+                     g_export_trans.x, g_export_trans.y, g_export_trans.z);
+    render_text(fpsstr, 0.2, 0.8, sx, sy);
+    
+
 }
 
 
@@ -955,6 +1012,13 @@ void transformObject(float x1, float y1) {
         s = x1-x0 + y1-y0;
         g_scaleRotMat = glm::scale(g_scaleRotMat, glm::vec3(s + 1));
         g_export_scale *= s+1;
+
+        // change height so object still touches ground
+        // FIXME - needs object's y-dimention
+        // y' = s * y
+        g_export_trans.y *= s + 1;
+
+
         break;
     case DO_ROTATE:
         // TODO - option to rotate only against 1 axis
@@ -1041,6 +1105,14 @@ void keyboard(unsigned char key, int x, int y ){
 
 
     switch( key ) {
+
+    case '.':
+        toggleObjects(1);
+        break;  
+
+    case ',':
+        toggleObjects(-1);
+        break;  
 
     case 'o':
         printf("enter map name: \n");

@@ -2,6 +2,7 @@
 
 
 #include "GameBuilding.h"
+#include "GameRamp.h"
 
 
 using glm::vec3;
@@ -66,7 +67,15 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
         printf("read r:\n");
         fprint3f(r, stdout);
 
-        read_object = new GameBuilding();
+        // TODO - put this info in a std::map
+        if (strcmp(name, "building") == 0) {
+           read_object = new GameBuilding();
+        } else if (strcmp(name, "ramp") == 0) {
+           read_object = new GameRamp();
+        } else {
+            // unknown
+            read_object = new GameBuilding();
+        }
 
         read_object->setPosition(p);
         read_object->setScale(s);
