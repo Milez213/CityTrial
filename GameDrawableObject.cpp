@@ -11,6 +11,9 @@
 
 #include "GameDrawableObject.h"
 
+#include "include_glm.h"
+
+
 extern ModelManager *g_model_manager;
 
 GameDrawableObject::GameDrawableObject(const char *objFile) : toRemove(false)
@@ -149,12 +152,18 @@ void GameDrawableObject::updateBoundingInfo()
    vec3 s = getScale();
    vec3 p = getPosition();
    
+   // FIXME - these assume object's height is 2
+   // boundingInfo.bottomLeft = (boundingInfo.bottomLeft - p) * s + p;
+
    boundingInfo.bottomLeft = p-s;
+   // test scale bottomLeft. from origin
    boundingInfo.dimension = 2.0f * s;
    boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);//glm::length(s);//
    boundingInfo.center = p;
+
 }
 
+// TODO - change bounding box so it's at origin. Then translate when returning it.
 bound GameDrawableObject::getBoundingInfo()
 {
    /*bound chgBound;

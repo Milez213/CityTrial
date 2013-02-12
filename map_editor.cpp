@@ -64,6 +64,10 @@ using  glm::vec4;
 
 #include "GameSettings.h"
 
+#include "util.h"
+
+
+
 using namespace std;
 
 
@@ -174,7 +178,7 @@ struct ExportObject {
 
 list<ExportObject> g_export_objects;
 
-int g_current_material = 0;
+// int g_current_material = 0;
 
 void toggleMaterials(int pos) {
 
@@ -484,6 +488,10 @@ float p2wy(int in_y) {
 }
 
 
+float g_x = 1;
+float g_z = 2;
+float g_theta = 0;
+
 void GLFWCALL mouseMove(int x, int y) {
 
    g_mousePos.x = p2wx(x);
@@ -491,10 +499,21 @@ void GLFWCALL mouseMove(int x, int y) {
 
    if (g_camera) 
       rotateCamera();
-   
+
    glfwSetMousePos(g_win_width/2, g_win_height/2);
-   
-   printf("x: %f, y: %f\n", g_mousePos.x, g_mousePos.y);
+
+   // printf("x: %f, y: %f\n", g_mousePos.x, g_mousePos.y);
+
+
+   float g_x = 1;
+   float g_z = 2;
+   // from 0 to g_theta
+   rotate2d(g_x, g_z, g_theta);
+
+   g_theta += 50 *g_mousePos.x;
+
+   printf("g_x: %3.2f, g_z: %3.2f theta: %3.2f\r", g_x, g_z, g_theta);
+   fflush(stdout);
 
 }
 
