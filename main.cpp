@@ -660,7 +660,6 @@ void initObjects() {
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ');
-      printf("size: (%d, %d)\n", g_current_width, g_current_height);
       kart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
