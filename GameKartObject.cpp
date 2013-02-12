@@ -364,32 +364,28 @@ void GameKartObject::update(float dt)
 
    
    float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
-   setDirection(oldDirection+directionMult);
- 
+   setDirection(oldDirection+directionMult); 
    setRotation(vec3(0, getDirection(), 0 ));
    
    
    
-
-   
-   if(joystickState[3] > 0.0) {
+   if(joystickState[3] > 0.0 && oldSpeed < properties.getTopSpeed()) {
       short speedUp = (oldSpeed > 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
       newSpeed = oldSpeed + (speedUp * dt);
+      if (newSpeed > properties.getTopSpeed())
+         newSpeed = properties.getTopSpeed();
    } else if(joystickState[3] < 0.0) {
       short speedDown = (oldSpeed < 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
       newSpeed = oldSpeed - (speedDown * dt);
+      if (newSpeed < -properties.getTopSpeed())
+         newSpeed = -properties.getTopSpeed();
    } else {
       if (abs(oldSpeed) > friction * dt)
          newSpeed = oldSpeed - (sign(oldSpeed) * friction * dt);
       else
          newSpeed = 0;
    }
-   
-   if (newSpeed > properties.getTopSpeed())
-      newSpeed = properties.getTopSpeed();
-   else if (newSpeed < -properties.getTopSpeed())
-         newSpeed = -properties.getTopSpeed();
-   
+      
    setSpeed(newSpeed);
    
    //}
