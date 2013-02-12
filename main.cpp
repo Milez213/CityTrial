@@ -122,9 +122,6 @@ vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
 
-
-RenderingHelper g_model_trans;
-
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
@@ -134,12 +131,11 @@ double g_last_time;
 
 mat4 g_proj;
 mat4 g_view;
-mat4 g_model;
+RenderingHelper g_model_trans;
 
 GameCamera *g_camera;
 
 
-GLuint fbo;
 
 
 
@@ -315,7 +311,12 @@ void draw(float dt, int kartIndex)
                          drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
          drawable_objects[i]->draw(meshShader, g_model_trans);
       } else {
-         //printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+         /*
+         // test frustum on one object.
+         if (dynamic_cast<GamePartWings *>(drawable_objects[i]))
+            printf("obj not drawn: %s\n", drawable_objects[i]->getName());
+         // printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+         */
       }
    }
 
@@ -530,7 +531,6 @@ void initObjects() {
    buildin->setScale(vec3(10.0, 2.0, 10.0));
    drawable_objects.push_back(buildin);
    
-   glGenFramebuffers(1, &fbo);
    
   /* GamePhysicalObject *building = new GamePhysicalObject("cube");
    building->setName("building");
