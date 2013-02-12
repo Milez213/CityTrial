@@ -306,11 +306,21 @@ void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
 }
 void GameKartObject::addActive(GameActiveUpgrade *active)
 {
-   activeUpgrades.push_back(active);
+   if (actionOn) {
+      if (!activeUpgrades.empty())
+         activeUpgrades.front()->activeEnd(this);
+      actionOn = false;
+   }
+   activeUpgrades.push_front(active);
 }
 void GameKartObject::cycleActives()
 {
    if (activeUpgrades.size() >= 2) {
+      if (actionOn) {
+         if (!activeUpgrades.empty())
+            activeUpgrades.front()->activeEnd(this);
+         actionOn = false;
+      }
       activeUpgrades.push_back(activeUpgrades.front());
       activeUpgrades.pop_front();
    }
