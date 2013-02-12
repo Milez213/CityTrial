@@ -19,7 +19,6 @@ public:
    
    virtual void activeStart(GameKartObject *kart)
    {
-      cout << "activeStart()\n";
       if (kart->properties.useEnergyCost(25))
          kart->setSpeed(kart->getSpeed()+10);
    }
