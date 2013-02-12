@@ -44,17 +44,18 @@ void GameHUD::drawSpeed(float speed)
 {
    hudShader->use();
    
-   hudShader->makeActive();
-   hudShader->useTexture();
-   
+   // this is messy.
+   // We should use x and y offsets in Screen coordinates, etc
+   // and pass them to the shader
+   // Then we won't need any matrices, like in TTFRenderer.h --Mustafa
    modelMatrix.loadIdentity();
    modelMatrix.translate(vec3(hudWidth - SPD, hudHeight - SPD, 0.0));
-   modelMatrix.scale(SPD, SPD, 1.0);
+   modelMatrix.scale(SPD + speed, SPD, 1.0);
    
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    hudShader->setViewMatrix(view);
    hudShader->setProjectionMatrix(proj);
-   
+
    hudShader->draw();
 
    hudShader->deactivate();

@@ -71,14 +71,23 @@ public:
            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
            
+ 
+           texture = 0;
+           LoadTexture("textures/hudAtlas.bmp", texture);
+           // There's also LoadTextureAlpha which loads loads 32-bit RGBA BMP's
+           
+           
+           /*
+           // too slow
            glGenTextures(1, &texture);
            glBindTexture(GL_TEXTURE_2D, texture);
            
-           // glfwLoadTexture2D("textures/hudAtlas.tga", 0);
-           LoadTexture("textures/hudAtlas.bmp", texture);
+           glfwLoadTexture2D("textures/hudAtlas.tga", 0);
            
+           already done in LoadTexture
            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+           */
         } else {
             fprintf(stderr, "HUDShader(): Couldn't install shaders\n");
             exit(1);
@@ -87,8 +96,9 @@ public:
    
     void makeActive() {
        glEnable(GL_TEXTURE_2D);
-       glActiveTexture(texture);
+       glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture);
+       setTexture(0);
        
        safe_glEnableVertexAttribArray(h_aPosition);
        glBindBuffer(GL_ARRAY_BUFFER, planeCoord);
@@ -96,6 +106,19 @@ public:
     }
    
     void draw() {
+       glEnable(GL_TEXTURE_2D);
+       glActiveTexture(GL_TEXTURE0);
+       glBindTexture(GL_TEXTURE_2D, texture);
+       setTexture(texture);
+       
+       safe_glEnableVertexAttribArray(h_aPosition);
+       glBindBuffer(GL_ARRAY_BUFFER, planeCoord);
+       safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+       
+       safe_glEnableVertexAttribArray(h_aTexture);
+       glBindBuffer(GL_ARRAY_BUFFER, textCoord);
+       safe_glVertexAttribPointer(h_aTexture, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
     }
@@ -113,11 +136,12 @@ public:
        safe_glVertexAttribPointer(h_aTexture, 2, GL_FLOAT, GL_FALSE, 0, 0);
     }
 
-    /*void setTexture(GLuint textureName) {
+    void setTexture(GLuint textureName) {
         GLint location = safe_glGetUniformLocation(m_shaderProg, "uTexUnit");
         safe_glUniform1i(location, textureName);
     }
 
+	/*
     void setNormTexture(GLuint textureName) {
         GLint location = safe_glGetUniformLocation(m_shaderProg, "uNormTexUnit");
         safe_glUniform1i(location, textureName);

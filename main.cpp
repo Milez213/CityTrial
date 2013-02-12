@@ -232,6 +232,7 @@ void ExtractFrustum()
    clip[13] = g_mView[0][3] * g_proj[0][1] + g_mView[1][3] * g_proj[ 1][1] + g_mView[2][3] * g_proj[ 2][1] + g_mView[3][3] * g_proj[3][1];
    clip[14] = g_mView[0][3] * g_proj[0][2] + g_mView[1][3] * g_proj[ 1][2] + g_mView[2][3] * g_proj[2][2] + g_mView[3][3] * g_proj[3][2];
    clip[15] = g_mView[0][3] * g_proj[0][ 3] + g_mView[1][3] * g_proj[ 1][3] + g_mView[2][3] * g_proj[2][3] + g_mView[3][3] * g_proj[3][3];
+   */
    
    /* Extract the numbers for the RIGHT plane */
    fr[0][0] = clip[ 3] - clip[ 0];

@@ -9,11 +9,13 @@ varying vec4 vPosition;
 varying vec2 vTexture;
 
 void main(void) {
-   vPosition = uModelMatrix* vec4(aPosition.x, aPosition.y, aPosition.z, 1);
+   
+   vPosition = uModelMatrix* vec4(aPosition.xyz, 1);
    vPosition = uViewMatrix* vPosition;
+   
    vTexture = aTexture;
    
-   gl_Position = uProjMatrix*vPosition; 
+   gl_Position = uProjMatrix * vPosition;
    
    //gl_FrontColor = vec4(1.0, 0.0, 1.0, 1.0);
 }
