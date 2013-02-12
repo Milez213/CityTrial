@@ -30,6 +30,8 @@ using  glm::vec4;
 #include "MStackHelp.h"
 
 #include "PhongShader.h"
+#include "HUDShader.h"
+#include "FontShader.h"
 #include "ModelManager.h"
 
 #ifdef USE_DUMMY_SOUND
@@ -109,6 +111,7 @@ GameSound *g_music;
 
 // test one object for now
 PhongShader *meshShader;
+HUDShader *hudShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
@@ -348,12 +351,6 @@ void setProjectionMatrix(int kartIndex) {
          (float)g_current_width/g_current_height, 0.1f, 100.f);
 }
 
-void setOrthographicMatrix() {
-   g_proj = glm::ortho(0.0f, (float)g_current_width, (float)g_current_height, 0.0f, -1.0f, 1.0f);
-
-}
-
-
 /* camera controls */
 void setView(int kartIndex) {
    vec3 kartDir = kart_objects[kartIndex]->getDirectionVector();
@@ -367,10 +364,6 @@ void setView(int kartIndex) {
 
    g_view = g_camera->getViewMat();
    
-}
-
-void setHUDView() {
-   g_view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 2.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
 }
 
 void getInputState()
@@ -547,47 +540,15 @@ void drawHUD (int kartIndex)
    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    //glEnable(GL_BLEND);
    
-   setOrthographicMatrix();
-   setHUDView();
+   //setOrthographicMatrix();
+   //setHUDView();
    
-   meshShader->use();
-   meshShader->setProjMatrix(g_proj);
-   meshShader->setViewMatrix(g_view);
+   //meshShader->setProjMatrix(g_proj);
+   //meshShader->setViewMatrix(g_view);
+   //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+   //glClear( GL_COLOR_BUFFER_BIT );
    
-   GLuint textureId;
-   glGenTextures(1, &textureId);
-   glBindTexture(GL_TEXTURE_2D, textureId);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, g_current_width, g_current_height, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, 0);
-   glBindTexture(GL_TEXTURE_2D, 0);
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-   
-   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                          GL_TEXTURE_2D, textureId, 0);
-   
-   glClearColor (0.5f, 0.7f, 0.1f, 1.0f);
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-   
-   glClearColor (1.0f, 1.0f, 0.1f, 0.0f);
-   //glClear(GL_COLOR_BUFFER_BIT);
-   
-   g_model_trans.pushMatrix();
-   g_model_trans.loadIdentity();
-   
-   GameHUD *hud = new GameHUD(g_current_width, g_current_height);
-   hud->drawSpeed(meshShader, g_model_trans, kart_objects[kartIndex]->getSpeed());
-   
-   g_model_trans.popMatrix();
-   
-   glDeleteTextures(1, &textureId);
+   kart_objects[kartIndex]->drawHUD();
    
    //glDisable(GL_BLEND);
    glDisable(GL_ALPHA_TEST);
@@ -595,19 +556,8 @@ void drawHUD (int kartIndex)
    
 }
 
-void drawMultipleViews(double dt, int numViews)
+void drawMultipleViews(double dt)
 {
-   if (numViews == 1) {
-      g_current_height = g_win_height;
-      g_current_width = g_win_width;
-   } else if (numViews == 2) {
-      g_current_height = g_win_height/2;
-      g_current_width = g_win_width;
-   } else if (numViews == 3 || numViews == 4) {
-      g_current_height = g_win_height/2;
-      g_current_width = g_win_width/2;
-   }
-   
    int kartIndex = 0;
    for (int i = 0; i * g_current_height < g_win_height; i++) {
       for (int j = 0; j * g_current_width < g_win_width; j++) {
@@ -643,7 +593,7 @@ void gameLoop()
 
    update(dt);
    
-   drawMultipleViews(dt, kart_objects.size());
+   drawMultipleViews(dt);
    
 
 
@@ -659,6 +609,7 @@ void initObjects() {
    // TODO - test for return values (but we usually know if they work or not)
    g_camera = new GameCamera();
    
+   hudShader = new HUDShader();
    meshShader = new PhongShader();
    // Light 
    g_lightInfo.pos = vec3(1, 15, 1);
@@ -689,6 +640,17 @@ void initObjects() {
    if (num_players_from_settings > 0) {
       g_num_players = num_players_from_settings;
    }
+   
+   if (g_num_players == 1) {
+      g_current_height = g_win_height;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 2) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 3 || g_num_players == 4) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width/2;
+   }
 
    // hax
    // 1st kart
@@ -698,6 +660,8 @@ void initObjects() {
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ');
+      printf("size: (%d, %d)\n", g_current_width, g_current_height);
+      kart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -707,6 +671,7 @@ void initObjects() {
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER);
+      otherKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
@@ -715,6 +680,7 @@ void initObjects() {
       thirdKart->setPosition(vec3(30, 1, 45));
       thirdKart->setScale(vec3(1.0, 0.75, 1.0));
       thirdKart->setDirection(0);
+      thirdKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(thirdKart);
       kart_objects.push_back(thirdKart); 
    }
@@ -841,6 +807,17 @@ void reshape(int width, int height)
 {
    g_win_width = width;
    g_win_height = height;
+   
+   if (g_num_players == 1) {
+      g_current_height = g_win_height;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 2) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 3 || g_num_players == 4) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width/2;
+   }
    
    g_time = glfwGetTime();
    g_last_time = glfwGetTime();

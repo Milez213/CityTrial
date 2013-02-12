@@ -19,22 +19,27 @@
 
 #include "MStackHelp.h"
 #include "ModelManager.h"
-#include "PhongShader.h"
-
-#include "GameObject.h"
+#include "HUDShader.h"
 
 using namespace glm;
 
 class GameHUD {
 public:
-   GameHUD(float width, float height);
+   GameHUD();
    
-   void drawSpeed(PhongShader *meshShader, RenderingHelper modelViewMatrix, float speed);
+   void setScreen(float width, float height);
+   void drawSpeed(float speed);
    
 protected:
-   bufferStore meshStorage;
+   RenderingHelper modelMatrix;
+   
+   mat4 proj, view;
    
    float hudWidth, hudHeight;
+   
+private:
+   void setOrthographicMatrix();
+   void setHUDView();
 };
 
 
