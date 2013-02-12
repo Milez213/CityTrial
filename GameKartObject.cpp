@@ -350,7 +350,7 @@ void GameKartObject::update(float dt)
    float oldDirection = getDirection();
    
    //float directionMult = oldSpeed == 0 ? 0 : (oldSpeed < 0.0) ? -1 : 1;
-   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - abs(getSpeed())/properties.getTurnSpeed());
+   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
    
    if (joystickState[0] < 0.0) {
       changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
