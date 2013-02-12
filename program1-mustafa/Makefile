@@ -3,11 +3,12 @@
 # vim modeline
 # vim: set noexpandtab :
 
-CFLAGS=-Wall -g
-LDFLAGS=-DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -DCSL -lfreetype
-IFLAGS=-I../ -I
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g 
+LDFLAGS= -lglut -lGL -lGLU -DCSL -lfreetype
 
+IFLAGS=-I../ 
 FT2=-I/usr/include/freetype2
+IFLAGS += $(FT2)
 
 # $@ - file name of target rule
 # $^ - name of all prerequisits
@@ -24,16 +25,30 @@ make_test:	../lol.ext
 	echo "testing"
 
 
-../%.ext:  $(wildcard noneexistant)
-	echo $@
+# console color text
+# see http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
+LIGHT_BLUE = "\033[1;34m"
+LIGHT_PURPLE = "\033[1;35m"
+END_COLOR = "\033[0m"
 
-map_editor2:	map_editor2.o texture.o helper.o shader.o phongShader.o
-		echo "Linking "$^
+
+map_editor_glut:	map_editor_glut.o texture.o \
+		shader.o phongShader.o \
+		../GLSL_helper.o ../GameDrawableObject.o ../ModelManager.o \
+		../GameObject.o ../MStackHelp.o
+		@echo $(LIGHT_BLUE)"Linking" $@ $(END_COLOR)
 		g++  $(CFLAGS) $^ -o $@ $(FT2) $(LDFLAGS)
+		@echo ""
 
+../%.o: %.cpp $(wildcard %.h)
+	@echo $(LIGHT_PURPLE)"compiling" $@ $(END_COLOR)
+	g++ $(IFLAGS) $< -c $(CFLAGS) 
+	@echo ""
 
-map_editor2.o:	map_editor2.cpp
-		g++ $(IFLAGS) $(CFLAGS) $(LDFLAGS)  $< -c  $(FT2)
+%.o: %.cpp $(wildcard %.h)
+	@echo $(LIGHT_PURPLE)"compiling" $@ $(END_COLOR)
+	g++ $(IFLAGS) $< -c $(CFLAGS)
+	@echo ""
 
 
 main.o:	main.cpp
