@@ -39,7 +39,6 @@ void GameHUD::drawSpeed(PhongShader *meshShader, RenderingHelper modelViewMatrix
       //modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
       //modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
       meshShader->setModelMatrix(modelViewMatrix.getMatrix());
-      meshShader->setiModelMatrix(glm::transpose(glm::inverse(modelViewMatrix.getMatrix())));
    
       safe_glEnableVertexAttribArray(h_aPos);
       glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
@@ -80,7 +79,6 @@ void GameHUD::drawSpeed(PhongShader *meshShader, RenderingHelper modelViewMatrix
       //modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
       modelViewMatrix.rotate(180 * (speed/50.0), vec3(0.0, 0.0, 1.0));
       meshShader->setModelMatrix(modelViewMatrix.getMatrix());
-      meshShader->setiModelMatrix(glm::transpose(glm::inverse(modelViewMatrix.getMatrix())));
    
       safe_glEnableVertexAttribArray(h_aPos);
       glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);

@@ -99,6 +99,7 @@ public:
 
     void setModelMatrix(mat4 mat) {
         safe_glUniformMatrix4fv(h_uModelMatrix, value_ptr(mat));
+        setiModelMatrix(mat);
     }
 
     void setiModelMatrix(mat4 mat) {
