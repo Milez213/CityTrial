@@ -7,6 +7,7 @@
 
 #include "Shader.h"
 #include "defines.h"
+#include "LoadTexture.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,7 +74,8 @@ public:
            glGenTextures(1, &texture);
            glBindTexture(GL_TEXTURE_2D, texture);
            
-           glfwLoadTexture2D("textures/hudAtlas.tga", GLFW_BUILD_MIPMAPS_BIT);
+           // glfwLoadTexture2D("textures/hudAtlas.tga", 0);
+           LoadTexture("textures/hudAtlas.bmp", texture);
            
            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
