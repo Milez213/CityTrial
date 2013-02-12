@@ -11,7 +11,7 @@
 
     Move mode: in first-person: a w s d, space, z, and mouse
 
-    Press 'c' to transform object
+    Press 'c' to toggle transform object and first-person mode
 
     t   - translate
     s   - scale
@@ -22,8 +22,12 @@
     press , and . (the keys with < and >) to toggle object.
     press j and k to toggle material (doesn't get set in kpp now.)
 
+    o - save map.  Ctrl-Tab to the console and enter map name.
 
     Right now there's 2 object types: ramps and buildings.
+    
+    
+    load map to edit: ./<program name> <mapname>
 
 */
 
