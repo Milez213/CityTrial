@@ -5,8 +5,10 @@
 #include "GameUpgradeObject.h"
 
 #include "GamePartUpgrade.h"
-#include "GamePartWings.h"
+//#include "GamePartWings.h"
+#include "GamePartNone.h"
 #include "GameActiveUpgrade.h"
+#include "GameActiveNone.h"
 
 #include <cmath>
 
@@ -28,8 +30,14 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
       GameDrawableObject *tire = new GameDrawableObject("models/tire.obj");
       wheels.push_back(tire);
    }
-      //GamePartUpgrade *part = new GamePartWings();
-      //sideParts.push_back(part);
+   
+   /* fill each kartSlot with a blank upgrade. simplifies logic and allows
+    * players to choose no part for a slot */
+   GamePartUpgrade *part = new GamePartNone();
+   frontParts.push_front(part);
+   sideParts.push_front(part);
+   backParts.push_front(part);
+   activeUpgrades.push_front(new GameActiveNone());
    
    /*glm::vec3 pos = position();
    wheels[0]->setPosition(vec3(pos.x - 12.0, pos.y-6, pos.z - 12.0));
@@ -211,25 +219,28 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    
-   if (frontParts.size()) {
+   //if (frontParts.size()) {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
       frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
-   }
+   //}
    
-   if (sideParts.size()) {
+   //if (sideParts.size()) {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
       sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
-   }
+   //}
    
-   if (backParts.size()) {
+   //if (backParts.size()) {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
       backParts.front()->drawOnKart(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
+   //}
+   if (actionOn) {
+      activeUpgrades.front()->drawEffect(meshShader, modelViewMatrix);
    }
 
 
@@ -267,63 +278,37 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
-   
-   /*if (targetAngle < 0.0)
-   {
-      if(tireTurnAngle > targetAngle)
-       tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
-   }
-   else if(targetAngle > 0.0)
-   {
-      if(tireTurnAngle < targetAngle)
-         tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
-   }
-   else
-   {
-      if(tireTurnAngle > 0.0)
-         tireTurnAngle -= dt * properties.getTurnSpeed()/tireTurnAngleTime;
-      else if(tireTurnAngle<0.0)
-         tireTurnAngle += dt * properties.getTurnSpeed()/tireTurnAngleTime;
-   }*/
-
 }
 
 void GameKartObject::addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part)
 {
-   if (!list.empty())
-      list.front()->cycleStatOff(&properties);
+   list.front()->cycleStatOff(&properties);
    list.push_front(part);
    part->cycleStatOn(&properties);
 }
 void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
 {
-   if (list.size() >= 2) {
-      list.front()->cycleStatOff(&properties);
-      list.push_back(list.front());
-      list.pop_front();
-      list.front()->cycleStatOn(&properties);
-   }
+   list.front()->cycleStatOff(&properties);
+   list.push_back(list.front());
+   list.pop_front();
+   list.front()->cycleStatOn(&properties);
 }
 void GameKartObject::addActive(GameActiveUpgrade *active)
 {
    if (actionOn) {
-      if (!activeUpgrades.empty())
-         activeUpgrades.front()->activeEnd(this);
+      activeUpgrades.front()->activeEnd(this);
       actionOn = false;
    }
    activeUpgrades.push_front(active);
 }
 void GameKartObject::cycleActives()
 {
-   if (activeUpgrades.size() >= 2) {
-      if (actionOn) {
-         if (!activeUpgrades.empty())
-            activeUpgrades.front()->activeEnd(this);
-         actionOn = false;
-      }
-      activeUpgrades.push_back(activeUpgrades.front());
-      activeUpgrades.pop_front();
+   if (actionOn) {
+      activeUpgrades.front()->activeEnd(this);
+      actionOn = false;
    }
+   activeUpgrades.push_back(activeUpgrades.front());
+   activeUpgrades.pop_front();
 }
 
 void GameKartObject::update(float dt)
@@ -440,17 +425,17 @@ void GameKartObject::update(float dt)
    
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
-         if (!activeUpgrades.empty())
+         //if (!activeUpgrades.empty())
             activeUpgrades.front()->activeStart(this);
          actionOn = true;
       }
-      else if (!activeUpgrades.empty()){
+      else {//if (!activeUpgrades.empty()){
          activeUpgrades.front()->activeUpdate(this, dt);
       }
    }
    else { //GLFW_RELEASE
       if (actionOn) {
-         if (!activeUpgrades.empty())
+         //if (!activeUpgrades.empty())
             activeUpgrades.front()->activeEnd(this);
          actionOn = false;
       }
