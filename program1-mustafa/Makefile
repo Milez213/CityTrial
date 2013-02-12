@@ -1,10 +1,14 @@
 # Makefile by Mustafa Khafateh
 
-CFLAGS=-Wall -g
-LDFLAGS=-DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -DCSL -lfreetype
-IFLAGS=-I../
+# vim modeline
+# vim: set noexpandtab :
 
+CFLAGS=-DGL_GLEXT_PROTOTYPES -Wall -g 
+LDFLAGS= -lglut -lGL -lGLU -DCSL -lfreetype
+
+IFLAGS=-I../ 
 FT2=-I/usr/include/freetype2
+IFLAGS += $(FT2)
 
 # $@ - file name of target rule
 # $^ - name of all prerequisits
@@ -14,6 +18,38 @@ main:	main.o helper.o mesh_loader.o shader.o phongShader.o torus.o drawable.o \
 		mesh.o texture.o sparks.o bunnie.o bunnies.o
 		echo "Linking "$^
 		g++  $(CFLAGS) $^ -o $@ $(FT2) $(LDFLAGS)
+
+
+
+make_test:	../lol.ext
+	echo "testing"
+
+
+# console color text
+# see http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
+LIGHT_BLUE = "\033[1;34m"
+LIGHT_PURPLE = "\033[1;35m"
+END_COLOR = "\033[0m"
+
+
+map_editor_glut:	map_editor_glut.o texture.o \
+		shader.o phongShader.o \
+		../GLSL_helper.o ../GameDrawableObject.o ../ModelManager.o \
+		../GameObject.o ../MStackHelp.o
+		@echo $(LIGHT_BLUE)"Linking" $@ $(END_COLOR)
+		g++  $(CFLAGS) $^ -o $@ $(FT2) $(LDFLAGS)
+		@echo ""
+
+../%.o: %.cpp $(wildcard %.h)
+	@echo $(LIGHT_PURPLE)"compiling" $@ $(END_COLOR)
+	g++ $(IFLAGS) $< -c $(CFLAGS) 
+	@echo ""
+
+%.o: %.cpp $(wildcard %.h)
+	@echo $(LIGHT_PURPLE)"compiling" $@ $(END_COLOR)
+	g++ $(IFLAGS) $< -c $(CFLAGS)
+	@echo ""
+
 
 main.o:	main.cpp
 		g++ $(IFLAGS) $(CFLAGS) $(LDFLAGS)  $< -c  $(FT2)

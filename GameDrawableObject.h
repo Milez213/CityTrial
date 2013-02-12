@@ -31,6 +31,8 @@ public:
    GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void draw(PhongShader *meshShader);
+   
    virtual void onCollide(GameDrawableObject *other);
 
    virtual void setScale(vec3 s);

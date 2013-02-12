@@ -13,11 +13,12 @@
 
 #include "GamePhysicalObject.h"
 #include "GameKartProperties.h"
+#include "GameHUD.h"
 
 #include "SoundManager.h"
 
 struct inputMap {
-   int up, down, left, right;
+   int up, down, left, right, action, cycleActive, cycleFront, cycleSide, cycleBack;
 };
 
 // global variables
@@ -69,10 +70,18 @@ public:
    }
    
    void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
-   //void setButtonState(char butState[]) { memcpy(butState, buttonState, sizeof(char) * 32); }; //"  " of buttons to "  "
+   void setButtonState(unsigned char butState[]) { memcpy(buttonState, butState, sizeof(unsigned char) * 32); }; //"  " of buttons to "  "
    
-   void setInputMap(int up, int down, int left, int right) { input.up = up; input.down = down; input.left = left; input.right = right; };
+   void setInputMap(int up, int down, int left, int right,
+      int action, int cycleActive, int cycleFront, int cycleSide, int cycleBack) {
+      input.up = up; input.down = down; input.left = left; input.right = right;
+      input.action = action; input.cycleActive = cycleActive;
+      input.cycleFront = cycleFront; input.cycleSide = cycleSide; input.cycleBack = cycleBack;};
    int getInput(int request);
+   const inputMap getInputMap() { return input; }
+   
+   void resize(float width, float height) { hud->setScreen(width, height); };
+   void drawHUD();
    
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }
@@ -94,9 +103,11 @@ private:
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle;
    
-   bool usingController,wings;
+   bool usingController;//,wings;
    float joystickState[4];
-   char buttonState[32];
+   unsigned char buttonState[32];
+   bool actionOn;
+   bool buttonDown[32];
    
    inputMap input;
    
@@ -104,6 +115,8 @@ private:
 
    GameSound *ding_sound;
    GameSound *collide_sound;
+   
+   GameHUD *hud;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);

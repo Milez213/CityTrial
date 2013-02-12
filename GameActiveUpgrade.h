@@ -12,13 +12,17 @@
 #include <iostream>
 #include "GameUpgradeObject.h"
 
-class GameActiveUpgrade : GameUpgradeObject
+class GameActiveUpgrade : public GameUpgradeObject
 {
+public:
    GameActiveUpgrade() : GameUpgradeObject("ramp") {}
    
-   void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
-   void activeOnce() = 0;
-   void activeDrain() = 0;
+   virtual void addToKart(GameKartObject *kart) { kart->addActive(this); }
+   
+   virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
+   virtual void activeStart(GameKartObject *kart) = 0;
+   virtual void activeUpdate(GameKartObject *kart, float dt) = 0;
+   virtual void activeEnd(GameKartObject *kart) = 0;
 };
 
 #endif /* defined(____GameActiveUpgrade__) */

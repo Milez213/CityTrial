@@ -30,6 +30,8 @@ using  glm::vec4;
 #include "MStackHelp.h"
 
 #include "PhongShader.h"
+#include "HUDShader.h"
+#include "FontShader.h"
 #include "ModelManager.h"
 
 #ifdef USE_DUMMY_SOUND
@@ -47,6 +49,8 @@ using  glm::vec4;
 
 #include "GamePartWings.h"
 #include "GameStatSpeed.h"
+#include "GameActiveBoost.h"
+#include "GameActiveJetpack.h"
 #include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF
@@ -56,9 +60,13 @@ using  glm::vec4;
 #endif
 
 #include "loadMap.h"
-//#include "frustum/FrustumG.h"
+#include "calcFrustum.h"
 
 #include "GameSettings.h"
+
+#include "util.h"       // has randFloat()
+
+
 
 using namespace std;
 
@@ -108,13 +116,11 @@ GameSound *g_music;
 
 // test one object for now
 PhongShader *meshShader;
+HUDShader *hudShader;
 vector<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
-
-
-RenderingHelper g_model_trans;
 
 // GLFW Window
 int g_win_height, g_win_width;
@@ -125,12 +131,11 @@ double g_last_time;
 
 mat4 g_proj;
 mat4 g_view;
-mat4 g_model;
+RenderingHelper g_model_trans;
 
 GameCamera *g_camera;
 
 
-GLuint fbo;
 
 
 
@@ -171,157 +176,9 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
                    20.0},
 };
 
+
+
 /* helper function to set up material for shading */
-
-float fr[6][4];
-
-void ExtractFrustum()
-{
-   float   clip[16];
-   float   t;
-
-
-  mat4 tpose = g_proj * g_view;
-  tpose = glm::transpose(tpose);
-
-  mat4 g_mView =  tpose * g_model;
-
-
-   clip[ 0] = g_mView[ 0][0]; 
-   clip[ 1] = g_mView[ 1][0] ;
-   clip[ 2] = g_mView[ 2][0] ;
-   clip[ 3] = g_mView[ 3][0] ;
-
-   clip[ 4] = g_mView[ 0][1] ;
-   clip[ 5] = g_mView[ 1][1] ;
-   clip[ 6] = g_mView[ 2][1] ;
-   clip[ 7] = g_mView[ 3][1] ;
-
-   clip[ 8] = g_mView[ 0][2];
-   clip[ 9] = g_mView[ 1][2] ;
-   clip[10] = g_mView[ 2][2];
-   clip[11] = g_mView[ 3][2] ;
-
-   clip[12] = g_mView[0][3] ;
-   clip[13] = g_mView[1][3] ;
-   clip[14] = g_mView[2][3] ;
-   clip[15] = g_mView[3][3] ;
-   
-
-   /* Combine the two matrices (multiply projection by modelview) */
-   /*clip[ 0] = g_mView[ 0][0] * g_proj[ 0][0] + g_mView[ 1][0] * g_proj[ 1][0] + g_mView[ 2][0] * g_proj[ 2][0] + g_mView[ 3][0] * g_proj[3][0];
-   clip[ 1] = g_mView[ 0][0] * g_proj[ 0][1] + g_mView[ 1][0] * g_proj[ 1][1] + g_mView[ 2][0] * g_proj[ 2][1] + g_mView[ 3][0] * g_proj[3][1];
-   clip[ 2] = g_mView[ 0][0] * g_proj[ 0][2] + g_mView[ 1][0] * g_proj[ 1][2] + g_mView[ 2][0] * g_proj[2][2] + g_mView[ 3][0] * g_proj[3][2];
-   clip[ 3] = g_mView[ 0][0] * g_proj[ 0][3] + g_mView[ 1][0] * g_proj[ 1][3] + g_mView[ 2][0] * g_proj[2][3] + g_mView[ 3][0] * g_proj[3][3];
-
-   clip[ 4] = g_mView[ 0][1] * g_proj[ 0][0] + g_mView[ 1][1] * g_proj[ 1][0] + g_mView[ 2][1] * g_proj[ 2][0] + g_mView[ 3][1] * g_proj[3][0];
-   clip[ 5] = g_mView[ 0][1] * g_proj[ 0][1] + g_mView[ 1][1] * g_proj[ 1][1] + g_mView[ 2][1] * g_proj[ 2][1] + g_mView[ 3][1] * g_proj[3][1];
-   clip[ 6] = g_mView[ 0][1] * g_proj[ 0][2] + g_mView[ 1][1] * g_proj[ 1][2] + g_mView[ 2][1] * g_proj[2][2] + g_mView[ 3][1] * g_proj[3][2];
-   clip[ 7] = g_mView[ 0][1] * g_proj[ 0][3] + g_mView[ 1][1] * g_proj[ 1][3] + g_mView[ 2][1] * g_proj[2][3] + g_mView[ 3][1] * g_proj[3][3];
-
-   clip[ 8] = g_mView[ 0][2] * g_proj[0][0] + g_mView[ 1][2] * g_proj[ 1][0] + g_mView[2][2] * g_proj[ 2][0] + g_mView[3][2] * g_proj[3][0];
-   clip[ 9] = g_mView[ 0][2] * g_proj[0][1] + g_mView[ 1][2] * g_proj[ 1][1] + g_mView[2][2] * g_proj[ 2][1] + g_mView[3][2] * g_proj[3][1];
-   clip[10] = g_mView[ 0][2] * g_proj[0][2] + g_mView[ 1][2] * g_proj[ 1][2] + g_mView[2][2] * g_proj[2][2] + g_mView[3][2] * g_proj[3][2];
-   clip[11] = g_mView[ 0][2] * g_proj[0][3] + g_mView[ 1][2] * g_proj[ 1][3] + g_mView[2][2] * g_proj[2][3] + g_mView[3][2] * g_proj[3][3];
-
-   clip[12] = g_mView[0][3] * g_proj[0][0] + g_mView[1][3] * g_proj[ 1][0] + g_mView[2][3] * g_proj[ 2][0] + g_mView[3][3] * g_proj[3][0];
-   clip[13] = g_mView[0][3] * g_proj[0][1] + g_mView[1][3] * g_proj[ 1][1] + g_mView[2][3] * g_proj[ 2][1] + g_mView[3][3] * g_proj[3][1];
-   clip[14] = g_mView[0][3] * g_proj[0][2] + g_mView[1][3] * g_proj[ 1][2] + g_mView[2][3] * g_proj[2][2] + g_mView[3][3] * g_proj[3][2];
-   clip[15] = g_mView[0][3] * g_proj[0][ 3] + g_mView[1][3] * g_proj[ 1][3] + g_mView[2][3] * g_proj[2][3] + g_mView[3][3] * g_proj[3][3];
-   
-   /* Extract the numbers for the RIGHT plane */
-   fr[0][0] = clip[ 3] - clip[ 0];
-   fr[0][1] = clip[ 7] - clip[ 4];
-   fr[0][2] = clip[11] - clip[ 8];
-   fr[0][3] = clip[15] - clip[12];
-
-   /* Normalize the result */
-   t = sqrt( fr[0][0] * fr[0][0] + fr[0][1] * fr[0][1] + fr[0][2] * fr[0][2] );
-   fr[0][0] /= t;
-   fr[0][1] /= t;
-   fr[0][2] /= t;
-   fr[0][3] /= t;
-   
-   /* Extract the numbers for the LEFT plane */
-   fr[1][0] = clip[ 3] + clip[ 0];
-   fr[1][1] = clip[ 7] + clip[ 4];
-   fr[1][2] = clip[11] + clip[ 8];
-   fr[1][3] = clip[15] + clip[12];
-
-   /* Normalize the result */
-   t = sqrt( fr[1][0] * fr[1][0] + fr[1][1] * fr[1][1] + fr[1][2] * fr[1][2] );
-   fr[1][0] /= t;
-   fr[1][1] /= t;
-   fr[1][2] /= t;
-   fr[1][3] /= t;
-
-   /* Extract the BOTTOM plane */
-   fr[2][0] = clip[ 3] + clip[ 1];
-   fr[2][1] = clip[ 7] + clip[ 5];
-   fr[2][2] = clip[11] + clip[ 9];
-   fr[2][3] = clip[15] + clip[13];
-
-   /* Normalize the result */
-   t = sqrt( fr[2][0] * fr[2][0] + fr[2][1] * fr[2][1] + fr[2][2] * fr[2][2] );
-   fr[2][0] /= t;
-   fr[2][1] /= t;
-   fr[2][2] /= t;
-   fr[2][3] /= t;
-
-   /* Extract the TOP plane */
-   fr[3][0] = clip[ 3] - clip[ 1];
-   fr[3][1] = clip[ 7] - clip[ 5];
-   fr[3][2] = clip[11] - clip[ 9];
-   fr[3][3] = clip[15] - clip[13];
-
-   /* Normalize the result */
-   t = sqrt( fr[3][0] * fr[3][0] + fr[3][1] * fr[3][1] + fr[3][2] * fr[3][2] );
-   fr[3][0] /= t;
-   fr[3][1] /= t;
-   fr[3][2] /= t;
-   fr[3][3] /= t;
-
-   /* Extract the FAR plane */
-   fr[4][0] = clip[ 3] - clip[ 2];
-   fr[4][1] = clip[ 7] - clip[ 6];
-   fr[4][2] = clip[11] - clip[10];
-   fr[4][3] = clip[15] - clip[14];
-
-   /* Normalize the result */
-   t = sqrt( fr[4][0] * fr[4][0] + fr[4][1] * fr[4][1] + fr[4][2] * fr[4][2] );
-   fr[4][0] /= t;
-   fr[4][1] /= t;
-   fr[4][2] /= t;
-   fr[4][3] /= t;
-
-   /* Extract the NEAR plane */
-   fr[5][0] = clip[ 3] + clip[ 2];
-   fr[5][1] = clip[ 7] + clip[ 6];
-   fr[5][2] = clip[11] + clip[10];
-   fr[5][3] = clip[15] + clip[14];
-
-   /* Normalize the result */
-   t = sqrt( fr[5][0] * fr[5][0] + fr[5][1] * fr[5][1] + fr[5][2] * fr[5][2] );
-   fr[5][0] /= t;
-   fr[5][1] /= t;
-   fr[5][2] /= t;
-   fr[5][3] /= t;
-
-
-/*for (int i = 0; i<6;i++)
-{
-   for (int d = 0; d<4; d++)
-   {
-      printf("%f ",fr[i][d]);
-   }
-   printf("\n");
-}
-printf("\n");*/
-}
-
-
-
-
 void setPhongMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
         meshShader->setMaterial(g_materials[i]);
@@ -334,24 +191,12 @@ void setPhongMaterial(int i) {
 // === end Globals ==============================
 
 
-// returns in range -1, 1 (not sure if incusive)
-float randFloat() {
-       return ((float) rand() / RAND_MAX);
-}
-
 
 /* projection matrix */
-
 void setProjectionMatrix(int kartIndex) {
    g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 0.5f + 90.0f,
          (float)g_current_width/g_current_height, 0.1f, 100.f);
 }
-
-void setOrthographicMatrix() {
-   g_proj = glm::ortho(0.0f, (float)g_current_width, (float)g_current_height, 0.0f, -1.0f, 1.0f);
-
-}
-
 
 /* camera controls */
 void setView(int kartIndex) {
@@ -366,10 +211,6 @@ void setView(int kartIndex) {
 
    g_view = g_camera->getViewMat();
    
-}
-
-void setHUDView() {
-   g_view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 2.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
 }
 
 void getInputState()
@@ -388,17 +229,24 @@ void getInputState()
             joy[3] = -1.0;
          else
             joy[3] = 0.0;
+         
          if (glfwGetKey(kart_objects[i]->getInput(2)) == GLFW_PRESS)
             joy[0] = 1.0;
          else if (glfwGetKey(kart_objects[i]->getInput(3)) == GLFW_PRESS)
             joy[0] = -1.0;
          else
             joy[0] = 0.0;
+         
+         button[0] = glfwGetKey(kart_objects[i]->getInputMap().action);
+         button[1] = glfwGetKey(kart_objects[i]->getInputMap().cycleActive);
+         button[2] = glfwGetKey(kart_objects[i]->getInputMap().cycleFront);
+         button[3] = glfwGetKey(kart_objects[i]->getInputMap().cycleSide);
+         button[4] = glfwGetKey(kart_objects[i]->getInputMap().cycleBack);
       }
       
       //printf("Joy: %0.3f\n", joy[3]);
       kart_objects[i]->setJoystickState(joy); //These functions are commented out in GameKartObject *****
-      //kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
+      kart_objects[i]->setButtonState(button);//Update internal input arrays in kartObject, then allow it to update based on given input *****
    }
 }
 
@@ -430,46 +278,8 @@ void update(double dt)
          drawable_objects.erase(it);
       }
    }
-   
-
-
-
-   
-
-
-   
 }
 
-   bool checkFrust(vec3 pos)
-   {
-   int p;
-
-   for( p = 0; p < 6; p++ )
-      if( fr[p][0] * pos.x + fr[p][1] * pos.y + fr[p][2] * pos.z + fr[p][3] < 0.0 ){
-         //printf("%d\n",p);
-         return false;
-      }
-   return true;
-   }
-
-
-
-float SphereInFrustum( vec3 pos, float radius    )
-{
-  int p;
-  float d;
-int c = 0;
-
-  for( p = 0; p < 6; p++ )
-  {
-    d = fr[p][0] * pos.x + fr[p][1] * pos.y + fr[p][2] * pos.z + fr[p][3];
-    if( d <= -radius )
-      return 0;
-    if( d > radius )
-      c++;
-  }
-  return (c == 6) ? 2 : 1;
-}
 
 
 void draw(float dt, int kartIndex)
@@ -492,26 +302,23 @@ void draw(float dt, int kartIndex)
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);
 
- ExtractFrustum(); 
+   ExtractFrustum(); 
+
    // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       setPhongMaterial(i%NUM_MATERIALS);
-      if(SphereInFrustum(drawable_objects[i]->getPosition(),drawable_objects[i]->getBoundingInfo().radius * 1.5) >0){
-      
-      drawable_objects[i]->draw(meshShader, g_model_trans);
-      }
-      else
-      {
-      //printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+      if(SphereInFrustum(drawable_objects[i]->getPosition(), 
+                         drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
+         drawable_objects[i]->draw(meshShader, g_model_trans);
+      } else {
+         /*
+         // test frustum on one object.
+         if (dynamic_cast<GamePartWings *>(drawable_objects[i]))
+            printf("obj not drawn: %s\n", drawable_objects[i]->getName());
+         // printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
+         */
       }
    }
-
-
-   /* psuedocode
-   for each (KKPDrawnObject object in drawn_objects) {
-      object->draw(model_trans);
-   }
-   */
 
    // draw text
    char text[100];
@@ -530,60 +337,31 @@ void draw(float dt, int kartIndex)
    sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
    g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
 
-
+   // draw energy
+   sprintf(text, "energy: %.1f", kart_objects[kartIndex]->getEnergy());
+   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);
    
    
 }
 
-void drawHUD (int kartIndex)
-{
+
+
+void drawHUD (int kartIndex) {
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    //glEnable(GL_BLEND);
    
-   setOrthographicMatrix();
-   setHUDView();
+   //setOrthographicMatrix();
+   //setHUDView();
    
-   meshShader->use();
-   meshShader->setProjMatrix(g_proj);
-   meshShader->setViewMatrix(g_view);
+   //meshShader->setProjMatrix(g_proj);
+   //meshShader->setViewMatrix(g_view);
+   //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+   //glClear( GL_COLOR_BUFFER_BIT );
    
-   GLuint textureId;
-   glGenTextures(1, &textureId);
-   glBindTexture(GL_TEXTURE_2D, textureId);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, g_current_width, g_current_height, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, 0);
-   glBindTexture(GL_TEXTURE_2D, 0);
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-   
-   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                          GL_TEXTURE_2D, textureId, 0);
-   
-   glClearColor (0.5f, 0.7f, 0.1f, 1.0f);
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-   
-   glClearColor (1.0f, 1.0f, 0.1f, 0.0f);
-   //glClear(GL_COLOR_BUFFER_BIT);
-   
-   g_model_trans.pushMatrix();
-   g_model_trans.loadIdentity();
-   
-   GameHUD *hud = new GameHUD(g_current_width, g_current_height);
-   hud->drawSpeed(meshShader, g_model_trans, kart_objects[kartIndex]->getSpeed());
-   
-   g_model_trans.popMatrix();
-   
-   glDeleteTextures(1, &textureId);
+   kart_objects[kartIndex]->drawHUD();
    
    //glDisable(GL_BLEND);
    glDisable(GL_ALPHA_TEST);
@@ -591,19 +369,7 @@ void drawHUD (int kartIndex)
    
 }
 
-void drawMultipleViews(double dt, int numViews)
-{
-   if (numViews == 1) {
-      g_current_height = g_win_height;
-      g_current_width = g_win_width;
-   } else if (numViews == 2) {
-      g_current_height = g_win_height/2;
-      g_current_width = g_win_width;
-   } else if (numViews == 3 || numViews == 4) {
-      g_current_height = g_win_height/2;
-      g_current_width = g_win_width/2;
-   }
-   
+void drawMultipleViews(double dt) {
    int kartIndex = 0;
    for (int i = 0; i * g_current_height < g_win_height; i++) {
       for (int j = 0; j * g_current_width < g_win_width; j++) {
@@ -612,15 +378,16 @@ void drawMultipleViews(double dt, int numViews)
          
          if (kartIndex < (int)kart_objects.size()) {
             draw(dt, kartIndex);
-if(motionBlur == 1)
-{glAccum(GL_MULT, .9);
-glAccum(GL_ACCUM, 1-.9);
-glAccum(GL_RETURN, 1.0);
-glFlush();
-}
+
+            if(motionBlur == 1) {
+               glAccum(GL_MULT, .9);
+               glAccum(GL_ACCUM, 1-.9);
+               glAccum(GL_RETURN, 1.0);
+               glFlush();
+            }
             drawHUD(kartIndex);
             kartIndex++;
-               glfwSwapBuffers();
+            glfwSwapBuffers();
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -628,6 +395,8 @@ glFlush();
       }
    }
 }
+
+
 
 void gameLoop()
 {
@@ -639,7 +408,7 @@ void gameLoop()
 
    update(dt);
    
-   drawMultipleViews(dt, kart_objects.size());
+   drawMultipleViews(dt);
    
 
 
@@ -655,6 +424,7 @@ void initObjects() {
    // TODO - test for return values (but we usually know if they work or not)
    g_camera = new GameCamera();
    
+   hudShader = new HUDShader();
    meshShader = new PhongShader();
    // Light 
    g_lightInfo.pos = vec3(1, 15, 1);
@@ -685,6 +455,17 @@ void initObjects() {
    if (num_players_from_settings > 0) {
       g_num_players = num_players_from_settings;
    }
+   
+   if (g_num_players == 1) {
+      g_current_height = g_win_height;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 2) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 3 || g_num_players == 4) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width/2;
+   }
 
    // hax
    // 1st kart
@@ -693,7 +474,8 @@ void initObjects() {
       kart->setPosition(vec3(30, 1, 30));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
-      kart->setInputMap('W', 'S', 'A', 'D');
+      kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
+      kart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -702,7 +484,8 @@ void initObjects() {
       otherKart->setPosition(vec3(45, 1, 30));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
-      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
+      otherKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
@@ -711,11 +494,12 @@ void initObjects() {
       thirdKart->setPosition(vec3(30, 1, 45));
       thirdKart->setScale(vec3(1.0, 0.75, 1.0));
       thirdKart->setDirection(0);
+      thirdKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(thirdKart);
       kart_objects.push_back(thirdKart); 
    }
 
-   
+   //upgrades
    GamePartUpgrade *part = new GamePartWings();
    part->setPosition(vec3(5, 1, 2));
    part->setScale(vec3(2.0, 1.0, 1.0));
@@ -726,19 +510,27 @@ void initObjects() {
    stat->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(stat);
    
+   GameActiveUpgrade *active = new GameActiveBoost();
+   active->setPosition(vec3(10, 1, 5));
+   active->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
+   active = new GameActiveJetpack();
+   active->setPosition(vec3(10, 1, 25));
+   active->setScale(vec3(1.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
    
    GameRamp *ramp = new GameRamp();
    ramp->setPosition(vec3(-25, 2, -25));
    ramp->setScale(vec3(3.0, 2.0, 3.0));
    drawable_objects.push_back(ramp);
    
-   
    GameBuilding *buildin = new GameBuilding();
    buildin->setPosition(vec3(-25, 2, 0));
    buildin->setScale(vec3(10.0, 2.0, 10.0));
    drawable_objects.push_back(buildin);
    
-   glGenFramebuffers(1, &fbo);
    
   /* GamePhysicalObject *building = new GamePhysicalObject("cube");
    building->setName("building");
@@ -834,6 +626,17 @@ void reshape(int width, int height)
    g_win_width = width;
    g_win_height = height;
    
+   if (g_num_players == 1) {
+      g_current_height = g_win_height;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 2) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width;
+   } else if (g_num_players == 3 || g_num_players == 4) {
+      g_current_height = g_win_height/2;
+      g_current_width = g_win_width/2;
+   }
+   
    g_time = glfwGetTime();
    g_last_time = glfwGetTime();
 }
@@ -897,9 +700,8 @@ int main(int argc, char** argv)
       glfwTerminate();
       exit( EXIT_FAILURE );
    } else {
-   		int major, minor, rev;
-		glfwGetGLVersion(&major, &minor, &rev);
- 		fprintf(stderr, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
+      // in GLSL_helper
+      getGLversion();
 	}
 
    glfwSetWindowSizeCallback( reshape );

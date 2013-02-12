@@ -2,8 +2,14 @@
 OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 	ModelManager.o GameObject.o GameDrawableObject.o \
 	GameKartObject.o GameUpgradeObject.o GamePhysicalObject.o \
-   GameRamp.o GameBuilding.o GameTerrain.o loadMap.o GameHUD.o
+   GameRamp.o GameBuilding.o GameTerrain.o loadMap.o GameHUD.o \
+   LoadTexture.o util.o calcFrustum.o
 
+
+EDITOR_OFILES=map_editor.o MStackHelp.o GLSL_helper.o Shader.o \
+	ModelManager.o GameObject.o GameDrawableObject.o loadMap.o \
+    GameTerrain.o GameBuilding.o GameRamp.o  \
+    util.o
 
 # where to find .h files
 IFLAGS=-I./glfw/include 
@@ -64,6 +70,10 @@ all: build
 
 build: $(OFILES)
 	g++ $(CFLAGS) $(OFILES) -o kpp $(LDFLAGS)
+
+
+map_editor: $(EDITOR_OFILES)
+	g++ $(CFLAGS) $(EDITOR_OFILES) -o map_editor $(LDFLAGS)
 
 %.o: %.cpp
 	g++ -c $(CFLAGS) $(IFLAGS) -o $@ $<
