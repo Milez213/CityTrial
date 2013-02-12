@@ -119,7 +119,7 @@ RenderingHelper g_model_trans;
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
-int motionBlur = 0;
+int motionBlur = 1;
 double g_time;
 double g_last_time;
 
