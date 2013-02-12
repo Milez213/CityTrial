@@ -50,6 +50,7 @@ using  glm::vec4;
 #include "GamePartWings.h"
 #include "GameStatSpeed.h"
 #include "GameActiveBoost.h"
+#include "GameActiveJetpack.h"
 #include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF
@@ -392,6 +393,10 @@ void getInputState()
             joy[0] = 0.0;
          
          button[0] = glfwGetKey(kart_objects[i]->getInputMap().action);
+         button[1] = glfwGetKey(kart_objects[i]->getInputMap().cycleActive);
+         button[2] = glfwGetKey(kart_objects[i]->getInputMap().cycleFront);
+         button[3] = glfwGetKey(kart_objects[i]->getInputMap().cycleSide);
+         button[4] = glfwGetKey(kart_objects[i]->getInputMap().cycleBack);
       }
       
       //printf("Joy: %0.3f\n", joy[3]);
@@ -662,7 +667,7 @@ void initObjects() {
       kart->setPosition(vec3(30, 1, 30));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
-      kart->setInputMap('W', 'S', 'A', 'D', ' ');
+      kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
@@ -672,7 +677,7 @@ void initObjects() {
       otherKart->setPosition(vec3(45, 1, 30));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
-      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER);
+      otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
@@ -701,6 +706,11 @@ void initObjects() {
    GameActiveUpgrade *active = new GameActiveBoost();
    active->setPosition(vec3(10, 1, 5));
    active->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
+   active = new GameActiveJetpack();
+   active->setPosition(vec3(10, 1, 25));
+   active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
    
    

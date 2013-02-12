@@ -2,7 +2,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <GL/glut.h>
+#include "include_glut.h"
 
 
 /*data structure for the image used for  texture mapping */
