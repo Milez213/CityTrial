@@ -31,6 +31,8 @@ public:
             h_uModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uModelMatrix");
             h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
             h_uViewMatrix = safe_glGetUniformLocation(m_shaderProg, "uViewMatrix");
+           
+            h_uColor = safe_glGetUniformLocation(m_shaderProg, "uColor");
 
             // attributes
             h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
@@ -77,6 +79,8 @@ public:
            glGenBuffers(1, &elements);
            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
+           
+           currentColor = vec4(1.0, 0.0, 1.0, 0.0);
            
  
            texture = 0;
@@ -129,6 +133,8 @@ public:
        glBindTexture(GL_TEXTURE_2D, texture);
        //setTexture(texture);
        
+       glUniform4f(h_uColor, currentColor.x, currentColor.y, currentColor.z, currentColor.w);
+       
        safe_glEnableVertexAttribArray(h_aPosition);
        glBindBuffer(GL_ARRAY_BUFFER, planeCoord);
        safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -140,6 +146,14 @@ public:
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
     }
+   
+   void usePlayerColor() {
+      currentColor.w = 1.0;
+   }
+   
+   void useTextureColor() {
+      currentColor.w = 0.0;
+   }
    
     void deactivate() {
        safe_glDisableVertexAttribArray(h_aPosition);
@@ -158,6 +172,10 @@ public:
         GLint location = safe_glGetUniformLocation(m_shaderProg, "uTexUnit");
         safe_glUniform1i(location, textureName);
     }
+   
+   void setColor(vec4 color) {
+      currentColor = color;
+   }
 
 	/*
     void setNormTexture(GLuint textureName) {
@@ -222,6 +240,10 @@ private:
    GLint h_uModelMatrix;
    GLint h_uProjMatrix;
    GLint h_uViewMatrix;
+   
+   GLint h_uColor;
+   
+   vec4 currentColor;
    
    int numCoords;
    GLuint *textCoords;

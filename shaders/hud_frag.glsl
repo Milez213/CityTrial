@@ -1,6 +1,7 @@
 uniform sampler2D uTexUnit;
 
 uniform mat4 uModelMatrix;
+uniform vec4 uColor;
 
 varying vec4 vPosition;
 varying vec2 vTexture;
@@ -19,7 +20,11 @@ void main(void) {
    */
    
    // use alpha value in texture
-   gl_FragColor = color;
+   if (uColor.a == 0.0) 
+      gl_FragColor = color;
+   else
+      gl_FragColor = vec4(uColor.r * color.r, uColor.g * color.g, 
+      uColor.b * color.b, color.a);
 }
 
 
