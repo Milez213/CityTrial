@@ -125,7 +125,7 @@ int g_num_players = 1;
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
-int motionBlur = 1;
+int motionBlur = 0;
 double g_time;
 double g_last_time;
 
@@ -142,7 +142,7 @@ GameCamera *g_camera;
 // === game info ===
 
 int g_num_squashes = 0;
-
+int g_timer = 120;
 
 // *** lights ***
 
@@ -310,7 +310,7 @@ void draw(float dt, int kartIndex)
       if(SphereInFrustum(drawable_objects[i]->getPosition(), 
                          drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
          drawable_objects[i]->draw(meshShader, g_model_trans);
-      } else {
+      } else { //printf("Not being drawn\n");
          /*
          // test frustum on one object.
          if (dynamic_cast<GamePartWings *>(drawable_objects[i]))
@@ -401,18 +401,32 @@ void drawMultipleViews(double dt) {
 void gameLoop()
 {
    double dt;
-
+   int time_then = 0;;
+   int time_now = 0;
    g_time = glfwGetTime();
 
+   if (g_timer > 0){ 
+    time_then = time(0);
+   }
    dt = g_time - g_last_time;
 
    update(dt);
    
    drawMultipleViews(dt);
    
+   
 
+   g_last_time = g_time;  
 
-   g_last_time = g_time;   	
+   if (g_timer > 0){
+    time_now = time(0);
+   }
+  
+   if(g_timer > 0){
+   g_timer -=time_now - time_then;
+   }
+
+   printf("%d\n",g_timer); 	
 }
 
 
