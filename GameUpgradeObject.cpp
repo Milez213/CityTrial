@@ -8,6 +8,7 @@
 
 #include "GameUpgradeObject.h"
 
+extern SoundManager *g_sound_manager;
 
 /*GameUpgradeObject::GameUpgradeObject(Type initType) : GameDrawableObject("cube")
 {
@@ -17,7 +18,7 @@
 }*/
 GameUpgradeObject::GameUpgradeObject(const char *objFile) : GameDrawableObject(objFile)
 {
-   
+    pickup_sound =  g_sound_manager->getSample("sounds/generic_pickup.ogg");
 }
 
 void GameUpgradeObject::update(float dt)
@@ -34,7 +35,13 @@ void GameUpgradeObject::update(float dt)
 void GameUpgradeObject::onCollide(GameDrawableObject *other)
 {
    if (GameKartObject *kart =  dynamic_cast<GameKartObject *>(other)) {
-      
+      playPickupSound();
       scheduleForRemoval();
    }
 }
+
+void GameUpgradeObject::playPickupSound() {
+    pickup_sound->play();
+}
+
+

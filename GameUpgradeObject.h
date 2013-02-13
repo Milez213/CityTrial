@@ -14,6 +14,8 @@
 #include "GameDrawableObject.h"
 #include "GameKartObject.h"
 
+#include "SoundManager.h"
+
 class GameUpgradeObject : public GameDrawableObject
 {
 public:
@@ -26,10 +28,15 @@ public:
    virtual void onCollide(GameDrawableObject *other);
    
    virtual void addToKart(GameKartObject *kart) = 0;
+
+   virtual void playPickupSound();
    
    //Type upgradeType() { return type; };
    
 private:
    //Type type;
+
+   GameSound *pickup_sound;
+   
 };
 #endif /* defined(____GameUpgradeObject__) */

@@ -35,7 +35,15 @@ public:
     }
 
     void play(bool looped) {
-        m_channel = Mix_PlayChannel(-1, m_sound, -1);
+        m_channel = Mix_PlayChannel(-1, m_sound, looped? -1 : 0);
+    }
+
+    void fadeIn(int ms, int loops) {
+        m_channel = Mix_FadeInChannel(-1, m_sound, loops, ms);
+    }
+
+    void fadeOut(int ms) {
+        m_channel = Mix_FadeOutChannel(-1, ms);
     }
 
     void pause() {

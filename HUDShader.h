@@ -11,10 +11,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 using glm::vec3;
 using glm::mat4;
 using glm::value_ptr;
+using namespace std;
 
 class HUDShader : public Shader {
 
@@ -26,12 +31,16 @@ public:
             h_uModelMatrix = safe_glGetUniformLocation(m_shaderProg, "uModelMatrix");
             h_uProjMatrix = safe_glGetUniformLocation(m_shaderProg, "uProjMatrix");
             h_uViewMatrix = safe_glGetUniformLocation(m_shaderProg, "uViewMatrix");
+           
+            h_uColor = safe_glGetUniformLocation(m_shaderProg, "uColor");
 
             // attributes
             h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
 
             // TODO - add texture coordinates handle in shader
             h_aTexture = safe_glGetAttribLocation(m_shaderProg, "aTexture");
+           
+           loadCoordinates("textures/hudMap.crd");
            
            GLfloat verticies[12] = {
               0.0, 0.0, 0.0,
@@ -48,10 +57,10 @@ public:
            };*/
            
            GLfloat text[8] = {
-              0.0, 0.0,
               0.0, 1.0,
-              1.0, 0.0,
-              1.0, 1.0
+              0.0, 0.0,
+              1.0, 1.0,
+              1.0, 0.0
            };
            
            GLushort faces[6] = {
@@ -71,9 +80,11 @@ public:
            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
            
+           currentColor = vec4(1.0, 0.0, 1.0, 0.0);
+           
  
            texture = 0;
-           LoadTexture("textures/hudAtlas.bmp", texture);
+           LoadTextureAlpha("textures/hudAtlas.bmp", texture);
            // There's also LoadTextureAlpha which loads loads 32-bit RGBA BMP's
            
            
@@ -105,23 +116,44 @@ public:
        safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
     }
    
-    void draw() {
+    void draw(string name) {
+       int index = -1;
+       for (int i = 0; i < numCoords && index == -1; i++) {
+          if (name == names[i])
+             index = i;
+       }
+       
+       if (index == -1) {
+          printf("No Coordinates Mapped\n");
+          index = 0;
+       }
+       
        glEnable(GL_TEXTURE_2D);
        glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture);
        //setTexture(texture);
+       
+       glUniform4f(h_uColor, currentColor.x, currentColor.y, currentColor.z, currentColor.w);
        
        safe_glEnableVertexAttribArray(h_aPosition);
        glBindBuffer(GL_ARRAY_BUFFER, planeCoord);
        safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
        
        safe_glEnableVertexAttribArray(h_aTexture);
-       glBindBuffer(GL_ARRAY_BUFFER, textCoord);
+       glBindBuffer(GL_ARRAY_BUFFER, textCoords[index]);
        safe_glVertexAttribPointer(h_aTexture, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
     }
+   
+   void usePlayerColor() {
+      currentColor.w = 1.0;
+   }
+   
+   void useTextureColor() {
+      currentColor.w = 0.0;
+   }
    
     void deactivate() {
        safe_glDisableVertexAttribArray(h_aPosition);
@@ -132,7 +164,7 @@ public:
    
     void useTexture() {
        safe_glEnableVertexAttribArray(h_aTexture);
-       glBindBuffer(GL_ARRAY_BUFFER, textCoord);
+       glBindBuffer(GL_ARRAY_BUFFER, textCoords[0]);
        safe_glVertexAttribPointer(h_aTexture, 2, GL_FLOAT, GL_FALSE, 0, 0);
     }
 
@@ -140,6 +172,10 @@ public:
         GLint location = safe_glGetUniformLocation(m_shaderProg, "uTexUnit");
         safe_glUniform1i(location, textureName);
     }
+   
+   void setColor(vec4 color) {
+      currentColor = color;
+   }
 
 	/*
     void setNormTexture(GLuint textureName) {
@@ -162,6 +198,35 @@ public:
 
 
 private:
+   
+   void loadCoordinates(const char *filename)
+   {
+      ifstream in(filename, ios::in);
+      if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+      
+      string line;
+      getline(in, line);
+      istringstream n(line);
+      n >> numCoords;
+      
+      names = new string[numCoords];
+      textCoords = new GLuint[numCoords];
+      
+      for (int i = 0; i < numCoords && getline(in, line); i++) {
+         istringstream s(line);
+         s >> names[i];
+         
+         GLfloat coord[8];
+         for (int j = 0; j < 8; j++) {
+            s >> coord[j];
+         }
+         
+         glGenBuffers(1, &textCoords[i]);
+         glBindBuffer(GL_ARRAY_BUFFER, textCoords[i]);
+         glBufferData(GL_ARRAY_BUFFER, sizeof(coord), coord, GL_STATIC_DRAW);
+      }
+      
+   }
 
    GLuint planeCoord;
    GLuint elements;
@@ -175,7 +240,14 @@ private:
    GLint h_uModelMatrix;
    GLint h_uProjMatrix;
    GLint h_uViewMatrix;
-
+   
+   GLint h_uColor;
+   
+   vec4 currentColor;
+   
+   int numCoords;
+   GLuint *textCoords;
+   string *names;
 };
 
 #endif

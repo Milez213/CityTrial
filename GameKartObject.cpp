@@ -43,9 +43,17 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    actionOn = false;
    points = 0;
 
+   // load sounds
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 
-   // collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
+   // made in sfxr
+   activate_part_sound = g_sound_manager->getSample("sounds/select.wav");
+   deactivate_part_sound = g_sound_manager->getSample("sounds/deselect.wav");
+
+   // exaggerated sound
+   collide_sound = g_sound_manager->getSample("sounds/crash.ogg");
+   flying_sound = g_sound_manager->getSample("sounds/flying.ogg");
+   outOfEnergy_sound = g_sound_manager->getSample("sounds/outofenergy.ogg");
 }
 
 int GameKartObject::getInput(int request) {
@@ -90,6 +98,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          }
          else  {
             // bounce off
+            collide_sound->play();
             setSpeed(-getSpeed());
             setPosition(oldPos);
          }
@@ -118,6 +127,9 @@ GameKartObject::~GameKartObject()
 
 #ifdef USE_SOUND 
    delete ding_sound;
+   delete crash_sound;
+   delete activate_sound;
+   delete deactivate_sound;
 #endif
    cout << "Kart Object Deleted\n";
 }
@@ -242,6 +254,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
 void GameKartObject::drawHUD() {
    hud->drawSpeed(getSpeed());
+   hud->drawEnergy(getMaxEnergy(), getEnergy());
 }
 
 
@@ -283,12 +296,20 @@ void GameKartObject::addActive(GameActiveUpgrade *active)
 }
 void GameKartObject::cycleActives()
 {
+
    if (actionOn) {
       activeUpgrades.front()->activeEnd(this);
       actionOn = false;
    }
    activeUpgrades.push_back(activeUpgrades.front());
    activeUpgrades.pop_front();
+
+   // empty or switch sound
+   if (dynamic_cast<GameActiveNone *>(activeUpgrades.front())) {
+       deactivate_part_sound->play();
+   } else {
+       activate_part_sound->play();
+   }
 }
 
 void GameKartObject::update(float dt)
@@ -370,15 +391,19 @@ void GameKartObject::update(float dt)
       buttonDown[4] = false;
    }
    
-   
-   
+
+   // be optimistic
+   bool notEnoughEnergy = false; 
+   // to only play sound once per state change
+   static bool playedOutOfEnergy = false; 
+
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
-         activeUpgrades.front()->activeStart(this);
+         notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
          actionOn = true;
       }
       else {
-         activeUpgrades.front()->activeUpdate(this, dt);
+         notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
       }
    }
    else { //GLFW_RELEASE
@@ -389,7 +414,39 @@ void GameKartObject::update(float dt)
       else {
          properties.regenEnergy(dt);
       }
+      // could play sound again after releasing action key
+      playedOutOfEnergy = false; 
+   }
+
+   if (notEnoughEnergy && actionOn && !playedOutOfEnergy) {
+       outOfEnergy_sound->play();
+       playedOutOfEnergy = true;
    }
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+
+   
+   // to only play/puse once per state change
+   static int i = 0;
+   static bool playedFlyingSound = false;
+   static bool pausedFlyingSound = true;
+
+   // is flying?
+   // from GamePhysicalObject::update()
+   if (speed*getLift() > gravity) {
+       // flying_sound->resume();
+       if (!playedFlyingSound) {
+           // printf("play %d\n", i++);
+           flying_sound->fadeIn(1000, -1); // fadin and loop forever
+           playedFlyingSound = true;
+           pausedFlyingSound = false;
+       }
+   } else {
+       if (!pausedFlyingSound) {
+           // printf("paused %d\n", i);
+           flying_sound->fadeOut(1000);
+           pausedFlyingSound = true;
+           playedFlyingSound = false;
+       }
+   }
 }

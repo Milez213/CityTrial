@@ -263,12 +263,30 @@ void update(double dt)
    
 
    // test for collisions
+   /*
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
       for (int j = i+1; j < (int)drawable_objects.size(); j++) {
          if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
             drawable_objects[i]->onCollide(drawable_objects[j]);
             drawable_objects[j]->onCollide(drawable_objects[i]);
+         }
+      }
+   }
+   */
+
+   // only test kart objects with drawable objects
+   for (int k = 0; k < (int)kart_objects.size(); k++) {
+      for (int j = 0; j < (int)drawable_objects.size(); j++) {
+         // don't test collision with self
+         if (kart_objects[k] == drawable_objects[j]) {
+            continue;
+         }
+
+         if (g_model_manager->boxOnBox(kart_objects[k]->getBoundingInfo(),
+                drawable_objects[j]->getBoundingInfo())) {
+            kart_objects[k]->onCollide(drawable_objects[j]);
+            drawable_objects[j]->onCollide(kart_objects[k]);
          }
       }
    }
@@ -322,24 +340,24 @@ void draw(float dt, int kartIndex)
 
    // draw text
    char text[100];
-   sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
-   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
+   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
    sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
    
    // draw fps
-   sprintf(text, "fps: %.0f", 1/dt);
-   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "fps: %.0f", 1/dt);
+   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);*/
    
-   // draw height
+   /* draw height
    sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
-   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);*/
 
-   // draw energy
+   /* draw energy
    sprintf(text, "energy: %.1f", kart_objects[kartIndex]->getEnergy());
-   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);*/
    
    
 }

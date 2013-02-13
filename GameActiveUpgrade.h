@@ -20,8 +20,9 @@ public:
    virtual void addToKart(GameKartObject *kart) { kart->addActive(this); }
    
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
-   virtual void activeStart(GameKartObject *kart) = 0;
-   virtual void activeUpdate(GameKartObject *kart, float dt) = 0;
+   virtual bool activeStart(GameKartObject *kart) = 0;
+   // returns true if was able to update (e.g. have enough energy)
+   virtual bool activeUpdate(GameKartObject *kart, float dt) = 0;
    virtual void activeEnd(GameKartObject *kart) = 0;
 };
 

@@ -11,8 +11,18 @@
 
 #include "GamePartUpgrade.h"
 
-class GamePartWings : public GamePartUpgrade
-{
+#include "SoundManager.h"
+
+extern SoundManager *g_sound_manager;
+
+
+class GamePartWings : public GamePartUpgrade {
+
+public:
+   GamePartWings() : GamePartUpgrade() {
+       activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
+   }
+
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
    {
       modelViewMatrix.pushMatrix();
@@ -29,8 +39,20 @@ class GamePartWings : public GamePartUpgrade
       kart->addSidePart(this);
       //cycleStatOn(&kart->properties);
    }
-   virtual void cycleStatOn(GameKartProperties *props) { props->setLift(props->getLift()+10.0/25); }
+   virtual void cycleStatOn(GameKartProperties *props) {
+       activate_sound->play();
+       props->setLift(props->getLift()+10.0/25);
+   }
    virtual void cycleStatOff(GameKartProperties *props) { props->setLift(props->getLift()-10.0/25); }
+
+   virtual void playPickupSound() {
+       // overwrite default generic_pickup.ogg in GameUpgradeObject
+       // pickup sound is activate sound
+       // Parts activate when they're picked up.
+   }
+
+private:
+   GameSound *activate_sound;
 };
 
 

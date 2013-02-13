@@ -16,6 +16,15 @@ public:
 
     virtual void pause() = 0;
     virtual void resume() = 0;
+
+    // optional
+    virtual void fadeIn(int ms, int loops) {
+        fprintf(stderr, "Warning: %s: not supported\n", __func__);
+    }
+
+    virtual void fadeOut(int ms) {
+        fprintf(stderr, "Warning: %s: not supported\n", __func__);
+    }
     
     // TODO - Callbacks when done playing?
 

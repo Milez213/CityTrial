@@ -18,6 +18,8 @@ GameHUD::GameHUD()
    setOrthographicMatrix();
    setHUDView();
    
+   currentSpeed = 0.0;
+   
 #ifdef DEBUG_VBO
    //printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
 #endif
@@ -42,6 +44,15 @@ void GameHUD::setScreen(float width, float height)
 #define SPD 150.0
 void GameHUD::drawSpeed(float speed)
 {
+   if (speed - currentSpeed > 1.0)
+      currentSpeed++;
+   else if (currentSpeed - speed > 1.0)
+      currentSpeed--;
+   else
+      currentSpeed = speed;
+   
+   if (currentSpeed < 0.0)
+      currentSpeed = 0.0;
    hudShader->use();
    
    // this is messy.
@@ -50,13 +61,57 @@ void GameHUD::drawSpeed(float speed)
    // Then we won't need any matrices, like in TTFRenderer.h --Mustafa
    modelMatrix.loadIdentity();
    modelMatrix.translate(vec3(hudWidth - SPD, hudHeight - SPD, 0.0));
-   modelMatrix.scale(SPD + speed, SPD, 1.0);
+   modelMatrix.scale(SPD, SPD, 1.0);
    
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    hudShader->setViewMatrix(view);
    hudShader->setProjectionMatrix(proj);
 
-   hudShader->draw();
+   hudShader->draw(string("speedometer"));
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(hudWidth - SPD/2.0, hudHeight - SPD/2.0, 0.0));
+   modelMatrix.scale(SPD, SPD, 1.0);
+   modelMatrix.rotate(30.0 * currentSpeed/10.0, vec3(0.0, 0.0, 1.0));
+   modelMatrix.translate(vec3(-0.5, -0.5, 0.0));
+   
+   hudShader->usePlayerColor();
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("needle"));
+   
+   hudShader->useTextureColor();
 
+   hudShader->deactivate();
+}
+
+#define ENG_HGT 50
+#define ENG_SCL 3.0
+void GameHUD::drawEnergy(float maxEnergy, float energy)
+{
+   hudShader->setViewMatrix(view);
+   hudShader->setProjectionMatrix(proj);
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(0.0, hudHeight - ENG_HGT - 15.0, 0.0));
+   modelMatrix.scale(maxEnergy * ENG_SCL, ENG_HGT, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("energyBack"));
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(0.0, hudHeight - ENG_HGT - 15.0, 0.0));
+   modelMatrix.scale(maxEnergy * ENG_SCL * (energy/maxEnergy), ENG_HGT, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->usePlayerColor();
+   
+   hudShader->draw(string("energy"));
+   
+   hudShader->useTextureColor();
+   
    hudShader->deactivate();
 }
