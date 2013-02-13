@@ -53,6 +53,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    // exaggerated sound
    collide_sound = g_sound_manager->getSample("sounds/crash.ogg");
    flying_sound = g_sound_manager->getSample("sounds/flying.ogg");
+   outOfEnergy_sound = g_sound_manager->getSample("sounds/outofenergy.ogg");
 }
 
 int GameKartObject::getInput(int request) {
@@ -389,15 +390,19 @@ void GameKartObject::update(float dt)
       buttonDown[4] = false;
    }
    
-   
-   
+
+   // be optimistic
+   bool notEnoughEnergy = false; 
+   // to only play sound once per state change
+   static bool playedOutOfEnergy = false; 
+
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
-         activeUpgrades.front()->activeStart(this);
+         notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
          actionOn = true;
       }
       else {
-         activeUpgrades.front()->activeUpdate(this, dt);
+         notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
       }
    }
    else { //GLFW_RELEASE
@@ -408,6 +413,13 @@ void GameKartObject::update(float dt)
       else {
          properties.regenEnergy(dt);
       }
+      // could play sound again after releasing action key
+      playedOutOfEnergy = false; 
+   }
+
+   if (notEnoughEnergy && actionOn && !playedOutOfEnergy) {
+       outOfEnergy_sound->play();
+       playedOutOfEnergy = true;
    }
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
@@ -424,7 +436,7 @@ void GameKartObject::update(float dt)
        // flying_sound->resume();
        if (!playedFlyingSound) {
            // printf("play %d\n", i++);
-           flying_sound->fadeIn(500, -1); // fadin and loop forever
+           flying_sound->fadeIn(1000, -1); // fadin and loop forever
            playedFlyingSound = true;
            pausedFlyingSound = false;
        }

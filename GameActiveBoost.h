@@ -23,14 +23,16 @@ public:
    }
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
-   virtual void activeStart(GameKartObject *kart)
+   virtual bool activeStart(GameKartObject *kart)
    {
       if (kart->properties.useEnergyCost(25)) {
          kart->setSpeed(kart->getSpeed()+10);
          activate_sound->play();
+         return true;
       }
+      return false;
    }
-   virtual void activeUpdate(GameKartObject *kart, float dt) {}
+   virtual bool activeUpdate(GameKartObject *kart, float dt) {return true;}
    virtual void activeEnd(GameKartObject *kart) {}
 
 private:

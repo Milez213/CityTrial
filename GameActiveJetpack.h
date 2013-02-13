@@ -16,11 +16,14 @@ class GameActiveJetpack : public GameActiveUpgrade
 public:
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
-   virtual void activeStart(GameKartObject *kart) {}
-   virtual void activeUpdate(GameKartObject *kart, float dt)
+   virtual bool activeStart(GameKartObject *kart) {return true;}
+   virtual bool activeUpdate(GameKartObject *kart, float dt)
    {
-      if (kart->properties.useEnergyDrain(50, dt))
+      if (kart->properties.useEnergyDrain(50, dt)) {
          kart->setFallSpeed(kart->getFallSpeed()-30*dt);
+         return true;
+      }
+      return false;  
    }
    virtual void activeEnd(GameKartObject *kart) {}
 };

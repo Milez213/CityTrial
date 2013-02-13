@@ -118,6 +118,7 @@ private:
    GameSound *activate_part_sound;
    GameSound *deactivate_part_sound;
    GameSound *flying_sound;
+   GameSound *outOfEnergy_sound;
    
    GameHUD *hud;
    
