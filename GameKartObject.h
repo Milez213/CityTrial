@@ -117,6 +117,7 @@ private:
    GameSound *collide_sound;
    GameSound *activate_part_sound;
    GameSound *deactivate_part_sound;
+   GameSound *flying_sound;
    
    GameHUD *hud;
    

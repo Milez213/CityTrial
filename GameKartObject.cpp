@@ -52,6 +52,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
 
    // exaggerated sound
    collide_sound = g_sound_manager->getSample("sounds/crash.ogg");
+   flying_sound = g_sound_manager->getSample("sounds/flying.ogg");
 }
 
 int GameKartObject::getInput(int request) {
@@ -410,4 +411,29 @@ void GameKartObject::update(float dt)
    }
    
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+
+   
+   // to only play/puse once per state change
+   static int i = 0;
+   static bool playedFlyingSound = false;
+   static bool pausedFlyingSound = true;
+
+   // is flying?
+   // from GamePhysicalObject::update()
+   if (speed*getLift() > gravity) {
+       // flying_sound->resume();
+       if (!playedFlyingSound) {
+           // printf("play %d\n", i++);
+           flying_sound->fadeIn(500, -1); // fadin and loop forever
+           playedFlyingSound = true;
+           pausedFlyingSound = false;
+       }
+   } else {
+       if (!pausedFlyingSound) {
+           // printf("paused %d\n", i);
+           flying_sound->fadeOut(1000);
+           pausedFlyingSound = true;
+           playedFlyingSound = false;
+       }
+   }
 }
