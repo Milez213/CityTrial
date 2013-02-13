@@ -340,24 +340,24 @@ void draw(float dt, int kartIndex)
 
    // draw text
    char text[100];
-   sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
-   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
+   g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
    sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
    
    // draw fps
-   sprintf(text, "fps: %.0f", 1/dt);
-   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "fps: %.0f", 1/dt);
+   g_ttf_text_renderer->drawText(text, 0.4, 0.6, 2.0/g_current_width, 2.0/g_current_height);*/
    
-   // draw height
+   /* draw height
    sprintf(text, "height: %.1f", kart_objects[kartIndex]->getPosition().y-kart_objects[0]->getRideHeight());
-   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, -0.95, 0.6, 2.0/g_current_width, 2.0/g_current_height);*/
 
-   // draw energy
+   /* draw energy
    sprintf(text, "energy: %.1f", kart_objects[kartIndex]->getEnergy());
-   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, -0.95, -0.8, 2.0/g_current_width, 2.0/g_current_height);*/
    
    
 }

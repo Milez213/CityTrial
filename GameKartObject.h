@@ -85,6 +85,7 @@ public:
    
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }
+   float getMaxEnergy() { return properties.getMaxEnergy(); }
    
     
    //void stop();

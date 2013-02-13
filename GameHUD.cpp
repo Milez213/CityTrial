@@ -75,9 +75,43 @@ void GameHUD::drawSpeed(float speed)
    modelMatrix.rotate(30.0 * currentSpeed/10.0, vec3(0.0, 0.0, 1.0));
    modelMatrix.translate(vec3(-0.5, -0.5, 0.0));
    
+   hudShader->usePlayerColor();
+   
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    
    hudShader->draw(string("needle"));
+   
+   hudShader->useTextureColor();
 
+   hudShader->deactivate();
+}
+
+#define ENG_HGT 50
+#define ENG_SCL 3.0
+void GameHUD::drawEnergy(float maxEnergy, float energy)
+{
+   hudShader->setViewMatrix(view);
+   hudShader->setProjectionMatrix(proj);
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(0.0, hudHeight - ENG_HGT - 15.0, 0.0));
+   modelMatrix.scale(maxEnergy * ENG_SCL, ENG_HGT, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("energyBack"));
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(0.0, hudHeight - ENG_HGT - 15.0, 0.0));
+   modelMatrix.scale(maxEnergy * ENG_SCL * (energy/maxEnergy), ENG_HGT, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->usePlayerColor();
+   
+   hudShader->draw(string("energy"));
+   
+   hudShader->useTextureColor();
+   
    hudShader->deactivate();
 }

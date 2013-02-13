@@ -254,6 +254,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
 void GameKartObject::drawHUD() {
    hud->drawSpeed(getSpeed());
+   hud->drawEnergy(getMaxEnergy(), getEnergy());
 }
 
 

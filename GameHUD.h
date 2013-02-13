@@ -29,6 +29,7 @@ public:
    
    void setScreen(float width, float height);
    void drawSpeed(float speed);
+   void drawEnergy(float maxEnergy, float energy);
    
 protected:
    RenderingHelper modelMatrix;
