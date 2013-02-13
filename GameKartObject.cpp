@@ -43,9 +43,15 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    actionOn = false;
    points = 0;
 
+   // load sounds
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
 
-   // collide_sound = g_sound_manager->getSample("sounds/157609__qubodup__hollow-bang.wav");
+   // made in sfxr
+   activate_part_sound = g_sound_manager->getSample("sounds/select.wav");
+   deactivate_part_sound = g_sound_manager->getSample("sounds/deselect.wav");
+
+   // exaggerated sound
+   collide_sound = g_sound_manager->getSample("sounds/crash.ogg");
 }
 
 int GameKartObject::getInput(int request) {
@@ -90,6 +96,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          }
          else  {
             // bounce off
+            collide_sound->play();
             setSpeed(-getSpeed());
             setPosition(oldPos);
          }
@@ -118,6 +125,9 @@ GameKartObject::~GameKartObject()
 
 #ifdef USE_SOUND 
    delete ding_sound;
+   delete crash_sound;
+   delete activate_sound;
+   delete deactivate_sound;
 #endif
    cout << "Kart Object Deleted\n";
 }
@@ -283,12 +293,20 @@ void GameKartObject::addActive(GameActiveUpgrade *active)
 }
 void GameKartObject::cycleActives()
 {
+
    if (actionOn) {
       activeUpgrades.front()->activeEnd(this);
       actionOn = false;
    }
    activeUpgrades.push_back(activeUpgrades.front());
    activeUpgrades.pop_front();
+
+   // empty or switch sound
+   if (dynamic_cast<GameActiveNone *>(activeUpgrades.front())) {
+       deactivate_part_sound->play();
+   } else {
+       activate_part_sound->play();
+   }
 }
 
 void GameKartObject::update(float dt)
