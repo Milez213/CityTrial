@@ -55,7 +55,7 @@ public:
    
    float getLift() {return lift;}
    void setLift(float lift) {this->lift = lift;}
-   void upgradeLift() {lift += 5;}
+   //void upgradeLift() {lift += 5;}
    
    //consumables
    void regenEnergy(float dt) {

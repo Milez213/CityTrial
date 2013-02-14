@@ -14,6 +14,9 @@
 
 //stat upgrades
 #include "Upgrades/GameStatSpeed.h"
+#include "Upgrades/GameStatAcceleration.h"
+#include "Upgrades/GameStatBrake.h"
+#include "Upgrades/GameStatTurn.h"
 
 //active upgrades
 #include "Upgrades/GameActiveBoost.h"
