@@ -32,18 +32,7 @@ GameDrawableObject::GameDrawableObject(const char *objFile) : toRemove(false)
    
    toRemove = false;
    
-   /*glGenVertexArrays(1, &vertexArray);
-   glBindVertexArray(vertexArray);
-   
-   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-   glVertexAttribPointer(POS_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-   glEnableVertexAttribArray(POS_LOCATION);
-   
-   glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-   glVertexAttribPointer(NORM_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-   glEnableVertexAttribArray(NORM_LOCATION);
-   
-   glBindVertexArray(0);*/
+   materialIndex = -1;
 }
 
 

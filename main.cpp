@@ -148,6 +148,7 @@ int g_timer = 120;
 
 LightInfo g_lightInfo;
 
+
 #define NUM_MATERIALS 5
 
 PhongMaterial g_materials[NUM_MATERIALS] = {
@@ -177,11 +178,17 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
 };
 
 
+#define UNSET_MATERIAL -1
+#define MAGIC_MATERIAL 0xd0000d
 
 /* helper function to set up material for shading */
 void setPhongMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
         meshShader->setMaterial(g_materials[i]);
+    } else if (i == UNSET_MATERIAL) {
+        meshShader->setMaterial(g_materials[0]);
+    } else if (i == MAGIC_MATERIAL) {
+        meshShader->setMaterial(g_materials[rand() % NUM_MATERIALS]);
     }
 }
 
@@ -324,9 +331,9 @@ void draw(float dt, int kartIndex)
 
    // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      setPhongMaterial(i%NUM_MATERIALS);
       if(SphereInFrustum(drawable_objects[i]->getPosition(), 
                          drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
+         setPhongMaterial(drawable_objects[i]->getMaterialIndex());
          drawable_objects[i]->draw(meshShader, g_model_trans);
       } else { //printf("Not being drawn\n");
          /*
@@ -560,6 +567,7 @@ void initObjects() {
    drawable_objects.push_back(active);
    
    active = new GameActiveJetpack();
+   active->setMaterialIndex(MAGIC_MATERIAL);
    active->setName("jetpack");
    active->setPosition(vec3(10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
@@ -590,6 +598,15 @@ void initObjects() {
    }
    kart_objects.push_back(kart);
    drawable_objects.push_back(kart);*/
+
+
+   // set initial materials for objects with unset materials
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      // if not set
+      if (drawable_objects[i]->getMaterialIndex() == UNSET_MATERIAL) {
+         drawable_objects[i]->setMaterialIndex(i % NUM_MATERIALS);
+      }
+   }
 
 }
 
@@ -652,6 +669,8 @@ void initialize()
    printf("one: %d\n", g_settings["one"]);
    printf("void: %d\n", g_settings["lol"]);
    printf("three: %d\n", g_settings["three"]);
+
+   srand(0xdeadf00d);
 
    initObjects();
 }

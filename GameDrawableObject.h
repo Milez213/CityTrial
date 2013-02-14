@@ -43,14 +43,21 @@ public:
    
    void updateBoundingInfo();
    bound getBoundingInfo();
+
+   virtual void setMaterialIndex(int i) {
+       materialIndex = i;
+   }
+   virtual int getMaterialIndex() {
+       return materialIndex;
+   }
     
 protected:
    bufferStore meshStorage;
    bound boundingInfo;
    
    bool toRemove;
-   
-   //bound boundInfo;
+
+   int materialIndex;
 };
 
 #endif
