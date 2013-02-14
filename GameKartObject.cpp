@@ -574,7 +574,8 @@ void GameKartObject::update(float dt)
            pausedFlyingSound = false;
        }
    } else {
-     //changeKartPitchAngle(dt,-25.0);
+      changeKartPitchAngle(dt,0.0);
+      changeKartRollAngle(dt,0.0);
        if (!pausedFlyingSound) {
         
            // printf("paused %d\n", i);
