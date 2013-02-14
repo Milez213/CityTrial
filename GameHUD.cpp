@@ -53,6 +53,38 @@ void GameHUD::prepareShader()
    hudShader->setColor(playerColor);
 }
 
+void GameHUD::drawWin()
+{
+   float width, height;
+   
+   width = hudWidth/2.0;
+   height = hudHeight/2.0;
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(width/2.0, height/2.0, 0.0));
+   modelMatrix.scale(width, height, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("win"));
+}
+
+void GameHUD::drawLose()
+{
+   float width, height;
+   
+   width = hudWidth/2.0;
+   height = hudHeight/2.0;
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(width/2.0, height/2.0, 0.0));
+   modelMatrix.scale(width, height, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("lose"));
+}
+
 #define SPD 150.0
 void GameHUD::drawSpeed(float speed)
 {
