@@ -45,7 +45,6 @@ void GameHUD::setScreen(float width, float height)
 
 void GameHUD::prepareShader()
 {
-   printf("(%0.3f, %0.3f)\n", hudWidth, hudHeight);
    hudShader->use();
    
    hudShader->setViewMatrix(view);
