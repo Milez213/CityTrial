@@ -12,17 +12,27 @@
 #include "../GameActiveUpgrade.h"
 #include "../defines.h"
 
+#include "../SoundManager.h"
+
+extern SoundManager *g_sound_manager;
+
 class GameActiveJetpack : public GameActiveUpgrade
 {
 public:
-   GameActiveJetpack() : GameActiveUpgrade("jetpack") {}
+   GameActiveJetpack() : GameActiveUpgrade("jetpack") {
+       active_sound = g_sound_manager->getSample("sounds/jetpack_fly.ogg");
+   }
    
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
    glm::vec3 getVecFromDir(float dir) { dir = TO_RADIANS(-dir); return glm::vec3(cos(dir), 0, sin(dir)); }
    static const float STRAFE_SPEED = 10.0;
    
-   virtual bool activeStart(GameKartObject *kart) {return true;}
+   virtual bool activeStart(GameKartObject *kart) {
+       printf("jetpack_fly start\n");
+       active_sound->fadeIn(500, -1);
+       return true;
+   }
    virtual bool activeUpdate(GameKartObject *kart, float dt)
    {
       if (kart->properties.useEnergyDrain(50, dt)) {
@@ -58,7 +68,13 @@ public:
       }
       return false;  
    }
-   virtual void activeEnd(GameKartObject *kart) {}
+   virtual void activeEnd(GameKartObject *kart) {
+       active_sound->fadeOut(1000);
+   }
+private:
+
+GameSound *active_sound;
+
 };
 
 #endif
