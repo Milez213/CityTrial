@@ -163,6 +163,10 @@ int g_xform = XT_VIEW;
 enum action_type {DO_XLATE=1, DO_SCALE, DO_ROTATE};
 int g_action;
 
+
+enum translate_direction {XT_Y=0, XT_XZ};
+int g_translate_direction = XT_XZ;
+
 int g_oldx, g_oldy;
 int g_newx, g_newy;
 
@@ -1010,7 +1014,11 @@ void transformObject(float x1, float y1) {
 
     switch (g_action) {
     case DO_XLATE:
-        g_export_trans += glm::vec3(1.5*(x1), 0, - 1.5*(y1));
+        if (g_translate_direction == XT_XZ) {
+            g_export_trans += glm::vec3(1.5*(x1), 0, - 1.5*(y1));
+        } else {
+            g_export_trans += glm::vec3(0, 1.5*(y1), 0);
+        }
         break;
     case DO_SCALE:
         s = x1-x0 + y1-y0;
@@ -1109,7 +1117,14 @@ void keyboard(unsigned char key, int x, int y ){
 
 
     switch( key ) {
-
+    case 'y':
+        printf("transform in y direction\n");
+        g_translate_direction = XT_Y;
+        break;
+    case 'x':
+        printf("transform in xz direction\n");
+        g_translate_direction = XT_XZ;
+        break;
     case '.':
         toggleObjects(1);
         break;  
@@ -1184,10 +1199,12 @@ void keyboard(unsigned char key, int x, int y ){
         playerDir.z = -1;
 
         break;
-    case 's':
+    case 'e':
         if (g_xform == XT_OBJ) {
             g_action = DO_SCALE;
         }
+        break;
+    case 's':
 
         playerDir.z = 1;
         break;
