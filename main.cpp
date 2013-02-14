@@ -47,10 +47,7 @@ using  glm::vec4;
 #include "GameBuilding.h"
 #include "GameTerrain.h"
 
-#include "GamePartWings.h"
-#include "GameStatSpeed.h"
-#include "GameActiveBoost.h"
-#include "GameActiveJetpack.h"
+#include "GameUpgradesInclude.h"
 #include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF

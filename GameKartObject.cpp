@@ -4,11 +4,9 @@
 #include "GameSceneryObject.h"
 #include "GameUpgradeObject.h"
 
-#include "GamePartUpgrade.h"
-//#include "GamePartWings.h"
-#include "GamePartNone.h"
-#include "GameActiveUpgrade.h"
-#include "GameActiveNone.h"
+
+#include "Upgrades/GamePartNone.h"
+#include "Upgrades/GameActiveNone.h"
 
 #include <cmath>
 
