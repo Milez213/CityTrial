@@ -33,7 +33,7 @@ public:
    }
    
    float getHeightAt(float x, float z) {
-       return getPosition().y + getScale().y;
+       return getPosition().y + boundingInfo.dimension.y/2;
    }
 
     void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
