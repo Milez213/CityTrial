@@ -9,7 +9,7 @@
 #ifndef _GameActiveJetpack_h
 #define _GameActiveJetpack_h
 
-#include "GameActiveUpgrade.h"
+#include "../GameActiveUpgrade.h"
 
 class GameActiveJetpack : public GameActiveUpgrade
 {

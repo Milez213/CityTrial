@@ -47,10 +47,7 @@ using  glm::vec4;
 #include "GameBuilding.h"
 #include "GameTerrain.h"
 
-#include "GamePartWings.h"
-#include "GameStatSpeed.h"
-#include "GameActiveBoost.h"
-#include "GameActiveJetpack.h"
+#include "GameUpgradesInclude.h"
 #include "GameHUD.h"
 
 #ifdef MAIN_USE_TTF
@@ -353,6 +350,9 @@ void draw(float dt, int kartIndex)
    // draw squashes
    sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+
+   sprintf(text, "Time: %d", g_timer);
+   g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
    
    // draw fps
    /*sprintf(text, "fps: %.0f", 1/dt);
@@ -572,6 +572,12 @@ void initObjects() {
    active->setPosition(vec3(10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
+   
+   active = new GameActiveTurning();
+   active->setPosition(vec3(25, 1, 25));
+   active->setScale(vec3(1.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
    
    
    GameRamp *ramp = new GameRamp();

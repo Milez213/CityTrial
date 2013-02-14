@@ -9,9 +9,7 @@
 #ifndef _GameActiveBoost_h
 #define _GameActiveBoost_h
 
-#include "GameActiveUpgrade.h"
-#include "SoundManager.h"
-#include <iostream>
+#include "../GameActiveUpgrade.h"
 
 extern SoundManager *g_sound_manager;
 
@@ -32,7 +30,7 @@ public:
       }
       return false;
    }
-   virtual bool activeUpdate(GameKartObject *kart, float dt) {return true;}
+   virtual bool activeUpdate(GameKartObject *kart, float dt) {return false;}
    virtual void activeEnd(GameKartObject *kart) {}
 
 private:

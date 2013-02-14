@@ -9,7 +9,7 @@
 #ifndef _GamePartNone_h
 #define _GamePartNone_h
 
-#include "GamePartUpgrade.h"
+#include "../GamePartUpgrade.h"
 
 class GamePartNone : public GamePartUpgrade
 {

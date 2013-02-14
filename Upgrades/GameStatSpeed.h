@@ -9,7 +9,7 @@
 #ifndef _GameStatSpeed_h
 #define _GameStatSpeed_h
 
-#include "GameStatUpgrade.h"
+#include "../GameStatUpgrade.h"
 
 class GameStatSpeed : public GameStatUpgrade
 {

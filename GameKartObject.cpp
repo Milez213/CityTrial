@@ -4,11 +4,9 @@
 #include "GameSceneryObject.h"
 #include "GameUpgradeObject.h"
 
-#include "GamePartUpgrade.h"
-//#include "GamePartWings.h"
-#include "GamePartNone.h"
-#include "GameActiveUpgrade.h"
-#include "GameActiveNone.h"
+
+#include "Upgrades/GamePartNone.h"
+#include "Upgrades/GameActiveNone.h"
 
 #include <cmath>
 
@@ -145,9 +143,12 @@ GameKartObject::~GameKartObject()
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    tireAngle+=(getSpeed()/2.0);
-   rot.x = rot.x + carRollAngle;
-   rot.z = rot.z + carPitchAngle;
-   GameDrawableObject::draw(meshShader, modelViewMatrix);
+   
+   //rot.x = carRollAngle;
+
+   //rot.z = carPitchAngle;
+   //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
+   GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
    
 
    modelViewMatrix.pushMatrix();
@@ -163,8 +164,8 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
-   //modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
-   //modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));  
+   modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));  
    //meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    //glBindVertexArray(vertexArray);
@@ -299,11 +300,11 @@ void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
    float targetAngle = rollAngle;
    if(carRollAngle < targetAngle)
    {
-      carRollAngle += dt * 5.0;
+      carRollAngle += dt * 10.0;
    }
    else if (carRollAngle > targetAngle)
    {
-      carRollAngle -= dt * 5.0;
+      carRollAngle -= dt * 10.0;
    }
 }
 
@@ -451,12 +452,71 @@ void GameKartObject::update(float dt)
    static bool playedOutOfEnergy = false; 
 
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
+      if (!buttonDown[0]) {
+         buttonDown[0] = true;
+         
+         notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
+         
+         if (notEnoughEnergy) {
+            properties.regenEnergy(dt);
+         }
+         else { // !notEnoughEnergy
+            actionOn = true;
+         }
+      }
+      else { // buttonDown[0]
+         if (actionOn) {
+            notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
+            
+            if (notEnoughEnergy) {
+               activeUpgrades.front()->activeEnd(this);
+               actionOn = false;
+            }
+            else { // !notEnoughEnergy
+               
+            }
+         }
+         else { // !actionOn
+            properties.regenEnergy(dt);
+         }
+      }
+   }
+   else { // buttonState[0] == GLFW_RELEASE
+      if (buttonDown[0]) {
+         buttonDown[0] = false;
+         
+         // could play sound again after releasing action key
+         playedOutOfEnergy = false;
+         
+         if (actionOn) {
+            activeUpgrades.front()->activeEnd(this);
+            actionOn = false;
+         }
+         else { // !actionOn
+            properties.regenEnergy(dt);
+         }
+      }
+      else { // !buttonDown[0]
+         properties.regenEnergy(dt);
+      }
+   }
+   
+   /*if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
          notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
-         actionOn = true;
+         if (notEnoughEnergy) {
+            properties.regenEnergy(dt);
+         }
+         else {
+            actionOn = true;
+         }
       }
       else {
          notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
+         if (notEnoughEnergy) {
+            activeUpgrades.front()->activeEnd(this);
+            actionOn = false;
+         }
       }
    }
    else { //GLFW_RELEASE
@@ -468,10 +528,10 @@ void GameKartObject::update(float dt)
          properties.regenEnergy(dt);
       }
       // could play sound again after releasing action key
-      playedOutOfEnergy = false; 
-   }
+      playedOutOfEnergy = false;
+   }*/
 
-   if (notEnoughEnergy && actionOn && !playedOutOfEnergy) {
+   if (notEnoughEnergy && !playedOutOfEnergy) {
        outOfEnergy_sound->play();
        playedOutOfEnergy = true;
    }

@@ -9,9 +9,7 @@
 #ifndef _GamePartWings_h
 #define _GamePartWings_h
 
-#include "GamePartUpgrade.h"
-
-#include "SoundManager.h"
+#include "../GamePartUpgrade.h"
 
 extern SoundManager *g_sound_manager;
 

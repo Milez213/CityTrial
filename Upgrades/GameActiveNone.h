@@ -9,6 +9,8 @@
 #ifndef _GameActiveNone_h
 #define _GameActiveNone_h
 
+#include "../GameActiveUpgrade.h"
+
 class GameActiveNone : public GameActiveUpgrade
 {
 public:

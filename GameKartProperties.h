@@ -18,27 +18,41 @@ public:
    acceleration(10), topSpeed(25), brakeSpeed(20), turnSpeed(45), lift(0), energy(maxEnergy) {}
    
    /*//parts
-   bool hasWings() {return wings;}
-   void toggleWings() {wings = !wings;}
-   void setWings(bool on) {wings = on;};
-   
    bool hasJetEngine() {return jetEngine;}
    void toggleJetEngine() {jetEngine = !jetEngine;}
    void setJetEngine(bool on) {jetEngine = on;};*/
    
    //stats
+   static const float MAX_ENERGY_CHANGE = 10.0;
    float getMaxEnergy() {return maxEnergy;}
-   void upgradeMaxEnergy() {maxEnergy += 10;}
+   void upgradeMaxEnergy() {maxEnergy += MAX_ENERGY_CHANGE;}
+   void downgradeMaxEnergy() {maxEnergy -= MAX_ENERGY_CHANGE;}
+   
+   static const float ENERGY_REGEN_CHANGE = 5.0;
    float getEnergyRegen() {return energyRegen;}
-   void upgradeEnergyRegen() {energyRegen += 5;}
+   void upgradeEnergyRegen() {energyRegen += ENERGY_REGEN_CHANGE;}
+   void downgradeEnergyRegen() {energyRegen -= ENERGY_REGEN_CHANGE;}
+   
+   static const float ACCELERATION_CHANGE = 1.0;
    float getAcceleration() {return acceleration;}
-   void upgradeAcceleration() {acceleration += 1;}
-   float getTopSpeed() {return topSpeed;}// + (hasJetEngine() ? 10 : 0);}
-   void upgradeTopSpeed() {topSpeed += 5;}
+   void upgradeAcceleration() {acceleration += ACCELERATION_CHANGE;}
+   void downgradeAcceleration() {acceleration -= ACCELERATION_CHANGE;}
+   
+   static const float TOP_SPEED_CHANGE = 5.0;
+   float getTopSpeed() {return topSpeed;}
+   void upgradeTopSpeed() {topSpeed += TOP_SPEED_CHANGE;}
+   void downgradeTopSpeed() {topSpeed -= TOP_SPEED_CHANGE;}
+   
+   static const float BRAKE_SPEED_CHANGE = 5.0;
    float getBrakeSpeed() {return brakeSpeed;}
-   void upgradeBrakeSpeed() {brakeSpeed += 5;}
+   void upgradeBrakeSpeed(int num = 1) {brakeSpeed += BRAKE_SPEED_CHANGE*num;}
+   void downgradeBrakeSpeed(int num = 1) {brakeSpeed -= BRAKE_SPEED_CHANGE*num;}
+   
+   static const float TURN_SPEED_CHANGE = 5.0;
    float getTurnSpeed() {return turnSpeed;}
-   void upgradeTurnSpeed() {turnSpeed += 5;}
+   void upgradeTurnSpeed(int num = 1) {turnSpeed += TURN_SPEED_CHANGE*num;}
+   void downgradeTurnSpeed(int num = 1) {turnSpeed -= TURN_SPEED_CHANGE*num;}
+   
    float getLift() {return lift;}
    void setLift(float lift) {this->lift = lift;}
    void upgradeLift() {lift += 5;}
@@ -71,7 +85,6 @@ public:
    
 private:
    /*//parts
-   bool wings;
    bool jetEngine;*/
    
    //stats
