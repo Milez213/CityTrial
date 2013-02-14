@@ -536,6 +536,10 @@ void initGeom() {
     entry.model = new GameDrawableObject("ramp");
     g_object_palette.push_back(entry);
 
+    entry.name = "tree";
+    entry.model = new GameDrawableObject("../models/tree.obj");
+    g_object_palette.push_back(entry);
+
 
     // dummy  model
     g_cube = model;

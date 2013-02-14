@@ -6,6 +6,8 @@
 
 #include "GameUpgradesInclude.h"
 
+#include "GameSceneryTree.h"
+
 using glm::vec3;
 using glm::mat4;
 
@@ -105,6 +107,10 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
 
         } else if (strcmp(name, "turning") == 0) {
            read_object = new GameActiveTurning();
+
+        } else if (strcmp(name, "tree") == 0) {
+           read_object = new GameSceneryTree();
+           read_object->setName("tree");
 
         } else {
             // unknown
