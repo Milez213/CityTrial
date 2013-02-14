@@ -24,8 +24,8 @@ public:
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
    {
       modelViewMatrix.pushMatrix();
-      modelViewMatrix.scale(1.5,0.5,1.0);
-      modelViewMatrix.translate(glm::vec3(0.0, 3.5, 0.0));
+      modelViewMatrix.scale(1.5,1.75,1.0);
+      modelViewMatrix.translate(glm::vec3(0.0, 0.25, 0.0));
       GameDrawableObject::draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }
