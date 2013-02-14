@@ -15,7 +15,7 @@
 class GameActiveUpgrade : public GameUpgradeObject
 {
 public:
-   GameActiveUpgrade() : GameUpgradeObject("ramp") {}
+   GameActiveUpgrade(const char *name) : GameUpgradeObject("ramp") {setName(name);}
    
    virtual void addToKart(GameKartObject *kart) {
       kart->addActive(this);

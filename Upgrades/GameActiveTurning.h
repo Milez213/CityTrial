@@ -14,6 +14,8 @@
 class GameActiveTurning : public GameActiveUpgrade
 {
 public:
+   GameActiveTurning() : GameActiveUpgrade("turning") {}
+   
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
    virtual bool activeStart(GameKartObject *kart)

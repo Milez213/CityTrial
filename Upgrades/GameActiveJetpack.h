@@ -15,6 +15,8 @@
 class GameActiveJetpack : public GameActiveUpgrade
 {
 public:
+   GameActiveJetpack() : GameActiveUpgrade("jetpack") {}
+   
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
    glm::vec3 getVecFromDir(float dir) { dir = TO_RADIANS(-dir); return glm::vec3(cos(dir), 0, sin(dir)); }

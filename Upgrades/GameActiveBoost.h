@@ -16,7 +16,7 @@ extern SoundManager *g_sound_manager;
 class GameActiveBoost : public GameActiveUpgrade
 {
 public:
-   GameActiveBoost() : GameActiveUpgrade() {
+   GameActiveBoost() : GameActiveUpgrade("boost") {
        activate_sound = g_sound_manager->getSample("sounds/rocket_fire.ogg");
    }
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
