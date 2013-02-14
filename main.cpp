@@ -568,6 +568,12 @@ void initObjects() {
    active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
    
+   active = new GameActiveTurning();
+   active->setPosition(vec3(25, 1, 25));
+   active->setScale(vec3(1.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+   
+   
    
    GameRamp *ramp = new GameRamp();
    ramp->setPosition(vec3(-25, 2, -25));
