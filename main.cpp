@@ -139,7 +139,7 @@ GameCamera *g_camera;
 // === game info ===
 
 int g_num_squashes = 0;
-int g_timer = 120;
+int g_timer = 10;
 
 // *** lights ***
 
