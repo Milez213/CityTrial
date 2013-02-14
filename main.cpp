@@ -444,6 +444,17 @@ void gameLoop()
    g_timer -=time_now - time_then;
    }
 
+   if(g_timer == 0)
+   {
+      if (kart_objects[0]->getPoints() > kart_objects[1]->getPoints())
+      {   kart_objects[0]->win();
+         kart_objects[1]->lose();}
+      else if (kart_objects[0]->getPoints() < kart_objects[1]->getPoints())
+        { kart_objects[0]->lose();
+         kart_objects[1]->win();}
+            
+   }
+
    printf("%d\n",g_timer); 	
 }
 

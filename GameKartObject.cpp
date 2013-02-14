@@ -40,6 +40,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    usingController = false;
    tireAngle = 0.0;
    tireTurnAngle = 0.0;
+   carPitchAngle = 0.0;
+   carRollAngle = 0.0;
    actionOn = false;
    points = 0;
 
@@ -143,13 +145,15 @@ GameKartObject::~GameKartObject()
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    tireAngle+=(getSpeed()/2.0);
+   rot.x = rot.x + carRollAngle;
+   rot.z = rot.z + carPitchAngle;
    GameDrawableObject::draw(meshShader, modelViewMatrix);
    
-   
+
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(getPosition());
    modelViewMatrix.scale(0.5,0.5,0.5);
-  
+
    
    //modelViewMatrix.pushMatrix();
    //meshShader->use();
@@ -159,6 +163,8 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
+   //modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
+   //modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));  
    //meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    //glBindVertexArray(vertexArray);
@@ -182,6 +188,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    //glBindVertexArray(0);
    //modelViewMatrix.popMatrix();
    
+
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-2.2,0.0,-2.2));
    modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
@@ -273,6 +280,33 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
    }
 }
 
+void GameKartObject::changeKartPitchAngle(float dt, float pitchAngle)
+{
+   float targetAngle = pitchAngle;
+   if(carPitchAngle < targetAngle)
+   {
+      carPitchAngle +=  dt * 5.0;
+   }
+   else if (carPitchAngle > targetAngle)
+   {
+      carPitchAngle -= dt * 5.0;
+   }
+}
+
+
+void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
+{
+   float targetAngle = rollAngle;
+   if(carRollAngle < targetAngle)
+   {
+      carRollAngle += dt * 5.0;
+   }
+   else if (carRollAngle > targetAngle)
+   {
+      carRollAngle -= dt * 5.0;
+   }
+}
+
 void GameKartObject::addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part)
 {
    list.front()->cycleStatOff(&properties);
@@ -312,6 +346,12 @@ void GameKartObject::cycleActives()
    }
 }
 
+void GameKartObject::win(){
+}
+
+void GameKartObject::lose(){
+}
+
 void GameKartObject::update(float dt)
 {   
    float oldSpeed = getSpeed(), newSpeed;
@@ -321,10 +361,13 @@ void GameKartObject::update(float dt)
    
    if (joystickState[0] < 0.0) {
       changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
+      //changeKartRollAngle(dt,-25.0);
    } else if(joystickState[0] > 0.0) {
       changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
+      //changeKartRollAngle(dt,25.0);
    } else if (joystickState[0] == 0.0){
       changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
+      //changeKartRollAngle(dt,0);
    }
 
    float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
@@ -332,24 +375,34 @@ void GameKartObject::update(float dt)
    setRotation(vec3(0, getDirection(), 0 ));
    
    
-   
+     
+
+
    if(joystickState[3] > 0.0 && oldSpeed < properties.getTopSpeed()) {
       short speedUp = (oldSpeed > 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
+      //changeKartPitchAngle(dt,25.0);
       newSpeed = oldSpeed + (speedUp * dt);
-      if (newSpeed > properties.getTopSpeed())
-         newSpeed = properties.getTopSpeed();
+      if (newSpeed > properties.getTopSpeed()){
+         newSpeed = properties.getTopSpeed();}
+     
    } else if(joystickState[3] < 0.0) {
       short speedDown = (oldSpeed < 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
+      //changeKartPitchAngle(dt,-25.0);
       newSpeed = oldSpeed - (speedDown * dt);
       if (newSpeed < -properties.getTopSpeed())
          newSpeed = -properties.getTopSpeed();
    } else {
       if (abs(oldSpeed) > friction * dt)
          newSpeed = oldSpeed - (sign(oldSpeed) * friction * dt);
+         
       else
-         newSpeed = 0;
+         {newSpeed = 0;
+         changeKartPitchAngle(dt, 0.0);
+         changeKartRollAngle(dt,0.0);}
    }
-      
+   
+
+   
    setSpeed(newSpeed);
    
    
@@ -434,6 +487,18 @@ void GameKartObject::update(float dt)
    // is flying?
    // from GamePhysicalObject::update()
    if (speed*getLift() > gravity) {
+       if(joystickState[3] > 0.0)
+       changeKartPitchAngle(dt,25.0);
+       else
+       changeKartPitchAngle(dt,0.0);
+       
+       if(joystickState[0] > 0.0)
+       changeKartRollAngle(dt,25.0);
+       else if(joystickState[0] < 0.0)
+       changeKartRollAngle(dt,-25.0);
+       else
+       changeKartRollAngle(dt,0.0);
+
        // flying_sound->resume();
        if (!playedFlyingSound) {
            // printf("play %d\n", i++);
@@ -442,7 +507,9 @@ void GameKartObject::update(float dt)
            pausedFlyingSound = false;
        }
    } else {
+     //changeKartPitchAngle(dt,-25.0);
        if (!pausedFlyingSound) {
+        
            // printf("paused %d\n", i);
            flying_sound->fadeOut(1000);
            pausedFlyingSound = true;

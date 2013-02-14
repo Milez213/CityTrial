@@ -87,6 +87,8 @@ public:
    float getEnergy() { return properties.getEnergy(); }
    float getMaxEnergy() { return properties.getMaxEnergy(); }
    
+   void win();
+   void lose();
     
    //void stop();
    //void done();
@@ -102,7 +104,7 @@ private:
    list<GameActiveUpgrade *> activeUpgrades;
    
    static const float tireTurnAngleTime;
-   float tireAngle, tireTurnAngle;
+   float tireAngle, tireTurnAngle, carPitchAngle, carRollAngle;
    
    bool usingController;//,wings;
    float joystickState[4];
@@ -124,6 +126,8 @@ private:
    GameHUD *hud;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
+   void changeKartRollAngle(float dt,float rollAngle);
+   void changeKartPitchAngle(float dt,float pitchAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
    void cyclePartList(list<GamePartUpgrade *> &list);
 };
