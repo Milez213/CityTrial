@@ -78,8 +78,23 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
         } else if (strcmp(name, "wings") == 0) {
            read_object = new GamePartWings();
 
-        } else if (strcmp(name, "speed_upgrade") == 0) {
+        } else if (strcmp(name, "engine") == 0) {
+           read_object = new GamePartEngine();
+
+        } else if (strcmp(name, "battery") == 0) {
+           read_object = new GamePartBattery();
+
+        } else if (strcmp(name, "stat_speed") == 0) {
            read_object = new GameStatSpeed();
+
+        } else if (strcmp(name, "stat_acceleration") == 0) {
+           read_object = new GameStatAcceleration();
+
+        } else if (strcmp(name, "stat_brake") == 0) {
+           read_object = new GameStatBrake();
+
+        } else if (strcmp(name, "stat_turn") == 0) {
+           read_object = new GameStatTurn();
 
         } else if (strcmp(name, "speed_boost") == 0) {
            read_object = new GameActiveBoost();
