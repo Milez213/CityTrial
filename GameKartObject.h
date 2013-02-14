@@ -88,6 +88,8 @@ public:
    float getEnergy() { return properties.getEnergy(); }
    float getMaxEnergy() { return properties.getMaxEnergy(); }
    
+   bool isAirborn() { return airborn; }//return speed*getLift() > gravity; }
+   
    void win();
    void lose();
     
@@ -106,6 +108,7 @@ private:
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle, carPitchAngle, carRollAngle;
+   bool airborn;
    
    bool usingController;//,wings;
    float joystickState[4];
