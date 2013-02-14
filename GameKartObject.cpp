@@ -260,9 +260,16 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    }*/
 }
 
+void GameKartObject::setHUDColor(vec3 color)
+{
+   hud->setColor(color);
+}
+
 void GameKartObject::drawHUD() {
+   hud->prepareShader();
    hud->drawSpeed(getSpeed());
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
+   hud->drawScore();
 }
 
 

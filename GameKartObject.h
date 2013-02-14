@@ -81,6 +81,7 @@ public:
    const inputMap getInputMap() { return input; }
    
    void resize(float width, float height) { hud->setScreen(width, height); };
+   void setHUDColor(vec3 color);
    void drawHUD();
    
    int getPoints() { return points; };

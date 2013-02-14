@@ -348,8 +348,8 @@ void draw(float dt, int kartIndex)
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
-   sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
-   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    sprintf(text, "Time: %d", g_timer);
    g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
@@ -411,6 +411,9 @@ void drawMultipleViews(double dt) {
                glFlush();
             }
             drawHUD(kartIndex);
+            char text[100];
+            sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
+            g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
             glfwSwapBuffers();
          } else {
@@ -526,6 +529,7 @@ void initObjects() {
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
+      kart->setHUDColor(vec3(1.0, 0.0, 0.0));
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -536,6 +540,7 @@ void initObjects() {
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
+      otherKart->setHUDColor(vec3(1.0, 1.0, 0.0));
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
