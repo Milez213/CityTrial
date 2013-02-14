@@ -78,10 +78,10 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
            read_object = new GameRamp();
 
         } else if (strcmp(name, "wings") == 0) {
-           read_object = new GamePartWings("models/tire.obj");
+           read_object = new GamePartWings("models/wings.obj");
 
         } else if (strcmp(name, "engine") == 0) {
-           read_object = new GamePartEngine();
+           read_object = new GamePartEngine("models/engine.obj");
 
         } else if (strcmp(name, "battery") == 0) {
            read_object = new GamePartBattery();

@@ -36,7 +36,7 @@ public:
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(vec3(0.0,0.5,0.0));
       modelViewMatrix.rotate(-10.0,vec3(0.0,0.0,1.0));
-      modelViewMatrix.scale(30.0,1.0,20.0);
+      modelViewMatrix.scale(1.0,1.0,1.0);
       GameDrawableObject::draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }
