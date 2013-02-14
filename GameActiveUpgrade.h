@@ -17,7 +17,9 @@ class GameActiveUpgrade : public GameUpgradeObject
 public:
    GameActiveUpgrade() : GameUpgradeObject("ramp") {}
    
-   virtual void addToKart(GameKartObject *kart) { kart->addActive(this); }
+   virtual void addToKart(GameKartObject *kart) {
+      kart->addActive(this);
+   }
    
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
    virtual bool activeStart(GameKartObject *kart) = 0;
