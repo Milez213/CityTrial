@@ -558,22 +558,19 @@ void initObjects() {
    drawable_objects.push_back(stat);
    
    GameActiveUpgrade *active = new GameActiveBoost();
-   //active->setName("boost");
    active->setPosition(vec3(10, 1, 5));
    active->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(active);
    
    active = new GameActiveJetpack();
    active->setMaterialIndex(MAGIC_MATERIAL);
-   //active->setName("jetpack");
    active->setPosition(vec3(10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
 
 
    active = new GameActiveJetpack();
-   //active->setMaterialIndex(MAGIC_MATERIAL);
-   active->setName("jetpack");
+   active->setMaterialIndex(MAGIC_MATERIAL);
    active->setPosition(vec3(-10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
