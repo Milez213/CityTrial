@@ -343,16 +343,13 @@ void draw(float dt, int kartIndex)
    }
 
    // draw text
-   char text[100];
+   //char text[100];
    /*sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
    /*sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
-
-   sprintf(text, "Time: %d", g_timer);
-   g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
    
    // draw fps
    /*sprintf(text, "fps: %.0f", 1/dt);
@@ -415,7 +412,6 @@ void drawMultipleViews(double dt) {
             sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
             g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
-            glfwSwapBuffers();
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -442,7 +438,17 @@ void gameLoop()
    
    drawMultipleViews(dt);
    
+   char text[100];
    
+   if (g_num_players == 1) {
+      sprintf(text, "%d", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.1, 0.85, 2.0/g_current_width, 2.0/g_current_height);
+   } else {
+      sprintf(text, "%d", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.1, -1.0, 2.0/g_current_width, 2.0/g_current_height);
+   }
+   
+   glfwSwapBuffers();
 
    g_last_time = g_time;  
 
