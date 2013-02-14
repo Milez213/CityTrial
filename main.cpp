@@ -346,6 +346,9 @@ void draw(float dt, int kartIndex)
    // draw squashes
    sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
    g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+
+   sprintf(text, "Time: %d", g_timer);
+   g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
    
    // draw fps
    /*sprintf(text, "fps: %.0f", 1/dt);

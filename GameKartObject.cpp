@@ -145,9 +145,12 @@ GameKartObject::~GameKartObject()
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    tireAngle+=(getSpeed()/2.0);
-   rot.x = rot.x + carRollAngle;
-   rot.z = rot.z + carPitchAngle;
-   GameDrawableObject::draw(meshShader, modelViewMatrix);
+   
+   //rot.x = carRollAngle;
+
+   //rot.z = carPitchAngle;
+   //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
+   GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
    
 
    modelViewMatrix.pushMatrix();
@@ -163,8 +166,8 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
-   //modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
-   //modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));  
+   modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));  
    //meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    //glBindVertexArray(vertexArray);
@@ -299,11 +302,11 @@ void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
    float targetAngle = rollAngle;
    if(carRollAngle < targetAngle)
    {
-      carRollAngle += dt * 5.0;
+      carRollAngle += dt * 10.0;
    }
    else if (carRollAngle > targetAngle)
    {
-      carRollAngle -= dt * 5.0;
+      carRollAngle -= dt * 10.0;
    }
 }
 
