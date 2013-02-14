@@ -454,12 +454,71 @@ void GameKartObject::update(float dt)
    static bool playedOutOfEnergy = false; 
 
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
+      if (!buttonDown[0]) {
+         buttonDown[0] = true;
+         
+         notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
+         
+         if (notEnoughEnergy) {
+            properties.regenEnergy(dt);
+         }
+         else { // !notEnoughEnergy
+            actionOn = true;
+         }
+      }
+      else { // buttonDown[0]
+         if (actionOn) {
+            notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
+            
+            if (notEnoughEnergy) {
+               activeUpgrades.front()->activeEnd(this);
+               actionOn = false;
+            }
+            else { // !notEnoughEnergy
+               
+            }
+         }
+         else { // !actionOn
+            properties.regenEnergy(dt);
+         }
+      }
+   }
+   else { // buttonState[0] == GLFW_RELEASE
+      if (buttonDown[0]) {
+         buttonDown[0] = false;
+         
+         // could play sound again after releasing action key
+         playedOutOfEnergy = false;
+         
+         if (actionOn) {
+            activeUpgrades.front()->activeEnd(this);
+            actionOn = false;
+         }
+         else { // !actionOn
+            properties.regenEnergy(dt);
+         }
+      }
+      else { // !buttonDown[0]
+         properties.regenEnergy(dt);
+      }
+   }
+   
+   /*if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!actionOn) {
          notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
-         actionOn = true;
+         if (notEnoughEnergy) {
+            properties.regenEnergy(dt);
+         }
+         else {
+            actionOn = true;
+         }
       }
       else {
          notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
+         if (notEnoughEnergy) {
+            activeUpgrades.front()->activeEnd(this);
+            actionOn = false;
+         }
       }
    }
    else { //GLFW_RELEASE
@@ -471,10 +530,10 @@ void GameKartObject::update(float dt)
          properties.regenEnergy(dt);
       }
       // could play sound again after releasing action key
-      playedOutOfEnergy = false; 
-   }
+      playedOutOfEnergy = false;
+   }*/
 
-   if (notEnoughEnergy && actionOn && !playedOutOfEnergy) {
+   if (notEnoughEnergy && !playedOutOfEnergy) {
        outOfEnergy_sound->play();
        playedOutOfEnergy = true;
    }
