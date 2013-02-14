@@ -452,8 +452,14 @@ void gameLoop()
 
 
 
+void initMap(const char *filename) {
+   
+   loadMap(filename, drawable_objects);
+   
+   
+}
 
-void initObjects() {
+void initObjects(const char *map) {
    cout << "Initializing game objects\n";
    
    // TODO - test for return values (but we usually know if they work or not)
@@ -468,25 +474,18 @@ void initObjects() {
    meshShader->setLight(g_lightInfo);
    meshShader->setShowNormals(0);
 
-
-   // Bunnie
+   
+   
+   //floors
    GameTerrain *floor = new GameTerrain();
    floor->setScale(vec3(100.0, 0.9, 100.0));
    floor->setPosition(vec3(0, 0, 0));
    drawable_objects.push_back(floor);
-   
-   for (int i = 0; i < 20; i++) {
-      GameDrawableObject *object = new GameDrawableObject("cube");
-      object->setName("thingy");
-      object->setPosition(vec3(i + 20*randFloat(), 1.0, 2*i +
-               30*randFloat()));
-      object->setScale(vec3(0.1, 0.5, 0.1));
-      drawable_objects.push_back(object);
-   }
-   
 
+   
+   // karts
    int num_players_from_settings = g_settings["num_players"];
-
+   
    if (num_players_from_settings > 0) {
       g_num_players = num_players_from_settings;
    }
@@ -501,7 +500,7 @@ void initObjects() {
       g_current_height = g_win_height/2;
       g_current_width = g_win_width/2;
    }
-
+   
    // hax
    // 1st kart
    if (g_num_players >= 1) {
@@ -533,80 +532,96 @@ void initObjects() {
       thirdKart->setDirection(0);
       thirdKart->resize(g_current_width, g_current_height);
       drawable_objects.push_back(thirdKart);
-      kart_objects.push_back(thirdKart); 
+      kart_objects.push_back(thirdKart);
    }
-
-   //upgrades
-   GamePartUpgrade *part = new GamePartWings();
-   part->setPosition(vec3(5, 1, 2));
-   part->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(part);
-   
-   part = new GamePartEngine();
-   part->setPosition(vec3(25, 1, 10));
-   part->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(part);
-   
-   part = new GamePartBattery();
-   part->setPosition(vec3(35, 1, 35));
-   part->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(part);
-   
-   GameStatUpgrade *stat = new GameStatSpeed();
-   stat->setPosition(vec3(10, 1, 10));
-   stat->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(stat);
-   
-   GameActiveUpgrade *active = new GameActiveBoost();
-   active->setPosition(vec3(10, 1, 5));
-   active->setScale(vec3(2.0, 1.0, 1.0));
-   drawable_objects.push_back(active);
-   
-   active = new GameActiveJetpack();
-   active->setMaterialIndex(MAGIC_MATERIAL);
-   active->setPosition(vec3(10, 1, 25));
-   active->setScale(vec3(1.0, 1.0, 1.0));
-   drawable_objects.push_back(active);
-
-
-   active = new GameActiveJetpack();
-   active->setMaterialIndex(MAGIC_MATERIAL);
-   active->setPosition(vec3(-10, 1, 25));
-   active->setScale(vec3(1.0, 1.0, 1.0));
-   drawable_objects.push_back(active);
-   
-   active = new GameActiveTurning();
-   active->setPosition(vec3(25, 1, 25));
-   active->setScale(vec3(1.0, 1.0, 1.0));
-   drawable_objects.push_back(active);
    
    
-   
-   GameRamp *ramp = new GameRamp();
-   ramp->setPosition(vec3(-25, 2, -25));
-   ramp->setScale(vec3(3.0, 2.0, 3.0));
-   drawable_objects.push_back(ramp);
-   
-   GameBuilding *buildin = new GameBuilding();
-   buildin->setPosition(vec3(-25, 2, 0));
-   buildin->setScale(vec3(10.0, 2.0, 10.0));
-   drawable_objects.push_back(buildin);
-   
-   
-  /* GamePhysicalObject *building = new GamePhysicalObject("cube");
-   building->setName("building");
-   building->setPosition(vec3(0, 2, 0));
-   building->setScale(vec3(1.0, 1.0, 1.0));
-   drawable_objects.push_back(building);*/
-   
-   /*GameKartObject *kart = new GameKartObject("Kart");
-   if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
-      printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
-      kart->setUsingController(true);
+   if (map != NULL) {
+      initMap(map);
    }
-   kart_objects.push_back(kart);
-   drawable_objects.push_back(kart);*/
-
+   else {
+      // Thingies
+      for (int i = 0; i < 20; i++) {
+         GameDrawableObject *object = new GameDrawableObject("cube");
+         object->setName("thingy");
+         object->setPosition(vec3(i + 20*randFloat(), 1.0, 2*i +
+                                  30*randFloat()));
+         object->setScale(vec3(0.1, 0.5, 0.1));
+         drawable_objects.push_back(object);
+      }
+      
+      //upgrades
+      GamePartUpgrade *part = new GamePartWings();
+      part->setPosition(vec3(5, 1, 2));
+      part->setScale(vec3(2.0, 1.0, 1.0));
+      drawable_objects.push_back(part);
+      
+      part = new GamePartEngine();
+      part->setPosition(vec3(25, 1, 10));
+      part->setScale(vec3(2.0, 1.0, 1.0));
+      drawable_objects.push_back(part);
+      
+      part = new GamePartBattery();
+      part->setPosition(vec3(35, 1, 35));
+      part->setScale(vec3(2.0, 1.0, 1.0));
+      drawable_objects.push_back(part);
+      
+      GameStatUpgrade *stat = new GameStatSpeed();
+      stat->setPosition(vec3(10, 1, 10));
+      stat->setScale(vec3(2.0, 1.0, 1.0));
+      drawable_objects.push_back(stat);
+      
+      GameActiveUpgrade *active = new GameActiveBoost();
+      active->setPosition(vec3(10, 1, 5));
+      active->setScale(vec3(2.0, 1.0, 1.0));
+      drawable_objects.push_back(active);
+      
+      active = new GameActiveJetpack();
+      active->setMaterialIndex(MAGIC_MATERIAL);
+      active->setPosition(vec3(10, 1, 25));
+      active->setScale(vec3(1.0, 1.0, 1.0));
+      drawable_objects.push_back(active);
+      
+      
+      active = new GameActiveJetpack();
+      active->setMaterialIndex(MAGIC_MATERIAL);
+      active->setPosition(vec3(-10, 1, 25));
+      active->setScale(vec3(1.0, 1.0, 1.0));
+      drawable_objects.push_back(active);
+      
+      active = new GameActiveTurning();
+      active->setPosition(vec3(25, 1, 25));
+      active->setScale(vec3(1.0, 1.0, 1.0));
+      drawable_objects.push_back(active);
+      
+      
+      
+      GameRamp *ramp = new GameRamp();
+      ramp->setPosition(vec3(-25, 2, -25));
+      ramp->setScale(vec3(3.0, 2.0, 3.0));
+      drawable_objects.push_back(ramp);
+      
+      GameBuilding *buildin = new GameBuilding();
+      buildin->setPosition(vec3(-25, 2, 0));
+      buildin->setScale(vec3(10.0, 2.0, 10.0));
+      drawable_objects.push_back(buildin);
+      
+      
+      /* GamePhysicalObject *building = new GamePhysicalObject("cube");
+       building->setName("building");
+       building->setPosition(vec3(0, 2, 0));
+       building->setScale(vec3(1.0, 1.0, 1.0));
+       drawable_objects.push_back(building);*/
+      
+      /*GameKartObject *kart = new GameKartObject("Kart");
+       if (glfwGetJoystickParam(kart_objects.size(), GLFW_PRESENT) == GL_TRUE) { // What code should look like for Kart Objects *****
+       printf("Controller Connected for Player %d\n", kart_objects.size());   // Please uncomment and test                   *****
+       kart->setUsingController(true);
+       }
+       kart_objects.push_back(kart);
+       drawable_objects.push_back(kart);*/
+      
+   }
 
    // set initial materials for objects with unset materials
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
@@ -619,15 +634,7 @@ void initObjects() {
 }
 
 
-void initMap(const char *filename) {
-
-   loadMap(filename, drawable_objects);
-
-
-}
-
-
-void initialize()
+void initialize(const char *map)
 {
    /* === Start OpenGL Initialization === */
    glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
@@ -680,7 +687,8 @@ void initialize()
 
    srand(0xdeadf00d);
 
-   initObjects();
+
+   initObjects(map);
 }
 
 
@@ -779,11 +787,11 @@ int main(int argc, char** argv)
    glfwSetWindowSizeCallback( reshape );
    glfwSetKeyCallback( keyboard_callback_key );
 
-   initialize();
+   initialize(argc == 2 ? argv[1] : NULL);
 
-   if (argc == 2) {
+   /*if (argc == 2) {
       initMap(argv[1]);
-   }
+   }*/
 
    glfwSetTime(0.0);
    g_last_time = glfwGetTime();
