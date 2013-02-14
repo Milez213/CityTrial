@@ -512,36 +512,6 @@ void GameKartObject::update(float dt)
          properties.regenEnergy(dt);
       }
    }
-   
-   /*if (buttonState[0] == GLFW_PRESS) { //inputMap.action
-      if (!actionOn) {
-         notEnoughEnergy = !activeUpgrades.front()->activeStart(this);
-         if (notEnoughEnergy) {
-            properties.regenEnergy(dt);
-         }
-         else {
-            actionOn = true;
-         }
-      }
-      else {
-         notEnoughEnergy = !activeUpgrades.front()->activeUpdate(this, dt);
-         if (notEnoughEnergy) {
-            activeUpgrades.front()->activeEnd(this);
-            actionOn = false;
-         }
-      }
-   }
-   else { //GLFW_RELEASE
-      if (actionOn) {
-         activeUpgrades.front()->activeEnd(this);
-         actionOn = false;
-      }
-      else {
-         properties.regenEnergy(dt);
-      }
-      // could play sound again after releasing action key
-      playedOutOfEnergy = false;
-   }*/
 
    if (notEnoughEnergy && !playedOutOfEnergy) {
        outOfEnergy_sound->play();
