@@ -32,6 +32,8 @@ public:
    void setColor(vec3 color) { playerColor = color; };
    
    void setScreen(float width, float height);
+   void drawWin();
+   void drawLose();
    void drawSpeed(float speed);
    void drawEnergy(float maxEnergy, float energy, string name);
    void drawScore();
