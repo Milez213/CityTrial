@@ -25,13 +25,13 @@ public:
    //stats
    static const float MAX_ENERGY_CHANGE = 10.0;
    float getMaxEnergy() {return maxEnergy;}
-   void upgradeMaxEnergy() {maxEnergy += MAX_ENERGY_CHANGE;}
-   void downgradeMaxEnergy() {maxEnergy -= MAX_ENERGY_CHANGE;}
+   void upgradeMaxEnergy(int num = 1) {maxEnergy += MAX_ENERGY_CHANGE*num;}
+   void downgradeMaxEnergy(int num = 1) {maxEnergy -= MAX_ENERGY_CHANGE*num;}
    
    static const float ENERGY_REGEN_CHANGE = 5.0;
    float getEnergyRegen() {return energyRegen;}
-   void upgradeEnergyRegen() {energyRegen += ENERGY_REGEN_CHANGE;}
-   void downgradeEnergyRegen() {energyRegen -= ENERGY_REGEN_CHANGE;}
+   void upgradeEnergyRegen(int num = 1) {energyRegen += ENERGY_REGEN_CHANGE*num;}
+   void downgradeEnergyRegen(int num = 1) {energyRegen -= ENERGY_REGEN_CHANGE*num;}
    
    static const float ACCELERATION_CHANGE = 2.5;
    float getAcceleration() {return acceleration;}
