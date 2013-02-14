@@ -4,6 +4,7 @@
 #include "GameBuilding.h"
 #include "GameRamp.h"
 
+#include "GameUpgradesInclude.h"
 
 using glm::vec3;
 using glm::mat4;
@@ -70,13 +71,32 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
         // TODO - put this info in a std::map
         if (strcmp(name, "building") == 0) {
            read_object = new GameBuilding();
+
         } else if (strcmp(name, "ramp") == 0) {
            read_object = new GameRamp();
+
+        } else if (strcmp(name, "wings") == 0) {
+           read_object = new GamePartWings();
+
+        } else if (strcmp(name, "speed_upgrade") == 0) {
+           read_object = new GameStatSpeed();
+
+        } else if (strcmp(name, "speed_boost") == 0) {
+           read_object = new GameActiveBoost();
+
+        } else if (strcmp(name, "jetpack") == 0) {
+           printf("***read jetpack\n");
+           read_object = new GameActiveJetpack();
+
+        } else if (strcmp(name, "turning") == 0) {
+           read_object = new GameActiveTurning();
+
         } else {
             // unknown
             read_object = new GameBuilding();
         }
 
+        read_object->setName(name);
         read_object->setPosition(p);
         read_object->setScale(s);
         read_object->setRotation(r);

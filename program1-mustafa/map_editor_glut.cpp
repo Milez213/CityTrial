@@ -100,7 +100,7 @@ GLuint bricksNormTex = 1;
 
 int g_GiboLen;
 const float g_groundY = 0.0f;      // y coordinate of the ground
-const float g_groundSize = 50.0;
+const float g_groundSize = 100.0;
 
 
 // ======= end ground =======
@@ -263,33 +263,8 @@ LightInfo g_lightInfo;
 GLuint g_showNormals;
 PhongShader *phong;
 
-#define NUM_MATERIALS 5
 
-PhongMaterial g_materials[NUM_MATERIALS] = {
-                  {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(H2_3f(0x9d5900)), // diff
-                   vec3(1, 0, 0),       // spec
-                   20.0},               // shine
-
-                  {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(H2_3f(0xe4000c)), // diff
-                   vec3(1, 1, 1),       // spec
-                   20.0},               // shine
-
-                  {vec3(0.1, 0.1, 0.1),
-                   vec3(H2_3f(0xfff852)), //Hex color to rgb
-                   vec3(1, 1, 1),
-                   5.0},
-
-                  {vec3(0.3, 0.3, 0.3),
-                   vec3(0, 0, 1),
-                   vec3(0.1, 0.1, 0.7),
-                   30.0},
-                  {vec3(.1, .8, .1),  // for drawing light
-                   vec3(0.1, 0.9, .1),
-                   vec3(3),
-                   20.0},
-};
+#include "materials.h"
 
 
 void toggleMaterials(int pos) {
@@ -297,6 +272,8 @@ void toggleMaterials(int pos) {
 
     if (pos == -1 && g_current_material == 0) {
         g_current_material = NUM_MATERIALS - 1;
+    } else if (pos == MAGIC_MATERIAL) {
+            
     } else {
         g_current_material = (g_current_material + pos) % NUM_MATERIALS;
     }
@@ -335,7 +312,7 @@ extern mat4 g_view;
 
 /* projection matrix */
 void setProjectionMatrix() {
-  g_proj = glm::perspective(90.0f, (float)g_width/g_height, 0.1f, 100.f);
+  g_proj = glm::perspective(90.0f, (float)g_width/g_height, 0.1f, 250.f);
 }
 
 /* camera controls */
@@ -405,9 +382,13 @@ void setModelI() {
 
 /* helper function to set up material for shading */
 
+int psuedo_rand = 0;
+
 void setMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
         phong->setMaterial(g_materials[i]);
+    } else if (i == MAGIC_MATERIAL) {
+        phong->setMaterial(g_materials[psuedo_rand++ % NUM_MATERIALS]);
     }
 }
 
@@ -507,13 +488,6 @@ void initGeom() {
 
     initGround();
 
-    // R, r, sides, rings
-    // torus = new VBOTorus(4, 2, 20, 10);
-
-
-    // TODO - load objects here
-
-
     LoadTexture("grass.bmp", bricksTex);
     // LoadTextureAlpha("smoke32.bmp", 1);
     // LoadTexture("bricks-norm.bmp", bricksNormTex);
@@ -525,20 +499,42 @@ void initGeom() {
     // this includes what objects are available to place in the map
     // when exporting, choose one.
     ExportObject entry;
+    GameDrawableObject *model = new GameDrawableObject("cube");
 
-    GameDrawableObject *building = new GameDrawableObject("cube");
+
+    // object types
+    // name is type here, really
     entry.name = "building";
-    entry.model = building;
+    entry.model = model;
     g_object_palette.push_back(entry);
 
-
-    GameDrawableObject *ramp = new GameDrawableObject("ramp");
     entry.name = "ramp";
-    entry.model = ramp;
+    entry.model = new GameDrawableObject("ramp");
     g_object_palette.push_back(entry);
+
+    entry.name = "wings";
+    entry.model = new GameDrawableObject("ramp");
+    g_object_palette.push_back(entry);
+
+    entry.name = "speed_upgrade";
+    entry.model = new GameDrawableObject("ramp");
+    g_object_palette.push_back(entry);
+
+    entry.name = "speed_boost";
+    entry.model = new GameDrawableObject("ramp");
+    g_object_palette.push_back(entry);
+
+    entry.name = "jetpack";
+    entry.model = new GameDrawableObject("ramp");
+    g_object_palette.push_back(entry);
+
+    entry.name = "turning";
+    entry.model = new GameDrawableObject("ramp");
+    g_object_palette.push_back(entry);
+
 
     // dummy  model
-    g_cube = building;
+    g_cube = model;
 
     toggleObjects(0);
 }
@@ -785,6 +781,10 @@ void drawTexts() {
     sprintf(fpsstr, "selected pos: x: %3.2f y: %3.2f z: %3.2f",
                      g_export_trans.x, g_export_trans.y, g_export_trans.z);
     render_text(fpsstr, 0.2, 0.8, sx, sy);
+
+    sprintf(fpsstr, "object type: %s",
+            g_object_palette[g_current_object].name.c_str());
+    render_text(fpsstr, 0.2, 0.7, sx, sy);
     
 
 }

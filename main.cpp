@@ -146,37 +146,11 @@ int g_timer = 120;
 LightInfo g_lightInfo;
 
 
-#define NUM_MATERIALS 5
 
-PhongMaterial g_materials[NUM_MATERIALS] = {
-                  {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(H2_3f(0x9d5900)), // diff
-                   vec3(1, 0, 0),       // spec
-                   20.0},               // shine
+// This defines the array g_materials 
+// leave this here - not a traditional .h file
+#include "materials.h"
 
-                  {vec3(0.2, 0.2, 0.2), // amb
-                   vec3(H2_3f(0xe4000c)), // diff
-                   vec3(1, 1, 1),       // spec
-                   20.0},               // shine
-
-                  {vec3(0.1, 0.1, 0.1),
-                   vec3(H2_3f(0xfff852)), //Hex color to rgb
-                   vec3(1, 1, 1),
-                   5.0},
-
-                  {vec3(0.3, 0.3, 0.3),
-                   vec3(0, 0, 1),
-                   vec3(0.1, 0.1, 0.7),
-                   30.0},
-                  {vec3(.1, .8, .1),  // for drawing light
-                   vec3(0.1, 0.9, .1),
-                   vec3(3),
-                   20.0},
-};
-
-
-#define UNSET_MATERIAL -1
-#define MAGIC_MATERIAL 0xd0000d
 
 /* helper function to set up material for shading */
 void setPhongMaterial(int i) {
@@ -188,7 +162,6 @@ void setPhongMaterial(int i) {
         meshShader->setMaterial(g_materials[rand() % NUM_MATERIALS]);
     }
 }
-
 
 // *** end lights ***
 
@@ -295,9 +268,14 @@ void update(double dt)
       }
    }
    
-   for (std::vector<GameDrawableObject *>::iterator it = drawable_objects.begin(); it != drawable_objects.end(); ++it) {
+   for (std::vector<GameDrawableObject *>::iterator it = drawable_objects.begin();
+         it != drawable_objects.end();) {
       if ((*it)->isScheduledForRemoval()) {
-         drawable_objects.erase(it);
+         printf("erasing: %s\n", (*it)->getName());
+         // it now points to the next obj
+         it = drawable_objects.erase(it);
+      } else {
+         it++;
       }
    }
 }
@@ -462,7 +440,7 @@ void gameLoop()
             
    }
 
-   printf("%d\n",g_timer); 	
+   // printf("%d\n",g_timer); 	
 }
 
 
@@ -570,6 +548,14 @@ void initObjects() {
    active->setMaterialIndex(MAGIC_MATERIAL);
    active->setName("jetpack");
    active->setPosition(vec3(10, 1, 25));
+   active->setScale(vec3(1.0, 1.0, 1.0));
+   drawable_objects.push_back(active);
+
+
+   active = new GameActiveJetpack();
+   active->setMaterialIndex(MAGIC_MATERIAL);
+   active->setName("jetpack");
+   active->setPosition(vec3(-10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
    drawable_objects.push_back(active);
    

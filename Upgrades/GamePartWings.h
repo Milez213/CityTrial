@@ -11,6 +11,8 @@
 
 #include "../GamePartUpgrade.h"
 
+#include <stdio.h>
+
 extern SoundManager *g_sound_manager;
 
 
@@ -19,6 +21,10 @@ class GamePartWings : public GamePartUpgrade {
 public:
    GamePartWings() : GamePartUpgrade() {
        activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
+   }
+
+   ~GamePartWings() {
+       printf("deleting wings\n");
    }
 
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
