@@ -468,7 +468,7 @@ void initObjects(const char *map) {
    hudShader = new HUDShader();
    meshShader = new PhongShader();
    // Light 
-   g_lightInfo.pos = vec3(1, 15, 1);
+   g_lightInfo.pos = vec3(1, 50, 1);
    g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
 
    meshShader->setLight(g_lightInfo);
