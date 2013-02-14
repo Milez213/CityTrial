@@ -96,6 +96,8 @@ public:
     
    //void stop();
    //void done();
+   void changeKartRollAngle(float dt,float rollAngle);
+   void changeKartPitchAngle(float dt,float pitchAngle);
    
    
 private:
@@ -131,8 +133,6 @@ private:
    GameHUD *hud;
    
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
-   void changeKartRollAngle(float dt,float rollAngle);
-   void changeKartPitchAngle(float dt,float pitchAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
    void cyclePartList(list<GamePartUpgrade *> &list);
 };

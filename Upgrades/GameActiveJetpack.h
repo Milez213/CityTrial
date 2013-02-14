@@ -30,16 +30,27 @@ public:
          
          if(kart->getJoystickState(0) > 0.0) {
             kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()+90));
+            kart->changeKartRollAngle(dt,25.0);
          }
          else if (kart->getJoystickState(0) < 0.0) {
             kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()-90));
+            kart->changeKartRollAngle(dt,-25.0);
+         }
+         else {
+            kart->changeKartRollAngle(dt,0.0);
          }
          
+         kart->changeKartPitchAngle(dt, kart->getFallSpeed());
          if(kart->getJoystickState(3) > 0.0) {
             kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
+            kart->changeKartPitchAngle(dt,-10.0);
          }
          else if (kart->getJoystickState(3) < 0.0) {
             kart->setPosition(kart->getPosition() - dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
+            kart->changeKartPitchAngle(dt,10.0);
+         }
+         else {
+            kart->changeKartPitchAngle(dt,0.0);
          }
             
          

@@ -313,10 +313,14 @@ void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
    if(carRollAngle < targetAngle)
    {
       carRollAngle += dt * 10.0;
+      if (carRollAngle > targetAngle)
+         carRollAngle = targetAngle;
    }
    else if (carRollAngle > targetAngle)
    {
       carRollAngle -= dt * 10.0;
+      if (carRollAngle < targetAngle)
+         carRollAngle = targetAngle;
    }
 }
 
@@ -408,10 +412,11 @@ void GameKartObject::update(float dt)
       if (abs(oldSpeed) > friction * dt)
          newSpeed = oldSpeed - (sign(oldSpeed) * friction * dt);
          
-      else
-         {newSpeed = 0;
-         changeKartPitchAngle(dt, 0.0);
-         changeKartRollAngle(dt,0.0);}
+      else {
+         newSpeed = 0;
+         //changeKartPitchAngle(dt, 0.0);
+         //changeKartRollAngle(dt,0.0);
+      }
    }
    
 
@@ -527,13 +532,13 @@ void GameKartObject::update(float dt)
    // is flying?
    // from GamePhysicalObject::update()
    if (isAirborn()) {
-       if(getFallSpeed() < 0)
+       /*if(getFallSpeed() < 0)
           changeKartPitchAngle(dt,10.0);
        else if (getFallSpeed() > 0)
           changeKartPitchAngle(dt,-10.0);
-       else
-          changeKartPitchAngle(dt,0.0);
-       
+       else*/
+          changeKartPitchAngle(dt,-getFallSpeed());
+      
        if(joystickState[0] > 0.0)
           changeKartRollAngle(dt,25.0);
        else if(joystickState[0] < 0.0)
@@ -549,8 +554,10 @@ void GameKartObject::update(float dt)
            pausedFlyingSound = false;
        }
    } else {
-      changeKartPitchAngle(dt,0.0);
-      changeKartRollAngle(dt,0.0);
+      carPitchAngle = 0;
+      carRollAngle = 0;
+      //changeKartPitchAngle(dt,0.0);
+      //changeKartRollAngle(dt,0.0);
        if (!pausedFlyingSound) {
         
            // printf("paused %d\n", i);
