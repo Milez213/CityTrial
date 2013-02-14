@@ -10,6 +10,7 @@
 #define ____GameHUD__
 
 #include <iostream>
+#include <string>
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -29,7 +30,7 @@ public:
    
    void setScreen(float width, float height);
    void drawSpeed(float speed);
-   void drawEnergy(float maxEnergy, float energy);
+   void drawEnergy(float maxEnergy, float energy, string name);
    
 protected:
    RenderingHelper modelMatrix;

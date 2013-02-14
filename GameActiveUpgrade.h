@@ -24,6 +24,7 @@ public:
    // returns true if was able to update (e.g. have enough energy)
    virtual bool activeUpdate(GameKartObject *kart, float dt) = 0;
    virtual void activeEnd(GameKartObject *kart) = 0;
+   
 };
 
 #endif /* defined(____GameActiveUpgrade__) */

@@ -131,7 +131,7 @@ public:
        glEnable(GL_TEXTURE_2D);
        glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture);
-       //setTexture(texture);
+       setTexture(texture);
        
        glUniform4f(h_uColor, currentColor.x, currentColor.y, currentColor.z, currentColor.w);
        
@@ -219,6 +219,7 @@ private:
          GLfloat coord[8];
          for (int j = 0; j < 8; j++) {
             s >> coord[j];
+            printf("%0.3f ", coord[j]);
          }
          
          glGenBuffers(1, &textCoords[i]);

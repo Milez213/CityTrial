@@ -19,6 +19,8 @@ extern SoundManager *g_sound_manager;
 GameUpgradeObject::GameUpgradeObject(const char *objFile) : GameDrawableObject(objFile)
 {
     pickup_sound =  g_sound_manager->getSample("sounds/generic_pickup.ogg");
+   
+    upgradeName = "none";
 }
 
 void GameUpgradeObject::update(float dt)
