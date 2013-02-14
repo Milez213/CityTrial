@@ -18,7 +18,7 @@ class GamePartEngine : public GamePartUpgrade {
    
 public:
    GamePartEngine() : GamePartUpgrade() {
-      activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
+      activate_sound = g_sound_manager->getSample("sounds/engine_select.ogg");
    }
    
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
