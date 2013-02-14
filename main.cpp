@@ -560,6 +560,11 @@ void initObjects() {
    part->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(part);
    
+   part = new GamePartEngine();
+   part->setPosition(vec3(25, 1, 10));
+   part->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(part);
+   
    GameStatUpgrade *stat = new GameStatSpeed();
    stat->setPosition(vec3(10, 1, 10));
    stat->setScale(vec3(2.0, 1.0, 1.0));

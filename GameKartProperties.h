@@ -33,15 +33,15 @@ public:
    void upgradeEnergyRegen() {energyRegen += ENERGY_REGEN_CHANGE;}
    void downgradeEnergyRegen() {energyRegen -= ENERGY_REGEN_CHANGE;}
    
-   static const float ACCELERATION_CHANGE = 1.0;
+   static const float ACCELERATION_CHANGE = 2.5;
    float getAcceleration() {return acceleration;}
-   void upgradeAcceleration() {acceleration += ACCELERATION_CHANGE;}
-   void downgradeAcceleration() {acceleration -= ACCELERATION_CHANGE;}
+   void upgradeAcceleration(int num = 1) {acceleration += ACCELERATION_CHANGE*num;}
+   void downgradeAcceleration(int num = 1) {acceleration -= ACCELERATION_CHANGE*num;}
    
    static const float TOP_SPEED_CHANGE = 5.0;
    float getTopSpeed() {return topSpeed;}
-   void upgradeTopSpeed() {topSpeed += TOP_SPEED_CHANGE;}
-   void downgradeTopSpeed() {topSpeed -= TOP_SPEED_CHANGE;}
+   void upgradeTopSpeed(int num = 1) {topSpeed += TOP_SPEED_CHANGE*num;}
+   void downgradeTopSpeed(int num = 1) {topSpeed -= TOP_SPEED_CHANGE*num;}
    
    static const float BRAKE_SPEED_CHANGE = 5.0;
    float getBrakeSpeed() {return brakeSpeed;}

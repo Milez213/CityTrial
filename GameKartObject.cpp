@@ -224,7 +224,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    
    // draw parts
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   modelViewMatrix.translate(glm::vec3(2.0,0.0,0.0));
    frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
 
@@ -234,7 +234,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   modelViewMatrix.translate(glm::vec3(-2.0,0.0,0.0));
    backParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    
