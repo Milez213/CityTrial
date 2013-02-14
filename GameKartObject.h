@@ -122,6 +122,7 @@ private:
    inputMap input;
    
    int points;
+   int winState;
 
    GameSound *ding_sound;
    GameSound *collide_sound;

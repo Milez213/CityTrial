@@ -42,6 +42,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    carRollAngle = 0.0;
    actionOn = false;
    points = 0;
+   winState = 0;
 
    // load sounds
    ding_sound = g_sound_manager->getSample("sounds/ding.ogg");
@@ -271,6 +272,12 @@ void GameKartObject::drawHUD() {
    hud->drawSpeed(getSpeed());
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
    hud->drawScore();
+   
+   if (winState == 1) {
+      hud->drawWin();
+   } else if (winState == -1) {
+      hud->drawLose();
+   }
 }
 
 
@@ -366,10 +373,14 @@ void GameKartObject::cycleActives()
    }
 }
 
-void GameKartObject::win(){
+void GameKartObject::win()
+{
+   winState = 1;
 }
 
-void GameKartObject::lose(){
+void GameKartObject::lose()
+{
+   winState = -1;
 }
 
 void GameKartObject::update(float dt)
