@@ -145,6 +145,7 @@ int g_timer = 120;
 
 LightInfo g_lightInfo;
 
+
 #define NUM_MATERIALS 5
 
 PhongMaterial g_materials[NUM_MATERIALS] = {
@@ -174,11 +175,17 @@ PhongMaterial g_materials[NUM_MATERIALS] = {
 };
 
 
+#define UNSET_MATERIAL -1
+#define MAGIC_MATERIAL 0xd0000d
 
 /* helper function to set up material for shading */
 void setPhongMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
         meshShader->setMaterial(g_materials[i]);
+    } else if (i == UNSET_MATERIAL) {
+        meshShader->setMaterial(g_materials[0]);
+    } else if (i == MAGIC_MATERIAL) {
+        meshShader->setMaterial(g_materials[rand() % NUM_MATERIALS]);
     }
 }
 
@@ -321,9 +328,9 @@ void draw(float dt, int kartIndex)
 
    // draw objects
    for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      setPhongMaterial(i%NUM_MATERIALS);
       if(SphereInFrustum(drawable_objects[i]->getPosition(), 
                          drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
+         setPhongMaterial(drawable_objects[i]->getMaterialIndex());
          drawable_objects[i]->draw(meshShader, g_model_trans);
       } else { //printf("Not being drawn\n");
          /*
@@ -341,8 +348,8 @@ void draw(float dt, int kartIndex)
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
-   sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
-   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+   /*sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    sprintf(text, "Time: %d", g_timer);
    g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
@@ -404,6 +411,9 @@ void drawMultipleViews(double dt) {
                glFlush();
             }
             drawHUD(kartIndex);
+            char text[100];
+            sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
+            g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
             glfwSwapBuffers();
          } else {
@@ -519,6 +529,7 @@ void initObjects() {
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
+      kart->setHUDColor(vec3(1.0, 0.0, 0.0));
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -529,6 +540,7 @@ void initObjects() {
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
+      otherKart->setHUDColor(vec3(1.0, 1.0, 0.0));
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
@@ -560,6 +572,7 @@ void initObjects() {
    drawable_objects.push_back(active);
    
    active = new GameActiveJetpack();
+   active->setMaterialIndex(MAGIC_MATERIAL);
    active->setName("jetpack");
    active->setPosition(vec3(10, 1, 25));
    active->setScale(vec3(1.0, 1.0, 1.0));
@@ -596,6 +609,15 @@ void initObjects() {
    }
    kart_objects.push_back(kart);
    drawable_objects.push_back(kart);*/
+
+
+   // set initial materials for objects with unset materials
+   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+      // if not set
+      if (drawable_objects[i]->getMaterialIndex() == UNSET_MATERIAL) {
+         drawable_objects[i]->setMaterialIndex(i % NUM_MATERIALS);
+      }
+   }
 
 }
 
@@ -658,6 +680,8 @@ void initialize()
    printf("one: %d\n", g_settings["one"]);
    printf("void: %d\n", g_settings["lol"]);
    printf("three: %d\n", g_settings["three"]);
+
+   srand(0xdeadf00d);
 
    initObjects();
 }

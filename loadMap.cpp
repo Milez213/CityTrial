@@ -80,6 +80,7 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
         read_object->setPosition(p);
         read_object->setScale(s);
         read_object->setRotation(r);
+        read_object->setMaterialIndex(matnum);
         
         map.push_back(read_object);
     }
