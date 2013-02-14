@@ -28,9 +28,13 @@ class GameHUD {
 public:
    GameHUD();
    
+   void prepareShader();
+   void setColor(vec3 color) { playerColor = color; };
+   
    void setScreen(float width, float height);
    void drawSpeed(float speed);
    void drawEnergy(float maxEnergy, float energy, string name);
+   void drawScore();
    
 protected:
    RenderingHelper modelMatrix;
@@ -44,6 +48,8 @@ private:
    void setHUDView();
    
    float currentSpeed;
+   
+   vec3 playerColor;
 };
 
 

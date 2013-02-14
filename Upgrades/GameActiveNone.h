@@ -16,8 +16,8 @@ class GameActiveNone : public GameActiveUpgrade
 public:
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
-   virtual bool activeStart(GameKartObject *kart) {return true;}
-   virtual bool activeUpdate(GameKartObject *kart, float dt) {return true;}
+   virtual bool activeStart(GameKartObject *kart) {return false;}
+   virtual bool activeUpdate(GameKartObject *kart, float dt) {assert(false);}
    virtual void activeEnd(GameKartObject *kart) {}
 };
 

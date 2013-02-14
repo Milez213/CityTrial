@@ -81,11 +81,14 @@ public:
    const inputMap getInputMap() { return input; }
    
    void resize(float width, float height) { hud->setScreen(width, height); };
+   void setHUDColor(vec3 color);
    void drawHUD();
    
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }
    float getMaxEnergy() { return properties.getMaxEnergy(); }
+   
+   bool isAirborn() { return airborn; }//return speed*getLift() > gravity; }
    
    void win();
    void lose();
@@ -105,6 +108,7 @@ private:
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle, carPitchAngle, carRollAngle;
+   bool airborn;
    
    bool usingController;//,wings;
    float joystickState[4];

@@ -45,9 +45,9 @@ public:
    }
    virtual void cycleStatOn(GameKartProperties *props) {
        activate_sound->play();
-       props->setLift(props->getLift()+10.0/25);
+       props->setLift(props->getLift()+lift);
    }
-   virtual void cycleStatOff(GameKartProperties *props) { props->setLift(props->getLift()-10.0/25); }
+   virtual void cycleStatOff(GameKartProperties *props) { props->setLift(props->getLift()-lift); }
 
    virtual void playPickupSound() {
        // overwrite default generic_pickup.ogg in GameUpgradeObject
@@ -57,6 +57,7 @@ public:
 
 private:
    GameSound *activate_sound;
+   static const float lift = 9.81/30;
 };
 
 
