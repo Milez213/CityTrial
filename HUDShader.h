@@ -173,8 +173,8 @@ public:
         safe_glUniform1i(location, textureName);
     }
    
-   void setColor(vec4 color) {
-      currentColor = color;
+   void setColor(vec3 color) {
+      currentColor = vec4(color.x, color.y, color.z, currentColor.w);
    }
 
 	/*

@@ -93,6 +93,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          if (oldPos.y - getRideHeight() + 1.5 > top) {
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             fallSpeed = 0;
+            airborn = false;
             //fallSpeed = (oldPos.y-getRideHeight() - top)*abs(getSpeed());
             //setSpeed(oldSpeed + (oldSpeed > 0 ? fallSpeed : -fallSpeed));
          }
@@ -224,7 +225,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    
    // draw parts
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   modelViewMatrix.translate(glm::vec3(2.0,0.0,0.0));
    frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
 
@@ -234,7 +235,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0)); //todo
+   modelViewMatrix.translate(glm::vec3(-2.0,0.0,0.0));
    backParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
    
@@ -260,9 +261,16 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    }*/
 }
 
+void GameKartObject::setHUDColor(vec3 color)
+{
+   hud->setColor(color);
+}
+
 void GameKartObject::drawHUD() {
+   hud->prepareShader();
    hud->drawSpeed(getSpeed());
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
+   hud->drawScore();
 }
 
 
@@ -379,7 +387,7 @@ void GameKartObject::update(float dt)
      
 
 
-   if(joystickState[3] > 0.0 && oldSpeed < properties.getTopSpeed()) {
+   if(joystickState[3] > 0.0 && oldSpeed < properties.getTopSpeed() && !isAirborn()) {
       short speedUp = (oldSpeed > 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
       //changeKartPitchAngle(dt,25.0);
       newSpeed = oldSpeed + (speedUp * dt);
@@ -535,8 +543,6 @@ void GameKartObject::update(float dt)
        outOfEnergy_sound->play();
        playedOutOfEnergy = true;
    }
-   
-   GamePhysicalObject::update(dt); //actually move the cart with these updated values
 
    
    // to only play/puse once per state change
@@ -546,18 +552,18 @@ void GameKartObject::update(float dt)
 
    // is flying?
    // from GamePhysicalObject::update()
-   if (speed*getLift() > gravity) {
+   if (isAirborn()) {
        if(joystickState[3] > 0.0)
-       changeKartPitchAngle(dt,25.0);
+          changeKartPitchAngle(dt,15.0);
        else
-       changeKartPitchAngle(dt,0.0);
+          changeKartPitchAngle(dt,0.0);
        
        if(joystickState[0] > 0.0)
-       changeKartRollAngle(dt,25.0);
+          changeKartRollAngle(dt,25.0);
        else if(joystickState[0] < 0.0)
-       changeKartRollAngle(dt,-25.0);
+          changeKartRollAngle(dt,-25.0);
        else
-       changeKartRollAngle(dt,0.0);
+          changeKartRollAngle(dt,0.0);
 
        // flying_sound->resume();
        if (!playedFlyingSound) {
@@ -567,7 +573,8 @@ void GameKartObject::update(float dt)
            pausedFlyingSound = false;
        }
    } else {
-     //changeKartPitchAngle(dt,-25.0);
+      changeKartPitchAngle(dt,0.0);
+      changeKartRollAngle(dt,0.0);
        if (!pausedFlyingSound) {
         
            // printf("paused %d\n", i);
@@ -576,4 +583,9 @@ void GameKartObject::update(float dt)
            playedFlyingSound = false;
        }
    }
+   
+   
+   // do this last
+   airborn = true;
+   GamePhysicalObject::update(dt); //actually move the cart with these updated values
 }

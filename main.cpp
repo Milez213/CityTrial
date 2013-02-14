@@ -321,16 +321,13 @@ void draw(float dt, int kartIndex)
    }
 
    // draw text
-   char text[100];
+   //char text[100];
    /*sprintf(text, "speed: %.1f", kart_objects[kartIndex]->getSpeed());
    g_ttf_text_renderer->drawText(text, -0.95, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
 
    // draw squashes
-   sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
-   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);
-
-   sprintf(text, "Time: %d", g_timer);
-   g_ttf_text_renderer->drawText(text, 0.0, 0.0, 3.0/g_current_width, 1.0/g_current_height);
+   /*sprintf(text, "points: %d", kart_objects[kartIndex]->getPoints());
+   g_ttf_text_renderer->drawText(text, 0.2, 0.8, 2.0/g_current_width, 2.0/g_current_height);*/
    
    // draw fps
    /*sprintf(text, "fps: %.0f", 1/dt);
@@ -389,8 +386,10 @@ void drawMultipleViews(double dt) {
                glFlush();
             }
             drawHUD(kartIndex);
+            char text[100];
+            sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
+            g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
-            glfwSwapBuffers();
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -417,7 +416,17 @@ void gameLoop()
    
    drawMultipleViews(dt);
    
+   char text[100];
    
+   if (g_num_players == 1) {
+      sprintf(text, "%d", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.1, 0.85, 2.0/g_current_width, 2.0/g_current_height);
+   } else {
+      sprintf(text, "%d", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.1, -1.0, 2.0/g_current_width, 2.0/g_current_height);
+   }
+   
+   glfwSwapBuffers();
 
    g_last_time = g_time;  
 
@@ -439,8 +448,6 @@ void gameLoop()
          kart_objects[1]->win();}
             
    }
-
-   // printf("%d\n",g_timer); 	
 }
 
 
@@ -504,6 +511,7 @@ void initObjects() {
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
+      kart->setHUDColor(vec3(1.0, 0.0, 0.0));
       drawable_objects.push_back(kart);
       kart_objects.push_back(kart);
    }
@@ -514,6 +522,7 @@ void initObjects() {
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
+      otherKart->setHUDColor(vec3(1.0, 1.0, 0.0));
       drawable_objects.push_back(otherKart);
       kart_objects.push_back(otherKart);
    }
@@ -530,6 +539,11 @@ void initObjects() {
    //upgrades
    GamePartUpgrade *part = new GamePartWings();
    part->setPosition(vec3(5, 1, 2));
+   part->setScale(vec3(2.0, 1.0, 1.0));
+   drawable_objects.push_back(part);
+   
+   part = new GamePartEngine();
+   part->setPosition(vec3(25, 1, 10));
    part->setScale(vec3(2.0, 1.0, 1.0));
    drawable_objects.push_back(part);
    
