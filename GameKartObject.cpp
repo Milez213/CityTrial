@@ -294,11 +294,15 @@ void GameKartObject::changeKartPitchAngle(float dt, float pitchAngle)
    float targetAngle = pitchAngle;
    if(carPitchAngle < targetAngle)
    {
-      carPitchAngle +=  dt * 5.0;
+      carPitchAngle +=  dt * 10.0;
+      if (carPitchAngle > targetAngle)
+         carPitchAngle = targetAngle;
    }
    else if (carPitchAngle > targetAngle)
    {
-      carPitchAngle -= dt * 5.0;
+      carPitchAngle -= dt * 10.0;
+      if (carPitchAngle < targetAngle)
+         carPitchAngle = targetAngle;
    }
 }
 
@@ -553,8 +557,10 @@ void GameKartObject::update(float dt)
    // is flying?
    // from GamePhysicalObject::update()
    if (isAirborn()) {
-       if(joystickState[3] > 0.0)
-          changeKartPitchAngle(dt,15.0);
+       if(getFallSpeed() < 0)
+          changeKartPitchAngle(dt,10.0);
+       else if (getFallSpeed() > 0)
+          changeKartPitchAngle(dt,-10.0);
        else
           changeKartPitchAngle(dt,0.0);
        
