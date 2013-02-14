@@ -70,6 +70,7 @@ public:
    }
    
    void setJoystickState(float joyState[]) { memcpy(joystickState, joyState, sizeof(float) * 4); }; //Allow main to set state of joysticks to do proper updating
+   float getJoystickState(int axis) { return joystickState[axis]; }
    void setButtonState(unsigned char butState[]) { memcpy(buttonState, butState, sizeof(unsigned char) * 32); }; //"  " of buttons to "  "
    
    void setInputMap(int up, int down, int left, int right,

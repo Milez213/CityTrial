@@ -398,7 +398,7 @@ void GameKartObject::update(float dt)
       if (newSpeed > properties.getTopSpeed()){
          newSpeed = properties.getTopSpeed();}
      
-   } else if(joystickState[3] < 0.0) {
+   } else if(joystickState[3] < 0.0 && !isAirborn()) {
       short speedDown = (oldSpeed < 0.0) ? properties.getAcceleration() : properties.getBrakeSpeed();
       //changeKartPitchAngle(dt,-25.0);
       newSpeed = oldSpeed - (speedDown * dt);
