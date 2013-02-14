@@ -88,10 +88,23 @@ void GameHUD::drawSpeed(float speed)
 
 #define ENG_HGT 50
 #define ENG_SCL 3.0
-void GameHUD::drawEnergy(float maxEnergy, float energy)
+#define BCK_SCL 150.0
+void GameHUD::drawEnergy(float maxEnergy, float energy, string name)
 {
    hudShader->setViewMatrix(view);
    hudShader->setProjectionMatrix(proj);
+   
+   if (name != "none") {
+      string textName = name + "Energy";
+      
+      modelMatrix.loadIdentity();
+      modelMatrix.translate(vec3(0.0, hudHeight - BCK_SCL, 0.0));
+      modelMatrix.scale(BCK_SCL, BCK_SCL, 1.0);
+      
+      hudShader->setModelMatrix(modelMatrix.getMatrix());
+      
+      hudShader->draw(string(textName));
+   }
    
    modelMatrix.loadIdentity();
    modelMatrix.translate(vec3(0.0, hudHeight - ENG_HGT - 15.0, 0.0));

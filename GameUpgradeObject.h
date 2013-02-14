@@ -10,6 +10,7 @@
 #define ____GameUpgradeObject__
 
 #include <iostream>
+#include <string>
 
 #include "GameDrawableObject.h"
 #include "GameKartObject.h"
@@ -33,10 +34,15 @@ public:
    
    //Type upgradeType() { return type; };
    
+   string getName() { return upgradeName; };
+   void setName(string name) { upgradeName = name; };
+   
 private:
    //Type type;
 
    GameSound *pickup_sound;
+   
+   string upgradeName;
    
 };
 #endif /* defined(____GameUpgradeObject__) */
