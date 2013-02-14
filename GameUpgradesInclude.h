@@ -12,6 +12,7 @@
 //part upgrades
 #include "Upgrades/GamePartWings.h"
 #include "Upgrades/GamePartEngine.h"
+#include "Upgrades/GamePartBattery.h"
 
 //stat upgrades
 #include "Upgrades/GameStatSpeed.h"
