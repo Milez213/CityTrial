@@ -172,7 +172,7 @@ void setPhongMaterial(int i) {
 /* projection matrix */
 void setProjectionMatrix(int kartIndex) {
    g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 0.5f + 90.0f,
-         (float)g_current_width/g_current_height, 0.1f, 100.f);
+         (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 
 /* camera controls */

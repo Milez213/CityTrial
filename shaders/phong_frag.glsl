@@ -1,4 +1,4 @@
-// #version 320
+#version 120
 
 struct Material {
   vec3 aColor;
@@ -8,7 +8,7 @@ struct Material {
 };
 
 // texture
-// uniform sampler2D uTexUnit;
+uniform sampler2D uTexUnit;
 
 // light info
 uniform vec3 uLightPos;
@@ -30,15 +30,22 @@ void main() {
     vec3 spec;
     vec3 N;
     vec3 V;
-    vec3 finalColor;
+    vec4 finalColor;
 	float NL;
 
     // vec3 dColor = texture2D(uTexUnit, 0.3*vPosition.xz).xyz;
-    
     vec3 dColor = uMat.dColor;
     
     // interpolated normal
     N = normalize(vNormal);
+
+    // from
+    // http://www.ozone3d.net/tutorials/glsl_fog/p04.php
+    const float LOG2 = 1.442695f;
+    float z = gl_FragCoord.z / gl_FragCoord.w;
+    float fogDensity = 0.01; // how foggy it is
+    float fogFactor = exp2(- z * z * fogDensity * fogDensity * LOG2);
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
 
     if (uShowNormals == 0) {
         L = normalize(uLightPos - vPosition.xyz);
@@ -58,7 +65,11 @@ void main() {
 			spec = vec3(0.0);
 		}
 
-        gl_FragColor = vec4(clamp(spec + diffuse + uMat.aColor, 0.0, 1.0), 1.0);
+        finalColor = vec4(clamp(spec + diffuse + uMat.aColor, 0.0, 1.0), 1.0);
+
+        gl_FragColor = mix(vec4(1.0), finalColor, fogFactor);
+        // gl_FragColor = mix(vec4(1.0), vec4(0.0, 1, 0.0), fogFactor);
+
     } else {
         gl_FragColor = vec4(N, 1.0);
     }
