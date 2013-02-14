@@ -22,6 +22,10 @@ public:
    GamePartWings() : GamePartUpgrade() {
        activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
    }
+   
+   GamePartWings(const char *file) : GamePartUpgrade(file) {
+      activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
+   }
 
    ~GamePartWings() {
        printf("deleting wings\n");
@@ -32,7 +36,7 @@ public:
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(vec3(0.0,0.5,0.0));
       modelViewMatrix.rotate(-10.0,vec3(0.0,0.0,1.0));
-      modelViewMatrix.scale(0.75,0.1,5.0);
+      modelViewMatrix.scale(30.0,1.0,20.0);
       GameDrawableObject::draw(meshShader,modelViewMatrix);
       modelViewMatrix.popMatrix();
    }
