@@ -555,16 +555,16 @@ void GameKartObject::update(float dt)
    // from GamePhysicalObject::update()
    if (speed*getLift() > gravity) {
        if(joystickState[3] > 0.0)
-       changeKartPitchAngle(dt,25.0);
+          changeKartPitchAngle(dt,15.0);
        else
-       changeKartPitchAngle(dt,0.0);
+          changeKartPitchAngle(dt,0.0);
        
        if(joystickState[0] > 0.0)
-       changeKartRollAngle(dt,25.0);
+          changeKartRollAngle(dt,25.0);
        else if(joystickState[0] < 0.0)
-       changeKartRollAngle(dt,-25.0);
+          changeKartRollAngle(dt,-25.0);
        else
-       changeKartRollAngle(dt,0.0);
+          changeKartRollAngle(dt,0.0);
 
        // flying_sound->resume();
        if (!playedFlyingSound) {

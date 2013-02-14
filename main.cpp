@@ -465,7 +465,7 @@ void gameLoop()
             
    }
 
-   printf("%d\n",g_timer); 	
+   //printf("%d\n",g_timer);
 }
 
 
