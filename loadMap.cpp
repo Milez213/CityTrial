@@ -111,7 +111,7 @@ bool loadMap(const char* filename, vector<GameDrawableObject* > &map) {
             read_object = new GameBuilding();
         }
 
-        read_object->setName(name);
+        // read_object->setName(name);
         read_object->setPosition(p);
         read_object->setScale(s);
         read_object->setRotation(r);

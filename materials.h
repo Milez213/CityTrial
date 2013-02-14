@@ -4,7 +4,7 @@
 
 #define NUM_MATERIALS 5
 #define UNSET_MATERIAL -1
-#define MAGIC_MATERIAL 0xd0000d
+#define MAGIC_MATERIAL -2
 
 PhongMaterial g_materials[NUM_MATERIALS] = {
                   {vec3(0.2, 0.2, 0.2), // amb
