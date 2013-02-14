@@ -541,14 +541,6 @@ void initObjects(const char *map) {
    }
    else {
       // Thingies
-      for (int i = 0; i < 20; i++) {
-         GameDrawableObject *object = new GameDrawableObject("cube");
-         object->setName("thingy");
-         object->setPosition(vec3(i + 20*randFloat(), 1.0, 2*i +
-                                  30*randFloat()));
-         object->setScale(vec3(0.1, 0.5, 0.1));
-         drawable_objects.push_back(object);
-      }
       
       //upgrades
       GamePartUpgrade *part = new GamePartWings();
@@ -621,6 +613,14 @@ void initObjects(const char *map) {
        kart_objects.push_back(kart);
        drawable_objects.push_back(kart);*/
       
+   }
+   
+   for (int i = 0; i < 100; i++) {
+      GameDrawableObject *object = new GameDrawableObject("cube");
+      object->setName("thingy");
+      object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
+      object->setScale(vec3(0.1, 0.5, 0.1));
+      drawable_objects.push_back(object);
    }
 
    // set initial materials for objects with unset materials

@@ -22,7 +22,7 @@ public:
    }
    
    GamePartEngine(const char *file) : GamePartUpgrade(file) {
-      activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
+      activate_sound = g_sound_manager->getSample("sounds/engine_select.ogg");
    }
    
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
