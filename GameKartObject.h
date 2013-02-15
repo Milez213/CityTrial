@@ -130,6 +130,10 @@ private:
    GameSound *deactivate_part_sound;
    GameSound *flying_sound;
    GameSound *outOfEnergy_sound;
+   // to only play sound once per state change
+   bool playedFlyingSound;
+   bool pausedFlyingSound;
+   bool playedOutOfEnergy; 
    
    GameHUD *hud;
    

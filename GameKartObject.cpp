@@ -55,6 +55,11 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    collide_sound = g_sound_manager->getSample("sounds/crash.ogg");
    flying_sound = g_sound_manager->getSample("sounds/flying.ogg");
    outOfEnergy_sound = g_sound_manager->getSample("sounds/outofenergy.ogg");
+
+   // to only play sound once per state change
+   playedFlyingSound = false;
+   pausedFlyingSound = true;
+   playedOutOfEnergy = false; 
 }
 
 int GameKartObject::getInput(int request) {
@@ -107,7 +112,10 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       } 
    }
    else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+      printf("collided with kart\n");
+      vec3 oldPos = getPosition();
       setSpeed(-getSpeed());
+      setPosition(oldPos);
    }
    else if (strcmp(other->getName(), "thingy") == 0) {
        // Collided with cuby thing
@@ -479,8 +487,6 @@ void GameKartObject::update(float dt)
 
    // be optimistic
    bool notEnoughEnergy = false; 
-   // to only play sound once per state change
-   static bool playedOutOfEnergy = false; 
 
    if (buttonState[0] == GLFW_PRESS) { //inputMap.action
       if (!buttonDown[0]) {
@@ -540,8 +546,6 @@ void GameKartObject::update(float dt)
    
    // to only play/puse once per state change
    static int i = 0;
-   static bool playedFlyingSound = false;
-   static bool pausedFlyingSound = true;
 
    // is flying?
    // from GamePhysicalObject::update()
