@@ -391,6 +391,11 @@ void GameKartObject::lose()
    winState = -1;
 }
 
+void GameKartObject::reset()
+{
+   winState = 0;
+}
+
 void GameKartObject::update(float dt)
 {   
    float oldSpeed = getSpeed(), newSpeed;

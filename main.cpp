@@ -438,7 +438,7 @@ void gameLoop()
    g_timer -=time_now - time_then;
    }
 
-   if(g_timer == 0)
+   if(g_timer == 0 && (int)kart_objects.size() == 2)
    {
       if (kart_objects[0]->getPoints() > kart_objects[1]->getPoints())
       {   kart_objects[0]->win();
@@ -447,6 +447,12 @@ void gameLoop()
         { kart_objects[0]->lose();
          kart_objects[1]->win();}
             
+   }
+   
+   if(g_timer < -5.0 &&  g_num_players == 2) {
+      g_timer = 120;
+      kart_objects[0]->reset();
+      kart_objects[1]->reset();
    }
 }
 

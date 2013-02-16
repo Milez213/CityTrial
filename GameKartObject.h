@@ -93,6 +93,7 @@ public:
    
    void win();
    void lose();
+   void reset();
     
    //void stop();
    //void done();
