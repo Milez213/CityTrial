@@ -19,6 +19,8 @@
 #include <GL/gl.h>
 #endif
 
+#include "PhongShader.h"
+
 #include <string>
 #include <vector>
 #include "glm/glm.hpp"
@@ -35,8 +37,7 @@ struct bufferStore {
 	GLuint *indexBuffer;
 	int *indexBufferLength;
 	
-	vec3 *diffuseColor;
-	float *specularity;
+	PhongMaterial *material;
    
    int numMeshes;
 };
@@ -90,7 +91,9 @@ public:
 	
 private:
 	void loadObject(const char* filename);
-   int fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f);
+   int fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f, vector<PhongMaterial> materials);
+   int getMaterial(ifstream *matlib, string name, PhongMaterial *mat);
+   
    bufferStore cubeMesh();
    bufferStore rampMesh();
    bufferStore floorMesh();

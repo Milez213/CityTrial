@@ -63,6 +63,15 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    
    for (int i = 0; i < meshStorage.numMeshes; i++) {
       //printf("We are drawing, right? %d\n", indexBufferLength[i]);
+      meshShader->setMaterial(meshStorage.material[i]);
+      
+      /*printf("\nMaterial for %s:\n", meshStorage.name.c_str());
+      printf("   Diffuse: (%0.3f, %0.3f, %0.3f)\n", meshStorage.material[i].dColor.x,
+             meshStorage.material[i].dColor.y, meshStorage.material[i].dColor.z);
+      printf("   Specular: (%0.3f, %0.3f, %0.3f)\n", meshStorage.material[i].sColor.x,
+             meshStorage.material[i].sColor.y, meshStorage.material[i].sColor.z);
+      printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", meshStorage.material[i].aColor.x,
+             meshStorage.material[i].aColor.y, meshStorage.material[i].aColor.z);*/
       
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
    

@@ -62,8 +62,7 @@ ModelManager::~ModelManager()
    for (int i = 0; i < (int)storage.size(); i++) {
       delete[] storage[i].indexBuffer;
       delete[] storage[i].indexBufferLength;
-      delete[] storage[i].diffuseColor;
-      delete[] storage[i].specularity;
+      delete[] storage[i].material;
    }
 }
 
@@ -83,6 +82,8 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
       loadObject(fileName);
       index = (int)storage.size() - 1;
    }
+   
+   meshes->name = storage[index].name;
    	
    meshes->vertexBuffer = storage[index].vertexBuffer;
    meshes->normalBuffer = storage[index].normalBuffer;
@@ -90,14 +91,14 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    
    meshes->indexBuffer = new GLuint[storage[index].numMeshes];
    meshes->indexBufferLength = new int[storage[index].numMeshes];
-   meshes->diffuseColor = new vec3[storage[index].numMeshes];
-   meshes->specularity = new float[storage[index].numMeshes];
+   meshes->material = new PhongMaterial[storage[index].numMeshes];
    
    meshes->numMeshes = storage[index].numMeshes;
    
    for (int i = 0; i < meshes->numMeshes; i++) {
       meshes->indexBuffer[i] = storage[index].indexBuffer[i];
       meshes->indexBufferLength[i] = storage[index].indexBufferLength[i];
+      meshes->material[i] = storage[index].material[i];
       // meshes->diffuseColor[i] = storage[index].diffuseColor[i];
       // meshes->specularity[i] = storage[index].specularity[i];
    }
@@ -170,6 +171,7 @@ void ModelManager::loadObject(const char *filename)
       vector<glm::vec2> textures;
       vector<glm::vec2> texturesTemp;
       vector< vector<GLushort> > elements;
+      vector<PhongMaterial> materials;
       
       bool objectStarted = false;
       vector<GLushort> triangles;
@@ -178,7 +180,7 @@ void ModelManager::loadObject(const char *filename)
       store.name = string(filename);
       
       ifstream in(filename, ios::in);
-      ifstream matlib;
+      ifstream *matlib = new ifstream();
       if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
       
       string line;
@@ -253,15 +255,22 @@ void ModelManager::loadObject(const char *filename)
             istringstream s(line.substr(3));
             glm::vec2 v; s >> v.x; s >> v.y;
             texturesTemp.push_back(v);
-         } else if (line.substr(0,7) == "usemtl ") {
-            if (line.substr(7).length() < 2) {
-               //textures.resize(vertices.size(), vec2(0.0, 0.0));
+         } else if (line.substr(0,6) == "usemtl") {
+            PhongMaterial newMat;
+            
+            matlib->seekg (0, ios::beg);
+            if (getMaterial(matlib, line.substr(7), &newMat) != 1) {
+               newMat.aColor = vec3(1.0, 0.0, 0.0);
+               newMat.sColor = vec3(0.0, 1.0, 0.0);
+               newMat.dColor = vec3(0.0, 0.0, 1.0);
+               newMat.shine = 0.5;
             }
             
+            materials.push_back(newMat);
          } else if (line.substr(0,6) == "mtllib") {
             string mtl = "models/";
             mtl += line.substr(7);
-            matlib.open(mtl.c_str(), ifstream::in);
+            matlib->open(mtl.c_str(), ifstream::in);
          }
          else if (line[0] == '#') { /* ignoring this line */ }
          else { /* ignoring this line */ }
@@ -283,7 +292,7 @@ void ModelManager::loadObject(const char *filename)
       //printf("%d\n", newObject->IndexBufferLength());
       newObjects->push_back(*newObject);*/
       elements.push_back(triangles);
-      fillBuffer(&store, vertices, elements);
+      fillBuffer(&store, vertices, elements, materials);
       
       storage.push_back(store);
    }
@@ -293,7 +302,42 @@ void ModelManager::loadObject(const char *filename)
 #endif
 }
 
-int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f)
+int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
+{
+   string line;
+   while (getline(*matlib, line)) {
+      if (line.substr(0,7) == "newmtl ") {
+         string found = line.substr(7);
+         printf("Found: %s Attempt: %s\n", found.c_str(), name.c_str());
+         if (found == name) {
+            while (getline(*matlib, line)) {
+               if (line.substr(0,3) == "Ka ") {
+                  istringstream s(line.substr(3));
+                  s >> mat->aColor.x; s >> mat->aColor.y; s >> mat->aColor.z;
+               } else if (line.substr(0,3) == "Kd ") {
+                  istringstream s(line.substr(3));
+                  s >> mat->dColor.x; s >> mat->dColor.y; s >> mat->dColor.z;
+               } else if (line.substr(0,3) == "Ks ") {
+                  printf("Hello\n");
+                  istringstream s(line.substr(3));
+                  s >> mat->sColor.x; s >> mat->sColor.y; s >> mat->sColor.z;
+                  
+                  mat->aColor.x = mat->dColor.x / 5.0;
+                  mat->aColor.y = mat->dColor.y / 5.0;
+                  mat->aColor.z = mat->dColor.z / 5.0;
+                  
+                  mat->shine = 0.5;
+                  return 1;
+               }
+            }
+         }
+      }
+   }
+   
+   return 0;
+}
+
+int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f, vector<PhongMaterial> materials)
 {
    vector<vec3> normals;
    bound meshBound;
@@ -391,6 +435,20 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, norms, GL_STATIC_DRAW);
    
    store->textureBuffer = 0;
+   
+   store->material = new PhongMaterial[materials.size()];
+   
+   for (int i = 0; i < (int)materials.size(); i++) {
+      store->material[i] = materials.at(i);
+      
+      printf("\nMaterial for %s:\n", store->name.c_str());
+      printf("   Diffuse: (%0.3f, %0.3f, %0.3f)\n", store->material[i].dColor.x,
+             store->material[i].dColor.y, store->material[i].dColor.z);
+      printf("   Specular: (%0.3f, %0.3f, %0.3f)\n", store->material[i].sColor.x,
+             store->material[i].sColor.y, store->material[i].sColor.z);
+      printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", store->material[i].aColor.x,
+             store->material[i].aColor.y, store->material[i].aColor.z);
+   }
    
    boundStorage.push_back(meshBound);
    
@@ -550,40 +608,51 @@ bufferStore ModelManager::cubeMesh()
    
    store.indexBuffer = new GLuint[6];
    store.indexBufferLength = new int[6];
-   store.diffuseColor = new vec3[6];
-   store.specularity = new float[6];
+   store.material = new PhongMaterial[6];
    
    store.numMeshes = 6;
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
-   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
-   store.specularity[0] = 0.4;
+   store.material[0].aColor = vec3(0.0, 0.6, 0.0);
+   store.material[0].dColor = vec3(0.0, 0.6, 0.0);
+   store.material[0].sColor = vec3(0.0, 0.6, 0.0);
+   store.material[0].shine = 0.5;
    
    store.indexBuffer[1] = ibo2;
    store.indexBufferLength[1] = ibl;
-   store.diffuseColor[1] = vec3(0.5, 0.0, 0.0);
-   store.specularity[1] = 0.4;
+   store.material[1].aColor = vec3(0.6, 0.6, 0.0);
+   store.material[1].dColor = vec3(0.6, 0.6, 0.0);
+   store.material[1].sColor = vec3(0.6, 0.6, 0.0);
+   store.material[1].shine = 0.5;
    
    store.indexBuffer[2] = ibo3;
    store.indexBufferLength[2] = ibl;
-   store.diffuseColor[2] = vec3(0.0, 0.5, 0.0);
-   store.specularity[2] = 0.4;
+   store.material[2].aColor = vec3(0.0, 0.6, 0.0);
+   store.material[2].dColor = vec3(0.0, 0.6, 0.0);
+   store.material[2].sColor = vec3(0.0, 0.6, 0.0);
+   store.material[2].shine = 0.5;
    
    store.indexBuffer[3] = ibo4;
    store.indexBufferLength[3] = ibl;
-   store.diffuseColor[3] = vec3(0.0, 0.5, 0.0);
-   store.specularity[3] = 0.4;
+   store.material[3].aColor = vec3(0.0, 0.6, 0.0);
+   store.material[3].dColor = vec3(0.0, 0.6, 0.0);
+   store.material[3].sColor = vec3(0.0, 0.6, 0.0);
+   store.material[3].shine = 0.5;
    
    store.indexBuffer[4] = ibo5;
    store.indexBufferLength[4] = ibl;
-   store.diffuseColor[4] = vec3(0.0, 0.0, 0.5);
-   store.specularity[4] = 0.4;
+   store.material[4].aColor = vec3(0.8, 0.4, 0.0);
+   store.material[4].dColor = vec3(0.8, 0.4, 0.0);
+   store.material[4].sColor = vec3(0.8, 0.4, 0.0);
+   store.material[4].shine = 0.5;
    
    store.indexBuffer[5] = ibo6;
    store.indexBufferLength[5] = ibl;
-   store.diffuseColor[5] = vec3(0.0, 0.0, 0.5);
-   store.specularity[5] = 0.4;
+   store.material[5].aColor = vec3(0.8, 0.4, 0.0);
+   store.material[5].dColor = vec3(0.8, 0.4, 0.0);
+   store.material[5].sColor = vec3(0.8, 0.4, 0.0);
+   store.material[5].shine = 0.5;
    
    store.name = "cube";
    
@@ -715,35 +784,44 @@ bufferStore ModelManager::rampMesh()
    
    store.indexBuffer = new GLuint[5];
    store.indexBufferLength = new int[5];
-   store.diffuseColor = new vec3[5];
-   store.specularity = new float[5];
+   store.material = new PhongMaterial[6];
    
    store.numMeshes = 5;
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
-   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
-   store.specularity[0] = 0.4;
+   store.material[0].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].shine = 0.5;
    
    store.indexBuffer[1] = ibo2;
    store.indexBufferLength[1] = ibl;
-   store.diffuseColor[1] = vec3(0.5, 0.0, 0.0);
-   store.specularity[1] = 0.4;
+   store.material[1].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[1].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[1].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[1].shine = 0.5;
    
    store.indexBuffer[2] = ibo3;
    store.indexBufferLength[2] = ibl2;
-   store.diffuseColor[2] = vec3(0.0, 0.5, 0.0);
-   store.specularity[2] = 0.4;
+   store.material[2].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[2].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[2].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[2].shine = 0.5;
    
    store.indexBuffer[3] = ibo4;
    store.indexBufferLength[3] = ibl2;
-   store.diffuseColor[3] = vec3(0.0, 0.5, 0.0);
-   store.specularity[3] = 0.4;
+   store.material[3].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[3].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[3].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[3].shine = 0.5;
    
    store.indexBuffer[4] = ibo5;
    store.indexBufferLength[4] = ibl;
-   store.diffuseColor[4] = vec3(0.0, 0.0, 0.5);
-   store.specularity[4] = 0.4;
+   store.material[4].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[4].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[4].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[4].shine = 0.5;
    
    store.name = "ramp";
    
@@ -817,15 +895,16 @@ bufferStore ModelManager::floorMesh()
    
    store.indexBuffer = new GLuint[1];
    store.indexBufferLength = new int[1];
-   store.diffuseColor = new vec3[1];
-   store.specularity = new float[1];
+   store.material = new PhongMaterial[6];
    
    store.numMeshes = 1;
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
-   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
-   store.specularity[0] = 0.4;
+   store.material[0].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].shine = 0.5;
    
    store.name = "floor";
    
@@ -899,15 +978,16 @@ bufferStore ModelManager::planeMesh()
    
    store.indexBuffer = new GLuint[1];
    store.indexBufferLength = new int[1];
-   store.diffuseColor = new vec3[1];
-   store.specularity = new float[1];
+   store.material = new PhongMaterial[6];
    
    store.numMeshes = 1;
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
-   store.diffuseColor[0] = vec3(0.5, 0.0, 0.0);
-   store.specularity[0] = 0.4;
+   store.material[0].aColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].dColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].sColor = vec3(0.8, 0.8, 0.8);
+   store.material[0].shine = 0.5;
    
    store.name = "plane";
    

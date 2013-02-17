@@ -6,11 +6,34 @@
 //
 //
 
+#include <stdlib.h>
+#include <ctime>
+
 #include "GameBuilding.h"
+#include "PhongShader.h"
+
+#define NUM_MATERIALS 2
+
+PhongMaterial building_mats[NUM_MATERIALS] = {
+   {vec3(0.2, 0.1, 0.0), // amb
+      vec3(0.9, 0.5, 0.0), // diff
+      vec3(0.1, 0.1, 0.1),       // spec
+      20.0},               // shine
+   
+   {vec3(0.0, 0.2, 0.0), // amb
+      vec3(0.0, 0.6, 0.0), // diff
+      vec3(0.1, 0.1, 0.1),       // spec
+      20.0}
+};
 
 GameBuilding::GameBuilding() : GameSceneryObject("cube")
 {
+   srand(time(NULL));
+   int index = random() % 2;
    
+   for (int i = 0; i < meshStorage.numMeshes; i++) {
+      meshStorage.material[i] = building_mats[index];
+   }
 }
 
 float GameBuilding::getHeightAt(float x, float z)

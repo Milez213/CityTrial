@@ -58,7 +58,7 @@ void main() {
 
 		if (NL > 0.0) {
 			spec = uMat.sColor *
-               pow(max(dot(V, -L + 2.0 * NL * N), 0.0), uMat.shine) *
+               pow(max(dot(V, -L + 2.0 * NL * N), 0.0), 20.0) *
                uLColor;
 		} else {
 			// facing backwards
