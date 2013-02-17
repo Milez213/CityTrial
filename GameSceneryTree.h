@@ -64,12 +64,12 @@ public:
        // draw leaves
        int i;
        for (i = 0; i < meshStorage.numMeshes-1; i++) {
-          meshShader->setMaterial(tree_materials[1]);
+          meshShader->setMaterial(&tree_materials[1]);
           glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
           glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
        }
        // draw trunk
-       meshShader->setMaterial(tree_materials[0]);
+       meshShader->setMaterial(&tree_materials[0]);
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
        glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
        

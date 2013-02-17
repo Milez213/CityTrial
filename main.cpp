@@ -155,11 +155,11 @@ LightInfo g_lightInfo;
 /* helper function to set up material for shading */
 void setPhongMaterial(int i) {
     if ((i >= 0) && i < NUM_MATERIALS) {
-        meshShader->setMaterial(g_materials[i]);
+        meshShader->setMaterial(&g_materials[i]);
     } else if (i == UNSET_MATERIAL) {
-        meshShader->setMaterial(g_materials[0]);
+        meshShader->setMaterial(&g_materials[0]);
     } else if (i == MAGIC_MATERIAL) {
-        meshShader->setMaterial(g_materials[rand() % NUM_MATERIALS]);
+        meshShader->setMaterial(&g_materials[rand() % NUM_MATERIALS]);
     }
 }
 

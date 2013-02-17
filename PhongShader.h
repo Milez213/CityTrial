@@ -39,7 +39,6 @@ public:
 
             // attributes
             h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
-            h_aColor = safe_glGetAttribLocation(m_shaderProg, "aColor");
             h_aNormal = safe_glGetAttribLocation(m_shaderProg, "aNormal");
 
             // TODO - add texture coordinates handle in shader
@@ -71,11 +70,11 @@ public:
         return h_aPosition;
     }
 
-    void setMaterial(PhongMaterial &mat) {
-        safe_glUniform3f(h_uMatAmb, mat.aColor);
-        safe_glUniform3f(h_uMatDif, mat.dColor);
-        safe_glUniform3f(h_uMatSpec, mat.sColor);
-        safe_glUniform1f(h_uMatShine, mat.shine);
+    void setMaterial(PhongMaterial *mat) {
+        safe_glUniform3f(h_uMatAmb, mat->aColor);
+        safe_glUniform3f(h_uMatDif, mat->dColor);
+        safe_glUniform3f(h_uMatSpec, mat->sColor);
+        safe_glUniform1f(h_uMatShine, mat->shine);
     }
 
     void setLight(const LightInfo &l) {
