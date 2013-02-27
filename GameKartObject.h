@@ -50,9 +50,9 @@ public:
    float getRideHeight() { return getScale().y; }
    
    
-   void addFrontPart(GamePartUpgrade *part) { addPartToList(frontParts, part); }
-   void addSidePart(GamePartUpgrade *part) { addPartToList(sideParts, part); }
-   void addBackPart(GamePartUpgrade *part) { addPartToList(backParts, part); }
+   void addFrontPart(GamePartUpgrade *part) {frontPart = part; frontPartAdding = 1; frontScale = 0.99; frontScaleChanging = true; }
+   void addSidePart(GamePartUpgrade *part) {sidePart = part; sidePartAdding = 1; sideScale = 0.99; sideScaleChanging = true;}
+   void addBackPart(GamePartUpgrade *part) {backPart = part; backPartAdding = 1; backScale = 0.99; backScaleChanging = true; }
    
    void cycleFrontParts() { cyclePartList(frontParts); }
    void cycleSideParts() { cyclePartList(sideParts); }
@@ -112,6 +112,12 @@ private:
    
    static const float tireTurnAngleTime;
    float tireAngle, tireTurnAngle, carPitchAngle, carRollAngle;
+   float frontScale, backScale, sideScale;
+   bool frontScaleChanging, backScaleChanging, sideScaleChanging;
+   int frontScaleDir, backScaleDir, sideScaleDir, frontPartAdding, sidePartAdding, backPartAdding;
+   
+   GamePartUpgrade *frontPart, *sidePart, *backPart;
+
    bool airborn;
    
    bool usingController;//,wings;
@@ -141,6 +147,7 @@ private:
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
    void cyclePartList(list<GamePartUpgrade *> &list);
+   void changePartScale(int part,int dir);
 };
 
 #endif

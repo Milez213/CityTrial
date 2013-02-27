@@ -40,6 +40,16 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    tireTurnAngle = 0.0;
    carPitchAngle = 0.0;
    carRollAngle = 0.0;
+   frontScale = 0.1;
+   backScale = 0.1;
+   sideScale = 0.1;
+   frontScaleChanging = true;
+   sideScaleChanging = true;
+   backScaleChanging = true;
+   frontScaleDir = 1;
+   sideScaleDir = 1;
+   backScaleDir = 1;
+   
    actionOn = false;
    points = 0;
    winState = 0;
@@ -231,19 +241,23 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.scale(5.0,6.0,6.0);
    wheels[3]->draw(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
-   
+ 
+
    // draw parts
    modelViewMatrix.pushMatrix();
+   modelViewMatrix.scale(1.0 * frontScale,1.0*frontScale,1.0*frontScale);
    modelViewMatrix.translate(glm::vec3(2.0,0.0,0.0));
    frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
+   modelViewMatrix.scale(1.0 * sideScale,1.0*sideScale,1.0*sideScale);
    modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
    sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
+   modelViewMatrix.scale(1.0 * backScale,1.0*backScale,1.0*backScale);
    modelViewMatrix.translate(glm::vec3(-2.0,0.0,0.0));
    backParts.front()->drawOnKart(meshShader,modelViewMatrix);
    modelViewMatrix.popMatrix();
@@ -288,6 +302,45 @@ void GameKartObject::drawHUD() {
    }
 }
 
+void GameKartObject::changePartScale(int part,int dir)
+{
+   float change = 0.0;
+   if(dir == 1)
+   {
+   change = 0.01;
+   }
+   else
+   if(dir == 0)
+   {
+   change = -0.01;
+   }
+
+   if(part == 0)
+   {
+      if(dir == 1 && frontScale < 1.0)
+      {frontScale+=change;}
+      if(dir == 0 && frontScale >0)
+      {frontScale+=change;}
+   }
+   if(part == 1)
+   {
+      if(dir == 1 && sideScale < 1.0)
+      {sideScale+=change;}
+      if(dir == 0 && sideScale >0)
+      {sideScale+=change;}
+   }
+   if(part == 2)
+   {
+      if(dir == 1 && backScale < 1.0)
+      {backScale+=change;}
+      if(dir == 0 && backScale >0)
+      {backScale+=change;}
+   }
+   
+
+
+}
+
 
 void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle)
 {
@@ -320,6 +373,8 @@ void GameKartObject::changeKartPitchAngle(float dt, float pitchAngle)
          carPitchAngle = targetAngle;
    }
 }
+
+
 
 
 void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
@@ -361,10 +416,14 @@ void GameKartObject::addActive(GameActiveUpgrade *active)
       activeUpgrades.front()->activeEnd(this);
       actionOn = false;
    }
+
+      
+
    activeUpgrades.push_front(active);
 }
 void GameKartObject::cycleActives()
 {
+
 
    if (actionOn) {
       activeUpgrades.front()->activeEnd(this);
@@ -379,6 +438,8 @@ void GameKartObject::cycleActives()
    } else {
        activate_part_sound->play();
    }
+   
+
 }
 
 void GameKartObject::win()
@@ -463,7 +524,12 @@ void GameKartObject::update(float dt)
    }
    if (buttonState[2] == GLFW_PRESS) { //inputMap.cycleFront
       if (!buttonDown[2]) {
-         cycleFrontParts();
+         frontScaleChanging = true;
+if(frontScaleDir == 0)   
+   frontScale=0.9;
+else
+   frontScale = 0.1;
+         //cycleFrontParts();
          buttonDown[2] = true;
       }
    }
@@ -472,7 +538,13 @@ void GameKartObject::update(float dt)
    }
    if (buttonState[3] == GLFW_PRESS) { //inputMap.cycleSide
       if (!buttonDown[3]) {
-         cycleSideParts();
+   sideScaleChanging = true;
+   
+if(sideScaleDir == 0)
+   sideScale=0.9;
+else
+   sideScale = 0.1;
+         //cycleSideParts();
          buttonDown[3] = true;
       }
    }
@@ -481,7 +553,12 @@ void GameKartObject::update(float dt)
    }
    if (buttonState[4] == GLFW_PRESS) { //inputMap.cycleBack
       if (!buttonDown[4]) {
-         cycleBackParts();
+   backScaleChanging = true;
+   if(backScaleDir == 0)
+   backScale=0.9;
+   else
+   backScale = 0.1;
+         //cycleBackParts();
          buttonDown[4] = true;
       }
    }
@@ -594,4 +671,71 @@ void GameKartObject::update(float dt)
    // do this last
    airborn = true;
    GamePhysicalObject::update(dt); //actually move the cart with these updated values
+
+   
+   if(frontScaleChanging == true)
+   {
+      changePartScale(0,frontScaleDir);
+   }
+
+   if(sideScaleChanging == true)
+   {
+      changePartScale(1,sideScaleDir);
+   }
+
+   if(backScaleChanging == true)
+   {
+      changePartScale(2,backScaleDir);
+   }
+
+   if(frontScale >=1.0)
+   {
+      frontScaleChanging = false;
+      frontScaleDir = 0;
+   }
+   if(frontScale <= 0.0)
+   { 
+      frontScaleChanging = true;
+
+      if (frontPartAdding == 0)
+      {cycleFrontParts();}
+      else
+      {addPartToList(frontParts, frontPart);
+      frontPartAdding = 0;}
+      frontScaleDir = 1;
+   }
+
+   if(sideScale >=1.0)
+   {
+      sideScaleChanging = false;
+      sideScaleDir = 0;
+   }
+   if(sideScale <= 0.0)
+   { 
+      sideScaleChanging = true;
+      if(sidePartAdding == 0)      
+      {cycleSideParts();}
+      else
+      {addPartToList(sideParts,sidePart);
+      sidePartAdding = 0;}
+      sideScaleDir = 1;
+   }
+
+   if(backScale >=1.0)
+   {
+      backScaleChanging = false;
+      backScaleDir = 0;
+   }
+   if(backScale <= 0.0)
+   { 
+      backScaleChanging = true;
+      if (backPartAdding == 0){
+      cycleBackParts();}
+      else
+      {addPartToList(backParts,backPart);
+      backPartAdding = 0;}
+      backScaleDir = 1;
+   }
+
+   printf("%f  %d\n", backScale, backScaleDir);
 }
