@@ -12,6 +12,7 @@
 #include "GameBuilding.h"
 #include "PhongShader.h"
 
+
 #define NUM_MATERIALS 3
 
 PhongMaterial building_mats[NUM_MATERIALS] = {
