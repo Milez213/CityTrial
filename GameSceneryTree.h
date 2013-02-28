@@ -29,7 +29,7 @@ PhongMaterial tree_materials[2] = {
 
 class GameSceneryTree : public GameSceneryObject {
 public:
-   GameSceneryTree() : GameSceneryObject("models/tree.obj") {
+   GameSceneryTree() : GameSceneryObject("models/colorCoatRack.obj") {
    }
    
    float getHeightAt(float x, float z) {
@@ -41,7 +41,7 @@ public:
        modelViewMatrix.pushMatrix();
        meshShader->use();
        
-       modelViewMatrix.translate(getPosition());
+       modelViewMatrix.translate(vec3(getPosition().x, getPosition().y - 0.8f * scl.y,getPosition().z));
        modelViewMatrix.scale(scl.x, scl.y, scl.z);
        modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
        modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));

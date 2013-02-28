@@ -12,7 +12,7 @@
 #include "GameBuilding.h"
 #include "PhongShader.h"
 
-#define NUM_MATERIALS 2
+#define NUM_MATERIALS 3
 
 PhongMaterial building_mats[NUM_MATERIALS] = {
    {vec3(0.2, 0.1, 0.0), // amb
@@ -23,16 +23,23 @@ PhongMaterial building_mats[NUM_MATERIALS] = {
    {vec3(0.0, 0.2, 0.0), // amb
       vec3(0.0, 0.6, 0.0), // diff
       vec3(0.1, 0.1, 0.1),       // spec
+      20.0},
+   
+   {vec3(0.2, 0.0, 0.2), // amb
+      vec3(0.6, 0.4, 0.8), // diff
+      vec3(0.1, 0.1, 0.1),       // spec
       20.0}
 };
 
-GameBuilding::GameBuilding() : GameSceneryObject("cube")
+GameBuilding::GameBuilding() : GameSceneryObject("models/building.obj")
 {
    srand(time(NULL));
-   int index = random() % 2;
+   int index = random() % NUM_MATERIALS;
    
    for (int i = 0; i < meshStorage.numMeshes; i++) {
-      meshStorage.material[i] = building_mats[index];
+      if (meshStorage.material[i].dColor.x == 1.0f) {
+         meshStorage.material[i] = building_mats[index];
+      }
    }
 }
 

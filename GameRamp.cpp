@@ -12,7 +12,7 @@
 
 
 
-GameRamp::GameRamp() : GameSceneryObject("ramp")
+GameRamp::GameRamp() : GameSceneryObject("models/colorSkateboard.obj")
 {
    
 }
