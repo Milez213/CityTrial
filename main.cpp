@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <time.h>
+#include <ctime>
 
 // === helpful libraries ===
 #include "GLSL_helper.h"
@@ -761,6 +761,8 @@ int main(int argc, char** argv)
    // default values. Will be overwritten by game settings
    g_win_width = 640;
    g_win_height = 480;
+
+	srandom(time(NULL));
    
    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);

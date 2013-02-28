@@ -1153,9 +1153,9 @@ bufferStore ModelManager::floorMesh()
    
    store.indexBuffer[0] = ibo;
    store.indexBufferLength[0] = ibl;
-   store.material[0].aColor = vec3(0.2, 0.0, 0.2);
-   store.material[0].dColor = vec3(0.3, 0.0, 0.3);
-   store.material[0].sColor = vec3(0.1, 0.0, 0.1);
+   store.material[0].aColor = vec3(0.2, 0.1, 0.0);
+   store.material[0].dColor = vec3(0.5, 0.3, 0.0);
+   store.material[0].sColor = vec3(0.1, 0.1, 0.0);
    store.material[0].shine = 0.5;
    
    store.name = "floor";

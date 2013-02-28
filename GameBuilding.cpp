@@ -33,8 +33,7 @@ PhongMaterial building_mats[NUM_MATERIALS] = {
 
 GameBuilding::GameBuilding() : GameSceneryObject("models/building.obj")
 {
-   srand(time(NULL));
-   int index = random() % NUM_MATERIALS;
+   int index = rand() % NUM_MATERIALS;
    
    for (int i = 0; i < meshStorage.numMeshes; i++) {
       if (meshStorage.material[i].dColor.x == 1.0f) {
