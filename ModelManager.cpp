@@ -12,6 +12,7 @@
 // For CSC476 - Real Time 3D Rendering
 
 #include "ModelManager.h"
+#include "LoadTexture.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -230,7 +231,8 @@ void ModelManager::loadObject(const char *filename)
             glm::vec3 v; s >> v.x; s >> v.y; s >> v.z;
             vertices.push_back(v);
          }  else if (line.substr(0,2) == "f ") {
-            /*if (useMtl == 1) {
+            textures.resize(vertices.size());
+            if (materials[materials.size()-1].textureLocation != 0) {
                string s = line.substr(2);
                string n;
                int txtCrd = 0;
@@ -245,7 +247,7 @@ void ModelManager::loadObject(const char *filename)
                         str >> a;
                         a--;
                         //printf("Vertex %d has texture coordinates ", a);
-                        elements.push_back(a);
+                        triangles.push_back(a);
                      } else {
                         int t;
                         str >> t;
@@ -260,13 +262,13 @@ void ModelManager::loadObject(const char *filename)
                      txtCrd = (txtCrd + 1) % 2;
                   }
                }
-            } else {*/
+            } else {
                istringstream s(line.substr(2));
                GLushort a,b,c;
                s >> a; s >> b; s >> c;
                a--; b--; c--;
                triangles.push_back(a); triangles.push_back(b); triangles.push_back(c);
-            //}
+            }
          } else if (line.substr(0,3) == "vt ") {
             istringstream s(line.substr(3));
             glm::vec2 v; s >> v.x; s >> v.y;
@@ -275,12 +277,21 @@ void ModelManager::loadObject(const char *filename)
             PhongMaterial newMat;
             
             matlib->seekg (0, ios::beg);
-            if (getMaterial(matlib, line.substr(7), &newMat) != 1) {
+            getMaterial(matlib, line.substr(7), &newMat);
+            
+            printf("\nMaterial for %s:\n", store.name.c_str());
+            printf("   Diffuse: (%0.3f, %0.3f, %0.3f)\n", newMat.dColor.x,
+                   newMat.dColor.y, newMat.dColor.z);
+            printf("   Specular: (%0.3f, %0.3f, %0.3f)\n", newMat.sColor.x,
+                   newMat.sColor.y, newMat.sColor.z);
+            printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", newMat.aColor.x,
+                   newMat.aColor.y, newMat.aColor.z);
+            /*if (getMaterial(matlib, line.substr(7), &newMat) != 1) {
                newMat.aColor = vec3(1.0, 0.0, 0.0);
                newMat.sColor = vec3(0.0, 1.0, 0.0);
                newMat.dColor = vec3(0.0, 0.0, 1.0);
                newMat.shine = 0.5;
-            }
+            }*/
             
             materials.push_back(newMat);
          } else if (line.substr(0,6) == "mtllib") {
@@ -308,7 +319,7 @@ void ModelManager::loadObject(const char *filename)
       //printf("%d\n", newObject->IndexBufferLength());
       newObjects->push_back(*newObject);*/
       elements.push_back(triangles);
-      fillBuffer(&store, vertices, elements, materials);
+      fillBuffer(&store, vertices, textures, elements, materials);
       
       storage.push_back(store);
    }
@@ -321,11 +332,15 @@ void ModelManager::loadObject(const char *filename)
 int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
 {
    string line;
+   bool matFound = false;
+   matlib->seekg (0, ios::beg);
+   
    while (getline(*matlib, line)) {
-      if (line.substr(0,7) == "newmtl ") {
+      if (line.substr(0,7) == "newmtl " && !matFound) {
          string found = line.substr(7);
          printf("Found: %s Attempt: %s\n", found.c_str(), name.c_str());
          if (found == name) {
+            matFound = true;
             while (getline(*matlib, line)) {
                if (line.substr(0,3) == "Ka ") {
                   istringstream s(line.substr(3));
@@ -334,15 +349,27 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
                   istringstream s(line.substr(3));
                   s >> mat->dColor.x; s >> mat->dColor.y; s >> mat->dColor.z;
                } else if (line.substr(0,3) == "Ks ") {
-                  printf("Hello\n");
                   istringstream s(line.substr(3));
                   s >> mat->sColor.x; s >> mat->sColor.y; s >> mat->sColor.z;
-                  
-                  mat->aColor.x = mat->dColor.x / 5.0;
-                  mat->aColor.y = mat->dColor.y / 5.0;
-                  mat->aColor.z = mat->dColor.z / 5.0;
-                  
-                  mat->shine = 0.5;
+               } else if (line.substr(0,6) == "illum ") {
+                  getline(*matlib, line);
+                  if(line.substr(0,7) == "map_Kd ") {
+                     glGenTextures(1, &mat->textureLocation);
+                     glBindTexture(GL_TEXTURE_2D, mat->textureLocation);
+                     printf("textureLocation: %d\n", (int)mat->textureLocation);
+                     
+                     printf("%s\n", line.substr(7).c_str());
+                     
+                     LoadTexture(line.substr(7).c_str(), mat->textureLocation);
+                     
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                     
+                     printf("Hello\n");
+                     mat->dColor.x = -1.0; mat->dColor.y = -1.0; mat->dColor.z = -1.0;
+                  } else {
+                     mat->textureLocation = 0;
+                  }
                   return 1;
                }
             }
@@ -350,11 +377,13 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
       }
    }
    
+   mat->textureLocation = 0;
+   
    return 0;
 }
 
 #define SHADOW_INFINITY 1.0f
-int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f, vector<PhongMaterial> materials)
+int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t, vector< vector<GLushort> > f, vector<PhongMaterial> materials)
 {
    vector<vec3> normals;
    vector<vec3> shadowVerts;
@@ -362,6 +391,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    vector< vector<int> > shadowInfo;
    bound meshBound;
    float verts[v.size()*3];
+   float texts[t.size()*2];
    
    vec3 topRight = vec3(-100.0, -100.0, -100.0);
    
@@ -370,6 +400,11 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       verts[i * 3] = v.at(i).x;
       verts[i * 3 + 1] = v.at(i).y;
       verts[i * 3 + 2] = v.at(i).z;
+      
+      /*texts[i * 2] = t.at(i).x;
+      texts[i * 2 + 1] = t.at(i).y;
+      printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);*/
+      
       
       meshBound.center.x += verts[i*3];
       meshBound.center.y += verts[i*3+1];
@@ -408,6 +443,14 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, verts, GL_STATIC_DRAW);
    
+   /*for (int i = 0; i < store->numMeshes; i++) {
+      if (store->material[i].textureLocation != 0) {
+         glGenBuffers(1, &store->material[i].textureCoordinates);
+         glBindBuffer(GL_ARRAY_BUFFER, store->material[i].textureCoordinates);
+         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * t.size()*2, texts, GL_STATIC_DRAW);
+      }
+   }*/
+   
    normals.resize(v.size(), glm::vec3(0.0, 0.0, 0.0));
    float norms[normals.size()*3];
    GLushort *faces;
@@ -445,10 +488,11 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       }
       shadowInfo.push_back(sInfo);
       
+      /* Shadow Info
       for (int j = 0; j < (int)f[i].size()/3; j++) {
          printf("shadowInfo[%d][%d]: %d\n", i, j, shadowInfo[i][j]);
       }
-      printf("sInfo : f[i] == %d : %d\n", shadowInfo[i].size(), f[i].size());
+      printf("sInfo : f[i] == %d : %d\n", shadowInfo[i].size(), f[i].size());*/
       
       vector<vec2> vertInfo; // { v.index, shadowVerts.index }
       vec3 centroid = vec3(0, 0, 0);
@@ -629,10 +673,11 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
          sdwFaces[j] = (GLushort)sFaces[j];
       }
       
+      /* Shadow Faces
       printf("Number of Verticies: %d\n", (int)shadowVerts.size());
       for (int j = 0; j < (int)sFaces.size(); j+=3) {
          printf("   Face %d: %d, %d, %d\n", j/3, sdwFaces[j], sdwFaces[j+1], sdwFaces[j+2]);
-      }
+      }*/
       //Extend verticies/faces in direction of light
       //connect verticies into faces
       
@@ -658,10 +703,11 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       sdwVerts[i*3+2] = shadowVerts[i].z;
    }
    
+   /* Shadow Verts
    printf("Number of Verticies: %d\n", (int)shadowVerts.size());
    for (int j = 0; j < (int)shadowVerts.size(); j++) {
       printf("   Vertex %d: %0.3f, %0.3f, %0.3f\n", j, sdwVerts[j*3], sdwVerts[j*3+1], sdwVerts[j*3+2]);
-   }
+   }*/
    
    glGenBuffers(1, &store->shadowVBO);
    glBindBuffer(GL_ARRAY_BUFFER, store->shadowVBO);

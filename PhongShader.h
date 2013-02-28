@@ -14,15 +14,18 @@ using glm::mat4;
 using glm::value_ptr;
 
 struct PhongMaterial {
-  vec3 aColor;
-  vec3 dColor;
-  vec3 sColor;
-  GLfloat shine;
+   vec3 aColor;
+   vec3 dColor;
+   vec3 sColor;
+   GLfloat shine;
+   
+   GLuint textureLocation;
+   GLuint textureCoordinates;
 };
 
 struct LightInfo {
-    vec3 pos;
-    vec3 color;
+   vec3 pos;
+   vec3 color;
 };
 
 class PhongShader : public Shader {

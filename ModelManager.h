@@ -95,7 +95,7 @@ public:
 	
 private:
 	void loadObject(const char* filename);
-   int fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f, vector<PhongMaterial> materials);
+   int fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t, vector< vector<GLushort> > f, vector<PhongMaterial> materials);
    int getMaterial(ifstream *matlib, string name, PhongMaterial *mat);
    
    bufferStore cubeMesh();
