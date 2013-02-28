@@ -302,17 +302,17 @@ void GameKartObject::drawHUD() {
    }
 }
 
-void GameKartObject::changePartScale(int part,int dir)
+void GameKartObject::changePartScale(int part,int dir, float dt)
 {
    float change = 0.0;
    if(dir == 1)
    {
-   change = 0.01;
+      change = 4.0 * dt;
    }
    else
    if(dir == 0)
    {
-   change = -0.01;
+      change = -3.0 * dt;
    }
 
    if(part == 0)
@@ -675,17 +675,17 @@ else
    
    if(frontScaleChanging == true)
    {
-      changePartScale(0,frontScaleDir);
+      changePartScale(0,frontScaleDir, dt);
    }
 
    if(sideScaleChanging == true)
    {
-      changePartScale(1,sideScaleDir);
+      changePartScale(1,sideScaleDir, dt);
    }
 
    if(backScaleChanging == true)
    {
-      changePartScale(2,backScaleDir);
+      changePartScale(2,backScaleDir, dt);
    }
 
    if(frontScale >=1.0)

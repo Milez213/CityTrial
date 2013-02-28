@@ -147,7 +147,7 @@ private:
    void changeTireTurnAngle(float dt, float mult, float speedDampedTurnAngle);
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
    void cyclePartList(list<GamePartUpgrade *> &list);
-   void changePartScale(int part,int dir);
+   void changePartScale(int part,int dir, float dt);
 };
 
 #endif

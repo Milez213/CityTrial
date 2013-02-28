@@ -13,6 +13,9 @@
 
 class GameStatSpeed : public GameStatUpgrade
 {
+public:
+   GameStatSpeed() : GameStatUpgrade("models/speedometer.obj") {}
+   
    virtual void applyStat(GameKartProperties *props) { props->upgradeTopSpeed(); }
 };
 
