@@ -36,6 +36,10 @@ struct bufferStore {
 	GLuint textureBuffer;   
 	GLuint *indexBuffer;
 	int *indexBufferLength;
+   
+   GLuint shadowVBO;
+   GLuint *shadowIBO;
+   int *shadowBufferLength;
 	
 	PhongMaterial *material;
    

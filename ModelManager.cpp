@@ -18,6 +18,8 @@
 #include <fstream>
 #include <sstream>
 
+vec3 l_direction;
+
 bool ModelManager::sphereOnSphere(bound objOne, bound objTwo)
 {
 
@@ -54,7 +56,7 @@ bool ModelManager::boxOnBox(bound objOne, bound objTwo)
 
 ModelManager::ModelManager()
 {
-   
+   l_direction = vec3(0.707, -0.707, 0);
 }
 
 ModelManager::~ModelManager()
@@ -88,8 +90,14 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    meshes->vertexBuffer = storage[index].vertexBuffer;
    meshes->normalBuffer = storage[index].normalBuffer;
    meshes->textureBuffer = storage[index].textureBuffer;
+   if (storage[index].shadowVBO != NULL)
+      meshes->shadowVBO = storage[index].shadowVBO;
+   else
+      meshes->shadowVBO = NULL;
    
    meshes->indexBuffer = new GLuint[storage[index].numMeshes];
+   meshes->shadowIBO = new GLuint[storage[index].numMeshes];
+   meshes->shadowBufferLength = new int[storage[index].numMeshes];
    meshes->indexBufferLength = new int[storage[index].numMeshes];
    meshes->material = new PhongMaterial[storage[index].numMeshes];
    
@@ -98,6 +106,14 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    for (int i = 0; i < meshes->numMeshes; i++) {
       meshes->indexBuffer[i] = storage[index].indexBuffer[i];
       meshes->indexBufferLength[i] = storage[index].indexBufferLength[i];
+      if (storage[index].shadowVBO != NULL) {
+         meshes->shadowIBO[i] = storage[index].shadowIBO[i];
+         meshes->shadowBufferLength[i] = storage[index].shadowBufferLength[i];
+      } else {
+         meshes->shadowIBO = NULL;
+         meshes->shadowBufferLength = 0;
+      }
+      
       meshes->material[i] = storage[index].material[i];
       // meshes->diffuseColor[i] = storage[index].diffuseColor[i];
       // meshes->specularity[i] = storage[index].specularity[i];
@@ -337,9 +353,13 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
    return 0;
 }
 
+#define SHADOW_INFINITY 1.0f
 int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<GLushort> > f, vector<PhongMaterial> materials)
 {
    vector<vec3> normals;
+   vector<vec3> shadowVerts;
+   vector< vector<GLushort> > shadowFaces;
+   vector< vector<int> > shadowInfo;
    bound meshBound;
    float verts[v.size()*3];
    
@@ -394,8 +414,12 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
    store->numMeshes = f.size();
    store->indexBuffer = new GLuint[store->numMeshes];
    store->indexBufferLength = new int[store->numMeshes];
+   store->shadowBufferLength = new int[store->numMeshes];
+   store->shadowIBO = new GLuint[store->numMeshes];
    for (int i = 0; i < (int)f.size(); i++) {
       faces = new GLushort[f[i].size()];
+      vector<int> sInfo;
+      vector<GLushort> sFaces;
       store->indexBufferLength[i] = f[i].size();
       //printf("   Mesh %d: %d faces\n", i, store->indexBufferLength[i]/3);
       for (int j = 0; j < (int)f[i].size(); j+=3) {
@@ -408,11 +432,215 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
          normals[ib] += normal;
          normals[ic] += normal;
          
+         if (dot(normal, l_direction) < 0) {
+            sInfo.push_back(-1);
+         } else {
+            sInfo.push_back(1);
+         }
+         
          faces[j] = f[i][j];
          faces[j+1] = f[i][j+1];
          faces[j+2] = f[i][j+2];
          //printf("   Face %d: (%d, %d, %d)\n", j/3, faces[j], faces[j+1], faces[j+2]);
       }
+      shadowInfo.push_back(sInfo);
+      
+      for (int j = 0; j < (int)f[i].size()/3; j++) {
+         printf("shadowInfo[%d][%d]: %d\n", i, j, shadowInfo[i][j]);
+      }
+      printf("sInfo : f[i] == %d : %d\n", shadowInfo[i].size(), f[i].size());
+      
+      vector<vec2> vertInfo; // { v.index, shadowVerts.index }
+      vec3 centroid = vec3(0, 0, 0);
+      int centroidCount = 0, currentSize = 1, initSize = shadowVerts.size();
+      shadowVerts.push_back(centroid);
+      for (int j = 0; j < (int)f[i].size()/3; j++) {
+         if (shadowInfo[i][j] == -1) {
+            int v1 = -1, v2 = -1;
+            bool found = false;
+            for (int k = 0; k < (int)f[i].size()/3 && !found; k++) {
+               if (shadowInfo[i][k] == 1) {
+                  if (f[i][j*3] == f[i][k*3] || f[i][j*3] == f[i][k*3+1]
+                      || f[i][j*3] == f[i][k*3+2]) {
+                     v1 = f[i][j*3];
+                     if (f[i][j*3+1] == f[i][k*3] || f[i][j*3+1] == f[i][k*3+1]
+                         || f[i][j*3+1] == f[i][k*3+2]) {
+                        v2 = f[i][j*3+1];
+                        found = true;
+                     } else if (f[i][j*3+2] == f[i][k*3] || f[i][j*3+2] == f[i][k*3+1]
+                                || f[i][j*3+2] == f[i][k*3+2]) {
+                        v2 = f[i][j*3+2];
+                        found = true;
+                     } else {
+                        v1 = -1; v2 = -1;
+                     }
+                  }
+               }
+            }
+            
+            if (v1 != -1) {
+               vertInfo.push_back(vec2(v1, shadowVerts.size()));
+               shadowVerts.push_back(v[v1]);
+               v1 = shadowVerts.size() - 1;
+               currentSize++;
+               
+               vertInfo.push_back(vec2(v2, shadowVerts.size()));
+               shadowVerts.push_back(v[v2]);
+               v2 = shadowVerts.size() - 1;
+               currentSize++;
+               
+               sFaces.push_back(v1);
+               sFaces.push_back(initSize);
+               sFaces.push_back(v2);
+               
+               centroid += shadowVerts[v1];
+               centroid += shadowVerts[v2];
+               
+               centroidCount += 2;
+            }
+
+            /*if (dot(normalize(normals[f[i][j*3]]), l_direction) >= 0) {
+               if (dot(normalize(normals[f[i][j*3+1]]), l_direction) >= 0) {
+                  for (int l = 0; l < (int)vertInfo.size(); l++) {
+                     if (vertInfo[l].x == f[i][j*3])
+                        v1 = vertInfo[l].y;
+                     else if (vertInfo[l].x == f[i][j*3+1])
+                        v2 = vertInfo[l].y;
+                  }
+                  
+                  if (v1 == -1) {
+                     vertInfo.push_back(vec2(f[i][j*3], shadowVerts.size()));
+                     v1 = shadowVerts.size();
+                     shadowVerts.push_back(v[f[i][j*3]]);
+                     currentSize++;
+                  }
+                  if (v2 == -1) {
+                     vertInfo.push_back(vec2(f[i][j*3+1], shadowVerts.size()));
+                     v2 = shadowVerts.size();
+                     shadowVerts.push_back(v[f[i][j*3+1]]);
+                     currentSize++;
+                  }
+                  
+                  sFaces.push_back(v1);
+                  sFaces.push_back(initSize);
+                  sFaces.push_back(v2);
+                  
+                  centroid += shadowVerts[v1];
+                  centroid += shadowVerts[v2];
+                  
+                  centroidCount +=2;
+                  
+               } else if (dot(normalize(normals[f[i][j*3+2]]), l_direction) >= 0) {
+                  for (int l = 0; l < (int)vertInfo.size(); l++) {
+                     if (vertInfo[l].x == f[i][j*3])
+                        v1 = vertInfo[l].y;
+                     else if (vertInfo[l].x == f[i][j*3+2])
+                        v2 = vertInfo[l].y;
+                  }
+                  
+                  if (v1 == -1) {
+                     vertInfo.push_back(vec2(f[i][j*3], shadowVerts.size()));
+                     v1 = shadowVerts.size();
+                     shadowVerts.push_back(v[f[i][j*3]]);
+                     currentSize++;
+                  }
+                  if (v2 == -1) {
+                     vertInfo.push_back(vec2(f[i][j*3+2], shadowVerts.size()));
+                     v2 = shadowVerts.size();
+                     shadowVerts.push_back(v[f[i][j*3+2]]);
+                     currentSize++;
+                  }
+                  
+                  sFaces.push_back(v1);
+                  sFaces.push_back(initSize);
+                  sFaces.push_back(v2);
+                  
+                  centroid += shadowVerts[v1];
+                  centroid += shadowVerts[v2];
+                  
+                  centroidCount +=2;
+               }
+            } else if (dot(normalize(normals[f[i][j*3+1]]), l_direction) >= 0 && dot(normalize(normals[f[i][j*3+2]]), l_direction) >= 0) {
+               for (int l = 0; l < (int)vertInfo.size(); l++) {
+                  if (vertInfo[l].x == f[i][j*3+1])
+                     v1 = vertInfo[l].y;
+                  else if (vertInfo[l].x == f[i][j*3+2])
+                     v2 = vertInfo[l].y;
+               }
+               
+               if (v1 == -1) {
+                  vertInfo.push_back(vec2(f[i][j*3+1], shadowVerts.size()));
+                  v1 = shadowVerts.size();
+                  shadowVerts.push_back(v[f[i][j*3+2]]);
+                  currentSize++;
+               }
+               if (v2 == -1) {
+                  vertInfo.push_back(vec2(f[i][j*3+1], shadowVerts.size()));
+                  v2 = shadowVerts.size();
+                  shadowVerts.push_back(v[f[i][j*3+2]]);
+                  currentSize++;
+               }
+               
+               sFaces.push_back(v1);
+               sFaces.push_back(initSize);
+               sFaces.push_back(v2);
+               
+               centroid += shadowVerts[v1];
+               centroid += shadowVerts[v2];
+               
+               centroidCount +=2;
+            }*/
+         }
+      }
+      
+      centroid /= centroidCount;
+      
+      shadowVerts[initSize] = centroid;
+      
+      for (int j = 0; j < currentSize; j++) {
+         vec3 extend = shadowVerts[initSize + j];
+         extend += l_direction * SHADOW_INFINITY;
+         shadowVerts.push_back(extend);
+      }
+      
+      int faceSize = sFaces.size();
+      for (int j = 0; j < faceSize; j++) {
+         sFaces.push_back(sFaces[j] + currentSize);
+      }
+      
+      for (int j = 0; j < faceSize; j += 3) {
+         sFaces.push_back(sFaces[j]);
+         sFaces.push_back(sFaces[j] + currentSize);
+         sFaces.push_back(sFaces[j+2] + currentSize);
+         
+         sFaces.push_back(sFaces[j]);
+         sFaces.push_back(sFaces[j+2] + currentSize);
+         sFaces.push_back(sFaces[j+2]);
+      }
+      
+      shadowFaces.push_back(sFaces);
+      
+      store->shadowBufferLength[i] = sFaces.size();
+      
+      
+      GLushort sdwFaces[sFaces.size()];
+      
+      for (int j = 0; j < (int)sFaces.size(); j++) {
+         sdwFaces[j] = (GLushort)sFaces[j];
+      }
+      
+      printf("Number of Verticies: %d\n", (int)shadowVerts.size());
+      for (int j = 0; j < (int)sFaces.size(); j+=3) {
+         printf("   Face %d: %d, %d, %d\n", j/3, sdwFaces[j], sdwFaces[j+1], sdwFaces[j+2]);
+      }
+      //Extend verticies/faces in direction of light
+      //connect verticies into faces
+      
+      //create shadow vertex array and face array
+      
+      glGenBuffers(1, &store->shadowIBO[i]);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, store->shadowIBO[i]);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * sFaces.size(), sdwFaces, GL_STATIC_DRAW);
        
       //printf("Index Buffer %d Before: %d\n", i, (int)store->indexBuffer[i]);
       glGenBuffers(1, &store->indexBuffer[i]);
@@ -422,6 +650,22 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector< vector<
       
       delete[] faces;
    }
+   
+   float sdwVerts[shadowVerts.size()*3];
+   for (int i = 0; i < (int)shadowVerts.size(); i++) {
+      sdwVerts[i*3] = shadowVerts[i].x;
+      sdwVerts[i*3+1] = shadowVerts[i].y;
+      sdwVerts[i*3+2] = shadowVerts[i].z;
+   }
+   
+   printf("Number of Verticies: %d\n", (int)shadowVerts.size());
+   for (int j = 0; j < (int)shadowVerts.size(); j++) {
+      printf("   Vertex %d: %0.3f, %0.3f, %0.3f\n", j, sdwVerts[j*3], sdwVerts[j*3+1], sdwVerts[j*3+2]);
+   }
+   
+   glGenBuffers(1, &store->shadowVBO);
+   glBindBuffer(GL_ARRAY_BUFFER, store->shadowVBO);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * shadowVerts.size()*3, sdwVerts, GL_STATIC_DRAW);
 
    for (int i = 0; i < (int)normals.size(); i++) {
       normals[i] = normalize(normals[i]);
@@ -656,6 +900,10 @@ bufferStore ModelManager::cubeMesh()
    
    store.name = "cube";
    
+   store.shadowBufferLength = NULL;
+   store.shadowVBO = NULL;
+   store.shadowIBO = NULL;
+   
 #ifdef DEBUG_VBO   
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
 #endif   
@@ -823,6 +1071,10 @@ bufferStore ModelManager::rampMesh()
    store.material[4].sColor = vec3(0.8, 0.8, 0.8);
    store.material[4].shine = 0.5;
    
+   store.shadowBufferLength = NULL;
+   store.shadowVBO = NULL;
+   store.shadowIBO = NULL;
+   
    store.name = "ramp";
    
 #ifdef DEBUG_VBO
@@ -908,6 +1160,10 @@ bufferStore ModelManager::floorMesh()
    
    store.name = "floor";
    
+   store.shadowBufferLength = NULL;
+   store.shadowVBO = NULL;
+   store.shadowIBO = NULL;
+   
 #ifdef DEBUG_VBO
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);
 #endif
@@ -990,6 +1246,10 @@ bufferStore ModelManager::planeMesh()
    store.material[0].shine = 0.5;
    
    store.name = "plane";
+   
+   store.shadowBufferLength = NULL;
+   store.shadowVBO = NULL;
+   store.shadowIBO = NULL;
    
 #ifdef DEBUG_VBO
    printf("VBO Transfered to Local Variable \"store\": %d\n", (int)store.indexBufferLength[0]);

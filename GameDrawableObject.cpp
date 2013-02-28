@@ -71,6 +71,32 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    safe_glDisableVertexAttribArray(h_aNorm);
    
    modelViewMatrix.popMatrix();
+   /*modelViewMatrix.pushMatrix();
+   
+   modelViewMatrix.translate(getPosition());
+   modelViewMatrix.scale(scl.x, scl.y, scl.z);
+   meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+   
+   safe_glEnableVertexAttribArray(h_aNorm);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+   safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
+   
+   safe_glEnableVertexAttribArray(h_aPos);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.shadowVBO);
+   safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
+   
+   for (int i = meshStorage.numMeshes - 1; i >= 0; i--) {
+      meshShader->setMaterial(&meshStorage.material[i]);
+      if (meshStorage.shadowVBO != NULL) {
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.shadowIBO[i]);
+         glDrawElements(GL_TRIANGLES, meshStorage.shadowBufferLength[i], GL_UNSIGNED_SHORT, 0);
+      }
+   }
+   
+   safe_glDisableVertexAttribArray(h_aPos);
+   safe_glDisableVertexAttribArray(h_aNorm);
+   
+   modelViewMatrix.popMatrix();*/
 }
 
 void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix, float pitchAngle, float rollAngle)
