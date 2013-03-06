@@ -132,6 +132,7 @@ RenderingHelper g_model_trans;
 
 GameCamera *g_camera;
 
+GameDrawableObject *skyBox;
 
 
 
@@ -280,6 +281,19 @@ void update(double dt)
    }
 }
 
+void drawSkyBox()
+{
+   glDisable(GL_DEPTH_TEST);
+   glDepthMask(false);
+
+   skyBox->setPosition(glm::vec3(0,0,0));
+   skyBox->draw(meshShader, g_model_trans);
+
+   glDepthMask(true);
+   glEnable(GL_DEPTH_TEST);
+   glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 
 
 void draw(float dt, int kartIndex)
@@ -287,14 +301,23 @@ void draw(float dt, int kartIndex)
    glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    
-   setProjectionMatrix(kartIndex);
-   setView(kartIndex);
 
    // set once for this shader
+   setProjectionMatrix(kartIndex);
+
+   meshShader->use();
+   meshShader->setProjMatrix(g_proj); 
+   meshShader->setViewMatrix(g_view);
+
+  
+   drawSkyBox();
+
+
+   setView(kartIndex);
+
    meshShader->use();
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
-  
 
    // get camera position
    vec3 kartPos = kart_objects[kartIndex]->getPosition();
@@ -359,7 +382,7 @@ void drawHUD (int kartIndex) {
    //meshShader->setProjMatrix(g_proj);
    //meshShader->setViewMatrix(g_view);
    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-   //glClear( GL_COLOR_BUFFER_BIT );
+   //glClear( GL_COLOR_BUFFER_BIT );meshShader->setMaterial(&meshStorage.material[i]);
    
    kart_objects[kartIndex]->drawHUD();
    
@@ -377,6 +400,12 @@ void drawMultipleViews(double dt) {
          glScissor( j * g_current_width, i * g_current_height, g_current_width, g_current_height );
          
          if (kartIndex < (int)kart_objects.size()) {
+               
+               g_camera->setPosition(glm::vec3(0,0,0));
+   g_camera->setLookAtTarget(normalize(kart_objects[kartIndex]->getDirectionVector())); 
+
+   g_view = g_camera->getViewMat();
+    
             draw(dt, kartIndex);
 
             if(motionBlur == 1) {
@@ -393,6 +422,7 @@ void drawMultipleViews(double dt) {
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            //g_proj = mat4(1.0);
          }
       }
    }
@@ -803,6 +833,8 @@ int main(int argc, char** argv)
 
    glfwSetTime(0.0);
    g_last_time = glfwGetTime();
+
+   skyBox = new GameDrawableObject("cube");
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
       gameLoop();
