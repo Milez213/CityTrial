@@ -344,8 +344,7 @@ void draw(float dt, int kartIndex)
    
    // draw objects
    for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
-      if(SphereInFrustum((*it)->getPosition(),
-                         (*it)->getBoundingInfo().radius * 1.5) > 0) {
+      if(isBoundInFrustum((*it)->getBoundingInfo())) {
          setPhongMaterial((*it)->getMaterialIndex());
          (*it)->draw(meshShader, g_model_trans);
       } else { //printf("Not being drawn\n");

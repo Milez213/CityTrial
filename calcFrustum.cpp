@@ -199,6 +199,8 @@ float SphereInFrustum( vec3 pos, float radius )
 }
 
 
-
+bool isBoundInFrustum(bound boundInfo) {
+   return SphereInFrustum(boundInfo.center, boundInfo.radius*1.5) > 0;
+}
 
 
