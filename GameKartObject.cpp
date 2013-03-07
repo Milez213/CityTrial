@@ -30,6 +30,7 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    /* fill each kartSlot with a blank upgrade. simplifies logic and allows
     * players to choose no part for a slot */
    GamePartUpgrade *part = new GamePartNone();
+   frontPart = sidePart = backPart = part;
    frontParts.push_front(part);
    sideParts.push_front(part);
    backParts.push_front(part);
