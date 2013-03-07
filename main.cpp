@@ -268,7 +268,7 @@ void update(double dt)
             continue;
          }
 
-         if (g_model_manager->boxOnBox(kart_objects[k]->getBoundingInfo(),
+         if (ModelManager::boxOnBox(kart_objects[k]->getBoundingInfo(),
                 (*it)->getBoundingInfo())) {
             kart_objects[k]->onCollide(*it);
             // both karts will detect the collision so only call on self if another kart
