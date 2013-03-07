@@ -3,7 +3,7 @@
 
 
 #ifdef __APPLE__
-#include <OPENGL/gl.h>
+#include <OPENGL/gl3.h>
 #endif
 
 #ifdef _WIN32

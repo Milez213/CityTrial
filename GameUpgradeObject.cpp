@@ -36,7 +36,7 @@ void GameUpgradeObject::update(float dt)
 
 void GameUpgradeObject::onCollide(GameDrawableObject *other)
 {
-   if (GameKartObject *kart =  dynamic_cast<GameKartObject *>(other)) {
+   if (dynamic_cast<GameKartObject *>(other)) {
       playPickupSound();
       scheduleForRemoval();
    }

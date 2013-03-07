@@ -12,11 +12,7 @@
 #ifndef GAME_DRAW_OBJECT
 #define GAME_DRAW_OBJECT
 
-#ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#else
-#include <GL/gl.h>
-#endif
+#include "include_gl.h"
 
 #include "MStackHelp.h"
 #include "ModelManager.h"

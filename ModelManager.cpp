@@ -238,7 +238,7 @@ void ModelManager::loadObject(const char *filename)
                int txtCrd = 0;
                GLushort a;
                
-               for (int i = 0; i <= s.length(); i++) {
+               for (unsigned int i = 0; i <= s.length(); i++) {
                   if (s[i] != 47 && s[i] != 32 && i != s.length()) {
                      n += s[i];
                   } else {
@@ -391,7 +391,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
    vector< vector<int> > shadowInfo;
    bound meshBound;
    float verts[v.size()*3];
-   float texts[t.size()*2];
+   //float texts[t.size()*2];
    
    vec3 topRight = vec3(-100.0, -100.0, -100.0);
    

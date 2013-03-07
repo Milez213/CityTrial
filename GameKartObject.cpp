@@ -122,7 +122,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          }
       } 
    }
-   else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+   else if (dynamic_cast<GameKartObject *>(other)) {
       printf("collided with kart\n");
       vec3 oldPos = getPosition();
       setSpeed(-getSpeed());
@@ -628,7 +628,7 @@ else
 
    
    // to only play/puse once per state change
-   static int i = 0;
+   //static int i = 0;
 
    // is flying?
    // from GamePhysicalObject::update()
