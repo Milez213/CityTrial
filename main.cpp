@@ -49,6 +49,7 @@ using  glm::vec4;
 
 #include "GameUpgradesInclude.h"
 #include "GameHUD.h"
+#include "Octree.h"
 
 #ifdef MAIN_USE_TTF
 #include "TTFRenderer.h"
