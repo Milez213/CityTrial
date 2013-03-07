@@ -172,11 +172,11 @@ void setPhongMaterial(int i) {
 
 /* projection matrix */
 void setProjectionMatrix(int kartIndex) {
-   g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 0.5f + 90.0f,
+   g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 1.0f + 45.0f,
          (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 void setSkyboxProjectionMatrix() {
-   g_proj = glm::perspective(90.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
+   g_proj = glm::perspective(45.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 
 /* camera controls */
@@ -185,7 +185,7 @@ void setView(int kartIndex) {
    vec3 kartPos = kart_objects[kartIndex]->getPosition();
 
    // move camera back and up
-   kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
+   kartDir = vec3(kartDir.x * 5.0, kartDir.y - 2.0, kartDir.z * 5.0);
 
    g_camera->setLookAtTarget(kart_objects[kartIndex]->getPosition());
    g_camera->setPosition(kartPos - kartDir);
@@ -290,6 +290,7 @@ void drawSkyBox()
    glDepthMask(false);
 
    skyBox->setPosition(glm::vec3(0,0,0));
+   skyBox->setScale(glm::vec3(10, 10, 10));
    skyBox->draw(meshShader, g_model_trans);
 
    glDepthMask(true);
@@ -306,8 +307,9 @@ void draw(float dt, int kartIndex)
    
 
    // set once for this shader
-   setProjectionMatrix(kartIndex);
 
+   setSkyboxProjectionMatrix();
+   
    meshShader->use();
    meshShader->setProjMatrix(g_proj); 
    meshShader->setViewMatrix(g_view);
@@ -316,6 +318,7 @@ void draw(float dt, int kartIndex)
    drawSkyBox();
 
 
+   setProjectionMatrix(kartIndex);
    setView(kartIndex);
 
    meshShader->use();
@@ -405,7 +408,7 @@ void drawMultipleViews(double dt) {
          if (kartIndex < (int)kart_objects.size()) {
                
                g_camera->setPosition(glm::vec3(0,0,0));
-   g_camera->setLookAtTarget(normalize(kart_objects[kartIndex]->getDirectionVector())); 
+   g_camera->setLookAtTarget(kart_objects[kartIndex]->getDirectionVector()); 
 
    g_view = g_camera->getViewMat();
     
