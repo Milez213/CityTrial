@@ -267,6 +267,7 @@ void update(double dt)
          if (g_model_manager->boxOnBox(kart_objects[k]->getBoundingInfo(),
                 drawable_objects[j]->getBoundingInfo())) {
             kart_objects[k]->onCollide(drawable_objects[j]);
+            // both karts will detect the collision so only call on self if another kart
             if (!dynamic_cast<GameKartObject *>(drawable_objects[j])) {
                drawable_objects[j]->onCollide(kart_objects[k]);
             }
