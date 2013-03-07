@@ -116,7 +116,7 @@ GameSound *g_music;
 // test one object for now
 PhongShader *meshShader;
 HUDShader *hudShader;
-set<GameDrawableObject *> drawable_objects;
+Octree<GameDrawableObject *> drawable_objects;
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;

@@ -18,7 +18,7 @@ Octree<T>::~Octree() {
 }
 
 template <class T>
-void Octree<T>::add(T &val) {
+void Octree<T>::insert(T &val) {
    LeafNode *leaf = new LeafNode(val);
    
    head->add(leaf);
@@ -33,11 +33,40 @@ void Octree<T>::update(T &val) {
 }
 
 template <class T>
-void Octree<T>::remove(T &val) {
+void Octree<T>::erase(T &val) {
    LeafNode *leaf = leafMap[val];
    
    leaf->removeFromParents();
+   leafMap.erase(leaf.val);
+   
    delete leaf;
+}
+
+template <class T>
+typename Octree<T>::iterator Octree<T>::erase(typename Octree<T>::iterator position) {
+   wrappedIterator rtn;
+   LeafNode *leaf = position.mapItr->second;
+   
+   leaf->removeFromParents();
+   rtn = leafMap.erase(position.mapItr);
+   
+   delete leaf;
+   
+   return iterator(rtn);
+}
+
+template <class T>
+typename std::set<T &> Octree<T>::getCollisionsFor(T &val) {
+   std::set<T &> rtn;
+   head->getCollisionsFor(&rtn, val);
+   return rtn;
+}
+
+template <class T>
+typename std::set<T &> Octree<T>::getSubsetInFrustum(bool (*isInFrustum)(bound)) {
+   std::set<T &> rtn;
+   head->getSubsetInFrustum(&rtn, isInFrustum);
+   return rtn;
 }
 
 
@@ -138,6 +167,34 @@ bound Octree<T>::SubDivision::makeSubBound(bool xPositive, bool yPositive, bool 
    return rtn;
 }
 
+template <class T>
+void Octree<T>::SubDivision::getCollisionsFor(std::set<T &> *rtn, T &val) {
+   typename std::set<LeafNode *>::iterator itr;
+   for (itr = leaves.begin(); itr != leaves.end; itr++) {
+      rtn->insert(itr->val);
+   }
+   
+   for (int i = 0; i < 8; i++) {
+      if (subDivisions[i] && ModelManager::boxOnBox(val.getBoundingInfo(), subDivisions[i]->boundingBox)) {
+         subDivisions[i]->getCollisionsFor(rtn, val);
+      }
+   }
+}
+
+template <class T>
+void Octree<T>::SubDivision::getSubsetInFrustum(std::set<T &> *rtn, bool (*isInFrustum)(bound)) {
+   typename std::set<LeafNode *>::iterator itr;
+   for (itr = leaves.begin(); itr != leaves.end; itr++) {
+      rtn->insert(itr->val);
+   }
+   
+   for (int i = 0; i < 8; i++) {
+      if (subDivisions[i] && (*isInFrustum)(subDivisions[i]->boundingBox)) {
+         subDivisions[i]->getSubsetInFrustum(rtn, isInFrustum);
+      }
+   }
+}
+
 
 
 template <class T>
@@ -146,14 +203,9 @@ Octree<T>::LeafNode::LeafNode(T &val) : val(val), bound(val.getBoundingInfo()) {
 }
 
 template <class T>
-Octree<T>::LeafNode::~LeafNode() {
-   leafMap.erase(val);
-}
-
-template <class T>
 void Octree<T>::LeafNode::removeFromParents() {
    typename std::set<LeafNode *>::iterator itr;
-   for (itr = parents.begin(); itr != parents.end(); itr++) {
+   for (itr = parents.begin(); itr != parents.end();) {
       itr->leaves.erase(this);
       itr = parents.erase(itr);
    }
