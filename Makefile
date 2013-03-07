@@ -3,7 +3,7 @@ OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 	ModelManager.o GameObject.o GameDrawableObject.o \
 	GameKartObject.o GameUpgradeObject.o GamePhysicalObject.o \
    GameRamp.o GameBuilding.o GameTerrain.o loadMap.o GameHUD.o \
-   LoadTexture.o util.o calcFrustum.o
+   LoadTexture.o util.o calcFrustum.o 
 
 
 EDITOR_OFILES=map_editor.o MStackHelp.o GLSL_helper.o Shader.o \
