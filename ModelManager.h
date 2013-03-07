@@ -47,7 +47,7 @@ struct bufferStore {
 };
  
 struct bound {
-   vec3 bottomLeft;
+   //vec3 bottomLeft;
    vec3 dimension;
    vec3 center;
    float radius;

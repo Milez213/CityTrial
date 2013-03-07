@@ -42,12 +42,12 @@ bool ModelManager::sphereOnBox(bound objOne, bound objTwo)
 
 bool ModelManager::boxOnBox(bound objOne, bound objTwo)
 {
-   if (objOne.bottomLeft.x > objTwo.bottomLeft.x + objTwo.dimension.x  ||
-       objOne.bottomLeft.x + objOne.dimension.x  < objTwo.bottomLeft.x ||
-       objOne.bottomLeft.y > objTwo.bottomLeft.y + objTwo.dimension.y  ||
-       objOne.bottomLeft.y + objOne.dimension.y  < objTwo.bottomLeft.y ||
-       objOne.bottomLeft.z > objTwo.bottomLeft.z + objTwo.dimension.z  ||
-       objOne.bottomLeft.z + objOne.dimension.z  < objTwo.bottomLeft.z ) {
+   if (objOne.center.x - objOne.dimension.x > objTwo.center.x + objTwo.dimension.x ||
+       objOne.center.x + objOne.dimension.x < objTwo.center.x - objTwo.dimension.x ||
+       objOne.center.y - objOne.dimension.y > objTwo.center.y + objTwo.dimension.y ||
+       objOne.center.y + objOne.dimension.y < objTwo.center.y - objTwo.dimension.y ||
+       objOne.center.z - objOne.dimension.z > objTwo.center.z + objTwo.dimension.z ||
+       objOne.center.z + objOne.dimension.z < objTwo.center.z - objTwo.dimension.z) {
       return false;
    }
    
@@ -128,7 +128,7 @@ bool ModelManager::getObject(const char *fileName, bufferStore *meshes, bound *b
    }
    */
    
-   boundingInfo->bottomLeft = boundStorage[index].bottomLeft;
+   //boundingInfo->bottomLeft = boundStorage[index].bottomLeft;
    boundingInfo->dimension = boundStorage[index].dimension;
    boundingInfo->center = boundStorage[index].center;
    boundingInfo->radius = boundStorage[index].radius;
@@ -147,8 +147,8 @@ void ModelManager::loadObject(const char *filename)
       storage.push_back(rampMesh());
       
       bound newBound;
-      newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
-      newBound.dimension = vec3(2.0, 2.0, 2.0);
+      //newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
+      newBound.dimension = vec3(1.0, 1.0, 1.0);
       newBound.center = vec3(0.0, 0.0, 0.0);
       newBound.radius = 1.0;
       boundStorage.push_back(newBound);
@@ -157,8 +157,8 @@ void ModelManager::loadObject(const char *filename)
       storage.push_back(floorMesh());
       
       bound newBound;
-      newBound.bottomLeft = vec3(-1.0, 0.0, -1.0);
-      newBound.dimension = vec3(2.0, 0.01, 2.0);
+      //newBound.bottomLeft = vec3(-1.0, 0.0, -1.0);
+      newBound.dimension = vec3(1.0, 0.005, 1.0);
       newBound.center = vec3(0.0, 0.0, 0.0);
       newBound.radius = 1.0;
       boundStorage.push_back(newBound);
@@ -167,8 +167,8 @@ void ModelManager::loadObject(const char *filename)
       storage.push_back(planeMesh());
       
       bound newBound;
-      newBound.bottomLeft = vec3(-0.5, -0.5, 1.0);
-      newBound.dimension = vec3(1.0, 1.0, 0.01);
+      //newBound.bottomLeft = vec3(-0.5, -0.5, 1.0);
+      newBound.dimension = vec3(0.5, 0.5, 0.005);
       newBound.center = vec3(0.0, 0.0, 1.0);
       newBound.radius = 1.0;
       boundStorage.push_back(newBound);
@@ -177,8 +177,8 @@ void ModelManager::loadObject(const char *filename)
       storage.push_back(cubeMesh());
       
       bound newBound;
-      newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
-      newBound.dimension = vec3(2.0, 2.0, 2.0);
+      //newBound.bottomLeft = vec3(-1.0, -1.0, -1.0);
+      newBound.dimension = vec3(1.0, 1.0, 1.0);
       newBound.center = vec3(0.0, 0.0, 0.0);
       newBound.radius = 1.0;
       boundStorage.push_back(newBound);
@@ -393,6 +393,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
    float verts[v.size()*3];
    //float texts[t.size()*2];
    
+   vec3 bottomLeft = vec3(-100.0, -100.0, -100.0);
    vec3 topRight = vec3(-100.0, -100.0, -100.0);
    
    //printf("Loading Verticies:\n");
@@ -410,18 +411,18 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       meshBound.center.y += verts[i*3+1];
       meshBound.center.z += verts[i*3+2];
       
-      if (verts[i*3] < meshBound.bottomLeft.x) {
-         meshBound.bottomLeft.x = verts[i*3];
+      if (verts[i*3] < bottomLeft.x) {
+         bottomLeft.x = verts[i*3];
       } else if (verts[i*3] > topRight.x) {
 			topRight.x = verts[i*3];
       }
-      if (verts[i*3+1] < meshBound.bottomLeft.y) {
-         meshBound.bottomLeft.y = verts[i*3+1];
+      if (verts[i*3+1] < bottomLeft.y) {
+         bottomLeft.y = verts[i*3+1];
       } else if (verts[i*3+1] > topRight.y) {
 			topRight.y = verts[i*3+1];
       }
-      if (verts[i*3+2] < meshBound.bottomLeft.z) {
-         meshBound.bottomLeft.z = verts[i*3+2];
+      if (verts[i*3+2] < bottomLeft.z) {
+         bottomLeft.z = verts[i*3+2];
       } else if (verts[i*3+2] > topRight.z) {
 			topRight.z = verts[i*3+2];
       }
@@ -429,15 +430,16 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       //printf("   Vertex %d: (%0.3f, %0.3f, %0.3f)\n", i, verts[i], verts[i+1], verts[i+2]);
    }
    
-   meshBound.dimension.x = topRight.x - meshBound.bottomLeft.x;
-   meshBound.dimension.y = topRight.y - meshBound.bottomLeft.y;
-   meshBound.dimension.z = topRight.z - meshBound.bottomLeft.z;
+   meshBound.dimension.x = std::max(topRight.x, bottomLeft.x);
+   meshBound.dimension.y = std::max(topRight.y, bottomLeft.y);
+   meshBound.dimension.z = std::max(topRight.z, bottomLeft.z);
    
    meshBound.center.x = meshBound.center.x / v.size();
    meshBound.center.y = meshBound.center.y / v.size();
    meshBound.center.z = meshBound.center.z / v.size();
    
-   meshBound.radius = length(meshBound.center - meshBound.bottomLeft);
+   meshBound.radius = std::max(std::max(meshBound.dimension.x, meshBound.dimension.y),
+                               meshBound.dimension.z); //length(meshBound.dimension);
    
    glGenBuffers(1, &store->vertexBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);

@@ -209,9 +209,9 @@ void GameDrawableObject::updateBoundingInfo()
    // FIXME - these assume object's height is 2
    // boundingInfo.bottomLeft = (boundingInfo.bottomLeft - p) * s + p;
 
-   boundingInfo.bottomLeft = p-s;
+   //boundingInfo.bottomLeft = p-s;
    // test scale bottomLeft. from origin
-   boundingInfo.dimension = 2.0f * s;
+   boundingInfo.dimension = s;
    boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);//glm::length(s);//
    boundingInfo.center = p;
 
