@@ -218,7 +218,7 @@ void GameDrawableObject::updateBoundingInfo()
 }
 
 // TODO - change bounding box so it's at origin. Then translate when returning it.
-bound GameDrawableObject::getBoundingInfo()
+const bound GameDrawableObject::getBoundingInfo()
 {
    /*bound chgBound;
    chgBound.bottomLeft = boundingInfo.bottomLeft + this->getPosition();

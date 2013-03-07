@@ -39,7 +39,7 @@ public:
    bool isScheduledForRemoval() { return toRemove; };
    
    void updateBoundingInfo();
-   bound getBoundingInfo();
+   const bound getBoundingInfo();
 
    virtual void setMaterialIndex(int i) {
        materialIndex = i;
