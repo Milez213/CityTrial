@@ -125,6 +125,9 @@ int g_current_height, g_current_width;
 int motionBlur = 0;
 double g_time;
 double g_last_time;
+bool menu;
+int selected = 0;
+const char *mapSelected;
 
 mat4 g_proj;
 mat4 g_view;
@@ -133,6 +136,7 @@ RenderingHelper g_model_trans;
 GameCamera *g_camera;
 
 GameDrawableObject *skyBox;
+int hasStarted = 0;
 
 
 
@@ -293,7 +297,7 @@ void drawSkyBox()
    glDepthMask(false);
 
    skyBox->setPosition(glm::vec3(0,0,0));
-   skyBox->setScale(glm::vec3(10, 10, 10));
+   skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
    skyBox->draw(meshShader, g_model_trans);
 
    glDepthMask(true);
@@ -311,8 +315,8 @@ void draw(float dt, int kartIndex)
 
    // set once for this shader
 
-   setSkyboxProjectionMatrix();
-   
+   //setSkyboxProjectionMatrix();
+      setProjectionMatrix(kartIndex);
    meshShader->use();
    meshShader->setProjMatrix(g_proj); 
    meshShader->setViewMatrix(g_view);
@@ -376,7 +380,76 @@ void draw(float dt, int kartIndex)
    
 }
 
+void gameMenu()
+{
+   glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+   glDisable(GL_DEPTH_TEST);
+   glAlphaFunc(GL_GREATER,0.1f);
+   glEnable(GL_ALPHA_TEST);
 
+
+   char text[100];
+
+    
+
+   sprintf(text, "Kart Part Park");
+   g_ttf_text_renderer->drawText(text, -0.75, 0.75, 2.0/g_current_width, 2.0/g_current_height); 
+
+   if(selected == 0){
+   sprintf(text, "Begin 1P game");
+   g_ttf_text_renderer->drawText(text, -0.75, 0.50, 5.0/g_current_width, 5.0/g_current_height);
+   }
+   else{
+   sprintf(text, "Begin 1P game");
+   g_ttf_text_renderer->drawText(text, -0.75, 0.50, 2.0/g_current_width, 2.0/g_current_height);   
+   }
+
+   if(selected == 2){
+   sprintf(text, "Begin 2P game");
+   g_ttf_text_renderer->drawText(text, -0.75, 0.25, 5.0/g_current_width, 5.0/g_current_height);
+   }
+   else{
+   sprintf(text, "Begin 2P game");
+   g_ttf_text_renderer->drawText(text, -0.75, 0.25, 2.0/g_current_width, 2.0/g_current_height);   
+   }
+
+   if(selected == 4){
+   sprintf(text, "Music Volume: " );
+   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 5.0/g_current_width, 5.0/g_current_height);
+   }else{
+   sprintf(text, "Music Volume: " );
+   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 2.0/g_current_width, 2.0/g_current_height);   
+   }
+
+   if(selected == 6){
+   sprintf(text, "Sound Volume: ");
+   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 5.0/g_current_width, 5.0/g_current_height);
+   }
+   else{
+   sprintf(text, "Sound Volume: ");
+   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 2.0/g_current_width, 2.0/g_current_height);  
+   }
+
+   if(selected == 8){
+   sprintf(text, "Quit Game");
+   g_ttf_text_renderer->drawText(text, -0.75, -0.50, 5.0/g_current_width, 5.0/g_current_height);
+   }
+   else{
+   sprintf(text, "Quit Game");
+   g_ttf_text_renderer->drawText(text, -0.75, -0.50, 2.0/g_current_width, 2.0/g_current_height);   
+   }
+   
+    
+ 
+   
+   
+  glfwSwapBuffers();  
+   //glDisable(GL_BLEND);
+   glDisable(GL_ALPHA_TEST);
+   glEnable(GL_DEPTH_TEST);
+
+}
 
 void drawHUD (int kartIndex) {
    glDisable(GL_DEPTH_TEST);
@@ -411,7 +484,8 @@ void drawMultipleViews(double dt) {
          if (kartIndex < (int)kart_objects.size()) {
                
                g_camera->setPosition(glm::vec3(0,0,0));
-   g_camera->setLookAtTarget(kart_objects[kartIndex]->getDirectionVector()); 
+               vec3 v = kart_objects[kartIndex]->getDirectionVector();
+   g_camera->setLookAtTarget(glm::vec3(v.x,v.y,v.z)); 
 
    g_view = g_camera->getViewMat();
     
@@ -550,7 +624,7 @@ void initObjects(const char *map) {
    // 1st kart
    if (g_num_players >= 1) {
       GameKartObject *kart = new GameKartObject("cube");
-      kart->setPosition(vec3(30, 1, 30));
+      kart->setPosition(vec3(10, 200, 5));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
@@ -561,7 +635,7 @@ void initObjects(const char *map) {
    }
    if (g_num_players >= 2) {
       GameKartObject *otherKart = new GameKartObject("cube");
-      otherKart->setPosition(vec3(45, 1, 30));
+      otherKart->setPosition(vec3(-10, 200, 0));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
@@ -732,8 +806,8 @@ void initialize(const char *map)
 
    srand(0xdeadf00d);
 
-
-   initObjects(map);
+   mapSelected = map;
+   //initObjects(map);
 }
 
 
@@ -781,6 +855,33 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       printf("Bye :)\n");
       shutdown();
       break;
+   case 'W':
+      if(menu == true){
+         if(selected > 0)
+         {selected -= 1;}
+      }
+      break;
+   case 'S':
+      if(menu == true){
+         if(selected < 8)
+         {selected += 1;}
+      }     
+      break;
+   case GLFW_KEY_ENTER:
+      if(menu == true && action == GLFW_RELEASE){
+         if(selected == 0)
+         {menu = false;
+          initObjects(mapSelected);
+          }
+         if(selected == 2){
+          menu = false;
+          initObjects(mapSelected);
+         }
+         if(selected == 8)
+         {shutdown();}
+      
+      }
+      break; 
    }
 
    /*
@@ -844,9 +945,13 @@ int main(int argc, char** argv)
    g_last_time = glfwGetTime();
 
    skyBox = new GameDrawableObject("cube");
+   menu = true;
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
+      if(menu == false)
       gameLoop();
+      else
+      gameMenu();
    }
 
    glfwTerminate();
