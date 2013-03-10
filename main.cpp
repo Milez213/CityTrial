@@ -15,6 +15,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctime>
+#include <set>
 
 // === helpful libraries ===
 #include "GLSL_helper.h"
@@ -49,6 +50,7 @@ using  glm::vec4;
 
 #include "GameUpgradesInclude.h"
 #include "GameHUD.h"
+#include "Octree.h"
 
 #ifdef MAIN_USE_TTF
 #include "TTFRenderer.h"
@@ -114,7 +116,8 @@ int nPlayers;
 // test one object for now
 PhongShader *meshShader;
 HUDShader *hudShader;
-vector<GameDrawableObject *> drawable_objects;
+//set<GameDrawableObject *> drawable_objects;
+Octree drawable_objects;
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
@@ -243,49 +246,43 @@ void update(double dt)
 
 	//ExtractFrustum();
    
-   for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      drawable_objects[i]->update(dt);
+   Octree::iterator it;
+   
+   for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
+      (*it)->update(dt);
    }
    
-
-   // test for collisions
-   /*
-   for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      for (int j = i+1; j < (int)drawable_objects.size(); j++) {
-         if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
-                drawable_objects[j]->getBoundingInfo())) {
-            drawable_objects[i]->onCollide(drawable_objects[j]);
-            drawable_objects[j]->onCollide(drawable_objects[i]);
-         }
-      }
+   for (int k = 0; k < (int)kart_objects.size(); k++) {
+      drawable_objects.update(kart_objects[k]);
    }
-   */
 
    // only test kart objects with drawable objects
    for (int k = 0; k < (int)kart_objects.size(); k++) {
-      for (int j = 0; j < (int)drawable_objects.size(); j++) {
+      KartCollisionFilter filter(kart_objects[k]);
+      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);
+      
+      set<GameDrawableObject *>::iterator it;
+      for (it = collisions.begin(); it != collisions.end(); it++) {
          // don't test collision with self
-         if (kart_objects[k] == drawable_objects[j]) {
+         if (kart_objects[k] == *it) {
             continue;
          }
 
-         if (g_model_manager->boxOnBox(kart_objects[k]->getBoundingInfo(),
-                drawable_objects[j]->getBoundingInfo())) {
-            kart_objects[k]->onCollide(drawable_objects[j]);
+            kart_objects[k]->onCollide(*it);
             // both karts will detect the collision so only call on self if another kart
-            if (!dynamic_cast<GameKartObject *>(drawable_objects[j])) {
-               drawable_objects[j]->onCollide(kart_objects[k]);
+            if (!dynamic_cast<GameKartObject *>(*it)) {
+               (*it)->onCollide(kart_objects[k]);
             }
-         }
+         //}
       }
    }
    
-   for (std::vector<GameDrawableObject *>::iterator it = drawable_objects.begin();
+   for (it = drawable_objects.begin();
          it != drawable_objects.end();) {
       if ((*it)->isScheduledForRemoval()) {
          printf("erasing: %s\n", (*it)->getName());
          // it now points to the next obj
-         it = drawable_objects.erase(it);
+         /*it =*/ drawable_objects.erase(it++);
       } else {
          it++;
       }
@@ -341,20 +338,26 @@ void draw(float dt, int kartIndex)
 
    ExtractFrustum(); 
 
-   // draw objects
-   for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      if(SphereInFrustum(drawable_objects[i]->getPosition(), 
-                         drawable_objects[i]->getBoundingInfo().radius * 1.5) > 0) {
-         setPhongMaterial(drawable_objects[i]->getMaterialIndex());
-         drawable_objects[i]->draw(meshShader, g_model_trans);
-      } else { //printf("Not being drawn\n");
-         /*
-         // test frustum on one object.
-         if (dynamic_cast<GamePartWings *>(drawable_objects[i]))
-            printf("obj not drawn: %s\n", drawable_objects[i]->getName());
-         // printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
-         */
+   
+   
+   /*// draw objects
+   Octree::iterator it;
+   
+   for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
+      if(isBoundInFrustum((*it)->getBoundingInfo())) {
+         setPhongMaterial((*it)->getMaterialIndex());
+         (*it)->draw(meshShader, g_model_trans);
       }
+   }*/
+   
+   // draw objects
+   static ViewFrustumFilter filter;
+   set<GameDrawableObject *> inView = drawable_objects.getFilteredSubset(filter);
+   set<GameDrawableObject *>::iterator it;
+   
+   for (it = inView.begin(); it != inView.end(); it++) {
+      setPhongMaterial((*it)->getMaterialIndex());
+      (*it)->draw(meshShader, g_model_trans);
    }
 
    // draw text
@@ -600,7 +603,7 @@ void initObjects(const char *map) {
    GameTerrain *floor = new GameTerrain();
    floor->setScale(vec3(100.0, 1.0, 100.0));
    floor->setPosition(vec3(0, 0.0, 0));
-   drawable_objects.push_back(floor);
+   drawable_objects.insert(floor);
 
    
    // karts
@@ -630,8 +633,9 @@ void initObjects(const char *map) {
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
+      kart->setMaterialIndex(1 % NUM_MATERIALS);
       kart->setHUDColor(vec3(1.0, 0.0, 0.0));
-      drawable_objects.push_back(kart);
+      drawable_objects.insert(kart);
       kart_objects.push_back(kart);
    }
    if (g_num_players >= 2) {
@@ -641,8 +645,9 @@ void initObjects(const char *map) {
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
+      otherKart->setMaterialIndex(2 % NUM_MATERIALS);
       otherKart->setHUDColor(vec3(1.0, 1.0, 0.0));
-      drawable_objects.push_back(otherKart);
+      drawable_objects.insert(otherKart);
       kart_objects.push_back(otherKart);
    }
    if (g_num_players >= 3) {
@@ -651,7 +656,7 @@ void initObjects(const char *map) {
       thirdKart->setScale(vec3(1.0, 0.75, 1.0));
       thirdKart->setDirection(0);
       thirdKart->resize(g_current_width, g_current_height);
-      drawable_objects.push_back(thirdKart);
+      drawable_objects.insert(thirdKart);
       kart_objects.push_back(thirdKart);
    }
    
@@ -666,57 +671,57 @@ void initObjects(const char *map) {
       GamePartUpgrade *part = new GamePartWings();
       part->setPosition(vec3(5, 1, 2));
       part->setScale(vec3(2.0, 1.0, 1.0));
-      drawable_objects.push_back(part);
+      drawable_objects.insert(part);
       
       part = new GamePartEngine();
       part->setPosition(vec3(25, 1, 10));
       part->setScale(vec3(2.0, 1.0, 1.0));
-      drawable_objects.push_back(part);
+      drawable_objects.insert(part);
       
       part = new GamePartBattery();
       part->setPosition(vec3(35, 1, 35));
       part->setScale(vec3(2.0, 1.0, 1.0));
-      drawable_objects.push_back(part);
+      drawable_objects.insert(part);
       
       GameStatUpgrade *stat = new GameStatSpeed();
       stat->setPosition(vec3(10, 1, 10));
       stat->setScale(vec3(2.0, 1.0, 1.0));
-      drawable_objects.push_back(stat);
+      drawable_objects.insert(stat);
       
       GameActiveUpgrade *active = new GameActiveBoost();
       active->setPosition(vec3(10, 1, 5));
       active->setScale(vec3(2.0, 1.0, 1.0));
-      drawable_objects.push_back(active);
+      drawable_objects.insert(active);
       
       active = new GameActiveJetpack();
       active->setMaterialIndex(MAGIC_MATERIAL);
       active->setPosition(vec3(10, 1, 25));
       active->setScale(vec3(1.0, 1.0, 1.0));
-      drawable_objects.push_back(active);
+      drawable_objects.insert(active);
       
       
       active = new GameActiveJetpack();
       active->setMaterialIndex(MAGIC_MATERIAL);
       active->setPosition(vec3(-10, 1, 25));
       active->setScale(vec3(1.0, 1.0, 1.0));
-      drawable_objects.push_back(active);
+      drawable_objects.insert(active);
       
       active = new GameActiveTurning();
       active->setPosition(vec3(25, 1, 25));
       active->setScale(vec3(1.0, 1.0, 1.0));
-      drawable_objects.push_back(active);
+      drawable_objects.insert(active);
       
       
       
       GameRamp *ramp = new GameRamp();
       ramp->setPosition(vec3(-25, 2, -25));
       ramp->setScale(vec3(3.0, 2.0, 3.0));
-      drawable_objects.push_back(ramp);
+      drawable_objects.insert(ramp);
       
       GameBuilding *buildin = new GameBuilding();
       buildin->setPosition(vec3(-25, 2, 0));
       buildin->setScale(vec3(10.0, 2.0, 10.0));
-      drawable_objects.push_back(buildin);
+      drawable_objects.insert(buildin);
       
       
       /* GamePhysicalObject *building = new GamePhysicalObject("cube");
@@ -739,15 +744,17 @@ void initObjects(const char *map) {
       GameDrawableObject *object = new GameDrawableObject("models/squash.obj");
       //object->setName("thingy");
       object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
+
       object->setScale(vec3(0.5, 0.5, 0.5));
-      drawable_objects.push_back(object);
+      drawable_objects.insert(object);
    }
 
    // set initial materials for objects with unset materials
-   for (int i = 0; i < (int)drawable_objects.size(); i++) {
+   Octree::iterator it;
+   for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
       // if not set
-      if (drawable_objects[i]->getMaterialIndex() == UNSET_MATERIAL) {
-         drawable_objects[i]->setMaterialIndex(i % NUM_MATERIALS);
+      if ((*it)->getMaterialIndex() == UNSET_MATERIAL) {
+         (*it)->setMaterialIndex(rand() % NUM_MATERIALS);
       }
    }
 

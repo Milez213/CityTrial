@@ -12,13 +12,23 @@
 #include "GameDrawableObject.h"
 
 #include "include_glm.h"
-
+#include <cstring>
 
 extern ModelManager *g_model_manager;
 
-GameDrawableObject::GameDrawableObject(const char *objFile) : toRemove(false)
+GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRemove(false)
 {
-   g_model_manager->getObject(objFile, &meshStorage, &boundingInfo);
+   int fileNameLength = strlen(objFile);
+   char *fileName = (char *)malloc(sizeof(char) * (fileNameLength+3));
+   strcpy(fileName, objFile);
+   
+   g_model_manager->getObject(fileName, &meshStorage[0], &boundingInfo);
+   strcpy(&fileName[fileNameLength], "_1");
+   //g_model_manager->getObject(fileName, &meshStorage[1], &boundingInfo);
+   strcpy(&fileName[fileNameLength], "_2");
+   //g_model_manager->getObject(fileName, &meshStorage[2], &boundingInfo);
+   
+   free(fileName);
 
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
@@ -36,18 +46,26 @@ GameDrawableObject::GameDrawableObject(const char *objFile) : toRemove(false)
 }
 
 
-void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+void GameDrawableObject::transform(RenderingHelper &modelViewMatrix)
 {
-   modelViewMatrix.pushMatrix();
-   meshShader->use();
-   
-   glEnable(GL_TEXTURE_2D);
-   
    modelViewMatrix.translate(getPosition());
    modelViewMatrix.scale(scl.x, scl.y, scl.z);
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
+}
+
+
+void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+{
+   int LoD = 0;
+   
+   modelViewMatrix.pushMatrix();
+   meshShader->use();
+   
+   glEnable(GL_TEXTURE_2D);
+   
+   transform(modelViewMatrix);
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    
@@ -60,21 +78,21 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    meshShader->setTexture(0);
    
    safe_glEnableVertexAttribArray(h_aPos);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
    safe_glEnableVertexAttribArray(h_aNorm);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].normalBuffer);
    safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
    safe_glEnableVertexAttribArray(h_aText);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.material[0].textureCoordinates);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].material[0].textureCoordinates);
    safe_glVertexAttribPointer(h_aText, 2, GL_FLOAT, GL_FALSE, 0, 0);
    
-   for (int i = meshStorage.numMeshes - 1; i >= 0; i--) {
-      meshShader->setMaterial(&meshStorage.material[i]);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-      glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+   for (int i = meshStorage[LoD].numMeshes - 1; i >= 0; i--) {
+      meshShader->setMaterial(&meshStorage[LoD].material[i]);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].indexBuffer[i]);
+      glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
    safe_glDisableVertexAttribArray(h_aPos);
@@ -111,7 +129,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    modelViewMatrix.popMatrix();*/
 }
 
-void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix, float pitchAngle, float rollAngle)
+/*void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix, float pitchAngle, float rollAngle)
 {
    modelViewMatrix.pushMatrix();
    meshShader->use();
@@ -122,7 +140,7 @@ void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper mo
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
    modelViewMatrix.rotate(pitchAngle,vec3(0.0,0.0,1.0));
-   modelViewMatrix.rotate(-rollAngle,vec3(1.0,0.0,0.0));  
+   modelViewMatrix.rotate(-rollAngle,vec3(1.0,0.0,0.0));
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    
@@ -151,12 +169,12 @@ void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper mo
    safe_glDisableVertexAttribArray(h_aNorm);
    
    modelViewMatrix.popMatrix();
-}
+}*/
 
 
 // draw using GameObject's transform info, not a matrix stack.
 // draws in world coordinates, so this doesn't use hiearchical modeling
-void GameDrawableObject::draw(PhongShader *meshShader) {
+/*void GameDrawableObject::draw(PhongShader *meshShader) {
    meshShader->use();
 
    mat4 modelMat = glm::rotate(mat4(1.0f), rot.x, vec3(1.0, 0.0, 0.0));
@@ -193,7 +211,7 @@ void GameDrawableObject::draw(PhongShader *meshShader) {
    safe_glDisableVertexAttribArray(h_aPos);
    safe_glDisableVertexAttribArray(h_aNorm);
    
-}
+}*/
 
 void GameDrawableObject::onCollide(GameDrawableObject *other)
 {
