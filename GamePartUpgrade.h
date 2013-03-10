@@ -15,7 +15,7 @@
 class GamePartUpgrade : public GameUpgradeObject
 {
 public:
-   GamePartUpgrade() : GameUpgradeObject("cube") {}
+   GamePartUpgrade() : GameUpgradeObject("models/ball.obj") {}
    GamePartUpgrade(const char *file) : GameUpgradeObject(file) {}
    
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;

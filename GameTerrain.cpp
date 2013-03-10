@@ -8,7 +8,7 @@
 
 #include "GameTerrain.h"
 
-GameTerrain::GameTerrain() : GameSceneryObject("floor")
+GameTerrain::GameTerrain() : GameSceneryObject("models/floor.obj")
 {
    
 }

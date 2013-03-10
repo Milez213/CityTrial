@@ -172,7 +172,7 @@ void setPhongMaterial(int i) {
 
 /* projection matrix */
 void setProjectionMatrix(int kartIndex) {
-   g_proj = glm::perspective( (float) kart_objects[kartIndex]->getSpeed() * 1.0f + 45.0f,
+   g_proj = glm::perspective( (float) kart_objects[kartIndex]->getPerspective(),
          (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 void setSkyboxProjectionMatrix() {
@@ -185,7 +185,7 @@ void setView(int kartIndex) {
    vec3 kartPos = kart_objects[kartIndex]->getPosition();
 
    // move camera back and up
-   kartDir = vec3(kartDir.x * 5.0, kartDir.y - 2.0, kartDir.z * 5.0);
+   kartDir = vec3(kartDir.x * 6.0, kartDir.y - 2.0, kartDir.z * 6.0);
 
    g_camera->setLookAtTarget(kart_objects[kartIndex]->getPosition());
    g_camera->setPosition(kartPos - kartDir);
@@ -523,8 +523,8 @@ void initObjects(const char *map) {
    
    //floors
    GameTerrain *floor = new GameTerrain();
-   floor->setScale(vec3(100.0, 0.9, 100.0));
-   floor->setPosition(vec3(0, 0, 0));
+   floor->setScale(vec3(100.0, 1.0, 100.0));
+   floor->setPosition(vec3(0, 0.0, 0));
    drawable_objects.push_back(floor);
 
    
@@ -549,7 +549,7 @@ void initObjects(const char *map) {
    // hax
    // 1st kart
    if (g_num_players >= 1) {
-      GameKartObject *kart = new GameKartObject("cube");
+      GameKartObject *kart = new GameKartObject("models/ball.obj");
       kart->setPosition(vec3(30, 1, 30));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
@@ -560,7 +560,7 @@ void initObjects(const char *map) {
       kart_objects.push_back(kart);
    }
    if (g_num_players >= 2) {
-      GameKartObject *otherKart = new GameKartObject("cube");
+      GameKartObject *otherKart = new GameKartObject("models/ball.obj");
       otherKart->setPosition(vec3(45, 1, 30));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
@@ -571,7 +571,7 @@ void initObjects(const char *map) {
       kart_objects.push_back(otherKart);
    }
    if (g_num_players >= 3) {
-      GameKartObject *thirdKart = new GameKartObject("cube");
+      GameKartObject *thirdKart = new GameKartObject("models/ball.obj");
       thirdKart->setPosition(vec3(30, 1, 45));
       thirdKart->setScale(vec3(1.0, 0.75, 1.0));
       thirdKart->setDirection(0);
@@ -661,7 +661,7 @@ void initObjects(const char *map) {
    }
    
    for (int i = 0; i < 100; i++) {
-      GameDrawableObject *object = new GameDrawableObject("cube");
+      GameDrawableObject *object = new GameDrawableObject("models/ball.obj");
       object->setName("thingy");
       object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
       object->setScale(vec3(0.1, 0.5, 0.1));
@@ -843,7 +843,7 @@ int main(int argc, char** argv)
    glfwSetTime(0.0);
    g_last_time = glfwGetTime();
 
-   skyBox = new GameDrawableObject("cube");
+   skyBox = new GameDrawableObject("models/ball.obj");
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
       gameLoop();
