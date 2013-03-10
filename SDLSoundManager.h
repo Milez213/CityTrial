@@ -54,6 +54,10 @@ public:
         Mix_Resume(m_channel);
     }
 
+    void setVolume(int v){
+       Mix_Volume(m_channel,v);
+    }
+
     // TODO - SDL_Mix can specify how many times to loop but not irrklang
 
 private:
@@ -110,6 +114,10 @@ public:
     }
     virtual bool isLooped() {
         return m_loops == -1;
+    }
+
+    virtual bool setVolume(int v){
+       Mix_VolumeMusic(v);
     }
 
 private:

@@ -109,7 +109,7 @@ GameSettings g_settings;
 
 // just for the music
 GameSound *g_music;
-
+int nPlayers;
 
 // test one object for now
 PhongShader *meshShader;
@@ -603,7 +603,7 @@ void initObjects(const char *map) {
 
    
    // karts
-   int num_players_from_settings = g_settings["num_players"];
+   int num_players_from_settings = nPlayers;
    
    if (num_players_from_settings > 0) {
       g_num_players = num_players_from_settings;
@@ -871,10 +871,12 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       if(menu == true && action == GLFW_RELEASE){
          if(selected == 0)
          {menu = false;
+          nPlayers = 1;
           initObjects(mapSelected);
           }
          if(selected == 2){
           menu = false;
+          nPlayers = 2;
           initObjects(mapSelected);
          }
          if(selected == 8)
