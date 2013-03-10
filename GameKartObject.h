@@ -61,6 +61,8 @@ public:
    void addActive(GameActiveUpgrade *active);
    void cycleActives();
    
+   float getPerspective() { return perspective; };
+   
 
    bool isUsingController() {
        return usingController;
@@ -130,6 +132,8 @@ private:
    
    int points;
    int winState;
+   
+   float perspective;
 
    GameSound *ding_sound;
    GameSound *collide_sound;

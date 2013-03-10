@@ -43,6 +43,7 @@ public:
             // attributes
             h_aPosition = safe_glGetAttribLocation(m_shaderProg, "aPosition");
             h_aNormal = safe_glGetAttribLocation(m_shaderProg, "aNormal");
+            h_aTextCoord = safe_glGetAttribLocation(m_shaderProg, "aTextCoord");
 
             // TODO - add texture coordinates handle in shader
 
@@ -72,6 +73,10 @@ public:
     GLuint getPosLocation() {
         return h_aPosition;
     }
+   
+   GLuint getTextLocation() {
+      return h_aTextCoord;
+   }
 
     void setMaterial(PhongMaterial *mat) {
         safe_glUniform3f(h_uMatAmb, mat->aColor);
@@ -123,6 +128,7 @@ private:
     GLint h_aPosition;
     GLint h_aColor;
     GLint h_aNormal;
+   GLint h_aTextCoord;
 
     // matrices
     GLint h_uModelMatrix;

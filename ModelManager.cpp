@@ -51,6 +51,16 @@ bool ModelManager::boxOnBox(bound objOne, bound objTwo)
       return false;
    }
    
+   /*printf("Bounds:\n");
+   printf("   One: (%0.2f, %0.2f) (%0.2f, %0.2f) (%0.2f, %0.2f)\n",
+          objOne.center.x - objOne.dimension.x, objOne.center.x + objOne.dimension.x,
+          objOne.center.y - objOne.dimension.y, objOne.center.y + objOne.dimension.y,
+          objOne.center.z - objOne.dimension.z, objOne.center.z + objOne.dimension.z);
+   printf("   Two: (%0.2f, %0.2f) (%0.2f, %0.2f) (%0.2f, %0.2f)\n",
+          objTwo.center.x - objTwo.dimension.x, objTwo.center.x + objTwo.dimension.x,
+          objTwo.center.y - objTwo.dimension.y, objTwo.center.y + objTwo.dimension.y,
+          objTwo.center.z - objTwo.dimension.z, objTwo.center.z + objTwo.dimension.z);*/
+   
    return true;
 }
 
@@ -233,6 +243,7 @@ void ModelManager::loadObject(const char *filename)
          }  else if (line.substr(0,2) == "f ") {
             textures.resize(vertices.size());
             if (materials[materials.size()-1].textureLocation != 0) {
+               printf("Textures for %s\n", store.name.c_str());
                string s = line.substr(2);
                string n;
                int txtCrd = 0;
@@ -362,8 +373,8 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
                      
                      LoadTexture(line.substr(7).c_str(), mat->textureLocation);
                      
-                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                      
                      printf("Hello\n");
                      mat->dColor.x = -1.0; mat->dColor.y = -1.0; mat->dColor.z = -1.0;
@@ -391,9 +402,9 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
    vector< vector<int> > shadowInfo;
    bound meshBound;
    float verts[v.size()*3];
-   //float texts[t.size()*2];
+   float texts[v.size()*2];
    
-   vec3 bottomLeft = vec3(-100.0, -100.0, -100.0);
+   vec3 bottomLeft = vec3(100.0, 100.0, 100.0);
    vec3 topRight = vec3(-100.0, -100.0, -100.0);
    
    //printf("Loading Verticies:\n");
@@ -402,10 +413,11 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       verts[i * 3 + 1] = v.at(i).y;
       verts[i * 3 + 2] = v.at(i).z;
       
-      /*texts[i * 2] = t.at(i).x;
-      texts[i * 2 + 1] = t.at(i).y;
-      printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);*/
-      
+      if (t.size() > i) {
+         texts[i * 2] = t.at(i).x;
+         texts[i * 2 + 1] = t.at(i).y;
+         printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);
+      }
       
       meshBound.center.x += verts[i*3];
       meshBound.center.y += verts[i*3+1];
@@ -444,14 +456,6 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
    glGenBuffers(1, &store->vertexBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, store->vertexBuffer);
    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*3, verts, GL_STATIC_DRAW);
-   
-   /*for (int i = 0; i < store->numMeshes; i++) {
-      if (store->material[i].textureLocation != 0) {
-         glGenBuffers(1, &store->material[i].textureCoordinates);
-         glBindBuffer(GL_ARRAY_BUFFER, store->material[i].textureCoordinates);
-         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * t.size()*2, texts, GL_STATIC_DRAW);
-      }
-   }*/
    
    normals.resize(v.size(), glm::vec3(0.0, 0.0, 0.0));
    float norms[normals.size()*3];
@@ -741,6 +745,10 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", store->material[i].aColor.x,
              store->material[i].aColor.y, store->material[i].aColor.z);
    }
+   
+   glGenBuffers(1, &store->material[0].textureCoordinates);
+   glBindBuffer(GL_ARRAY_BUFFER, store->material[0].textureCoordinates);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size()*2, texts, GL_STATIC_DRAW);
    
    boundStorage.push_back(meshBound);
    

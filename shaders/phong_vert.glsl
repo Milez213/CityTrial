@@ -2,6 +2,7 @@
 
 attribute vec3 aPosition;
 attribute vec3 aNormal;
+attribute vec2 aTextCoord;
 
 uniform mat4 uProjMatrix;
 uniform mat4 uViewMatrix;
@@ -10,6 +11,7 @@ uniform mat4 uiModelMatrix;
 
 varying vec3 vNormal;
 varying vec4 vPosition;
+varying vec2 vTextCoord;
 
 void main() {
     vec4 tNormal;
@@ -23,4 +25,6 @@ void main() {
 
     // pass
     vNormal = tNormal.xyz;
+    
+    vTextCoord = aTextCoord;
 }
