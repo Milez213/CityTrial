@@ -6,88 +6,92 @@
 //
 //
 
-template <class T>
-Octree<T>::Octree(bound &boundingBox, unsigned int maxPerSub) :
+#include "Octree.h"
+
+Octree::Octree(bound boundingBox, unsigned int maxPerSub) :
       maxPerSub(maxPerSub), minPerSub(maxPerSub/2) {
+         
+   boundingBox.center = glm::vec3(0);
+   boundingBox.dimension = glm::vec3(100);
+   boundingBox.radius = 100;
    this->head = new SubDivision(boundingBox);
 }
 
-template <class T>
-Octree<T>::~Octree() {
+Octree::~Octree() {
    delete head;
 }
 
-template <class T>
-void Octree<T>::insert(T &val) {
+void Octree::insert(GameDrawableObject *val) {
    LeafNode *leaf = new LeafNode(val);
    
+   leafMap.insert(std::make_pair<GameDrawableObject *, LeafNode *>(val, leaf));
+   
    head->add(leaf);
 }
 
-template <class T>
-void Octree<T>::update(T &val) {
+void Octree::update(GameDrawableObject *val) {
    LeafNode *leaf = leafMap[val];
    
    leaf->removeFromParents();
+   leaf->boundingBox = val->getBoundingInfo();
    head->add(leaf);
 }
 
-template <class T>
-void Octree<T>::erase(T &val) {
+void Octree::erase(GameDrawableObject *val) {
    LeafNode *leaf = leafMap[val];
    
    leaf->removeFromParents();
-   leafMap.erase(leaf.val);
+   leafMap.erase(leaf->val);
    
    delete leaf;
 }
 
-template <class T>
-typename Octree<T>::iterator Octree<T>::erase(typename Octree<T>::iterator position) {
-   wrappedIterator rtn;
+void Octree::erase(Octree::iterator position) {
    LeafNode *leaf = position.mapItr->second;
    
    leaf->removeFromParents();
-   rtn = leafMap.erase(position.mapItr);
+   leafMap.erase(leaf->val);
    
-   delete leaf;
-   
-   return iterator(rtn);
+   //delete leaf;
+   //printf("deleted %s\n", position.mapItr->first->getName());
 }
 
-template <class T>
-typename std::set<T &> Octree<T>::getCollisionsFor(T &val) {
-   std::set<T &> rtn;
+/*std::set<GameDrawableObject *> Octree::getCollisionsWith(GameDrawableObject *val) {
+   std::set<GameDrawableObject *> rtn;
    head->getCollisionsFor(&rtn, val);
    return rtn;
 }
 
-template <class T>
-typename std::set<T &> Octree<T>::getSubsetInFrustum(bool (*isInFrustum)(bound)) {
-   std::set<T &> rtn;
+std::set<GameDrawableObject *> Octree::getSubsetInFrustum(bool (*isInFrustum)(bound)) {
+   std::set<GameDrawableObject *> rtn;
    head->getSubsetInFrustum(&rtn, isInFrustum);
+   return rtn;
+}*/
+
+std::set<GameDrawableObject *> Octree::getFilteredSubset(Filter &filter) {
+   std::set<GameDrawableObject *> rtn;
+   head->getFilteredSubset(&rtn, filter);
    return rtn;
 }
 
 
 
-template <class T>
-Octree<T>::SubDivision::SubDivision(bound boundingBox) :
+
+Octree::SubDivision::SubDivision(bound boundingBox) :
       boundingBox(boundingBox), subDivisions() {
 }
 
-template <class T>
-Octree<T>::SubDivision::~SubDivision() {
+Octree::SubDivision::~SubDivision() {
    for (int i = 0; i < 8; i++)
       if (subDivisions[i])
          delete subDivisions[i];
 }
 
-template <class T>
-void Octree<T>::SubDivision::add(LeafNode *leaf) {
+void Octree::SubDivision::add(LeafNode *leaf) {
    
-   if (leaf->bound.dimension.x > boundingBox.dimension.x/2) {
+   if (leaf->boundingBox.dimension.x > boundingBox.dimension.x/2) {
       leaves.insert(leaf);
+      leaf->parents.insert(this);
    }
    else {
       if (leaf->boundingBox.center.y + leaf->boundingBox.dimension.y > boundingBox.center.y) {
@@ -129,8 +133,7 @@ void Octree<T>::SubDivision::add(LeafNode *leaf) {
    }
 }
 
-template <class T>
-typename Octree<T>::SubDivision *Octree<T>::SubDivision::getSubDivision(
+Octree::SubDivision *Octree::SubDivision::getSubDivision(
       bool xPositive, bool yPositive, bool zPositive)
 {
    if (!subDivisions[(xPositive ? 4 : 0)+(yPositive ? 2 : 0)+(zPositive ? 1 : 0)])
@@ -140,8 +143,7 @@ typename Octree<T>::SubDivision *Octree<T>::SubDivision::getSubDivision(
    return subDivisions[(xPositive ? 4 : 0)+(yPositive ? 2 : 0)+(zPositive ? 1 : 0)];
 }
 
-template <class T>
-bound Octree<T>::SubDivision::makeSubBound(bool xPositive, bool yPositive, bool zPositive) {
+bound Octree::SubDivision::makeSubBound(bool xPositive, bool yPositive, bool zPositive) {
    bound rtn;
    
    rtn.dimension.x = boundingBox.dimension.x/2;
@@ -167,25 +169,27 @@ bound Octree<T>::SubDivision::makeSubBound(bool xPositive, bool yPositive, bool 
    return rtn;
 }
 
-template <class T>
-void Octree<T>::SubDivision::getCollisionsFor(std::set<T &> *rtn, T &val) {
-   typename std::set<LeafNode *>::iterator itr;
-   for (itr = leaves.begin(); itr != leaves.end; itr++) {
-      rtn->insert(itr->val);
+/*void Octree::SubDivision::getCollisionsFor(std::set<GameDrawableObject *> *rtn, GameDrawableObject *val) {
+   std::set<LeafNode *>::iterator itr;
+   for (itr = leaves.begin(); itr != leaves.end(); itr++) {
+      if (ModelManager::boxOnBox(val->getBoundingInfo(), (*itr)->boundingBox)) {
+         rtn->insert((*itr)->val);
+      }
    }
    
    for (int i = 0; i < 8; i++) {
-      if (subDivisions[i] && ModelManager::boxOnBox(val.getBoundingInfo(), subDivisions[i]->boundingBox)) {
+      if (subDivisions[i] && ModelManager::boxOnBox(val->getBoundingInfo(), subDivisions[i]->boundingBox)) {
          subDivisions[i]->getCollisionsFor(rtn, val);
       }
    }
 }
 
-template <class T>
-void Octree<T>::SubDivision::getSubsetInFrustum(std::set<T &> *rtn, bool (*isInFrustum)(bound)) {
-   typename std::set<LeafNode *>::iterator itr;
-   for (itr = leaves.begin(); itr != leaves.end; itr++) {
-      rtn->insert(itr->val);
+void Octree::SubDivision::getSubsetInFrustum(std::set<GameDrawableObject *> *rtn, bool (*isInFrustum)(bound)) {
+   std::set<LeafNode *>::iterator itr;
+   for (itr = leaves.begin(); itr != leaves.end(); itr++) {
+      if ((*isInFrustum)((*itr)->boundingBox)) {
+         rtn->insert((*itr)->val);
+      }
    }
    
    for (int i = 0; i < 8; i++) {
@@ -193,20 +197,33 @@ void Octree<T>::SubDivision::getSubsetInFrustum(std::set<T &> *rtn, bool (*isInF
          subDivisions[i]->getSubsetInFrustum(rtn, isInFrustum);
       }
    }
+}*/
+
+void Octree::SubDivision::getFilteredSubset(std::set<GameDrawableObject *> *rtn, Octree::Filter &filter) {
+   std::set<LeafNode *>::iterator itr;
+   for (itr = leaves.begin(); itr != leaves.end(); itr++) {
+      if (filter((*itr)->boundingBox)) {
+         rtn->insert((*itr)->val);
+      }
+   }
+   
+   for (int i = 0; i < 8; i++) {
+      if (subDivisions[i] && filter(subDivisions[i]->boundingBox)) {
+         subDivisions[i]->getFilteredSubset(rtn, filter);
+      }
+   }
 }
 
 
 
-template <class T>
-Octree<T>::LeafNode::LeafNode(T &val) : val(val), bound(val.getBoundingInfo()) {
-   leafMap.add(std::make_pair<T &, LeafNode *>(val, this));
-}
 
-template <class T>
-void Octree<T>::LeafNode::removeFromParents() {
-   typename std::set<LeafNode *>::iterator itr;
+Octree::LeafNode::LeafNode(GameDrawableObject *val) : val(val), boundingBox(val->getBoundingInfo()) {}
+
+
+void Octree::LeafNode::removeFromParents() {
+   std::set<SubDivision *>::iterator itr;
    for (itr = parents.begin(); itr != parents.end();) {
-      itr->leaves.erase(this);
-      itr = parents.erase(itr);
+      (*itr)->leaves.erase(this);
+      parents.erase(itr++);
    }
 }

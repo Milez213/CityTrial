@@ -11,8 +11,9 @@
 using glm::vec3;
 using glm::mat4;
 
-#include <set>
-using std::set;
+#include "Octree.h"
+//#include <set>
+//using std::set;
 
 #include <stdio.h>
 
@@ -36,7 +37,7 @@ void readMat4(mat4 &mat, FILE *file) {
     };
 }
 
-bool loadMap(const char* filename, set<GameDrawableObject* > &map) {
+bool loadMap(const char* filename, Octree &map) {
 
     FILE * file = fopen(filename, "r");
 

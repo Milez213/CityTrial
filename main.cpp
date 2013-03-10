@@ -116,7 +116,8 @@ GameSound *g_music;
 // test one object for now
 PhongShader *meshShader;
 HUDShader *hudShader;
-Octree<GameDrawableObject *> drawable_objects;
+//set<GameDrawableObject *> drawable_objects;
+Octree drawable_objects;
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
@@ -240,42 +241,34 @@ void update(double dt)
 
 	//ExtractFrustum();
    
-   set<GameDrawableObject *>::iterator it;
+   Octree::iterator it;
    
    for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
       (*it)->update(dt);
    }
    
-
-   // test for collisions
-   /*
-   for (int i = 0; i < (int)drawable_objects.size(); i++) {
-      for (int j = i+1; j < (int)drawable_objects.size(); j++) {
-         if (g_model_manager->boxOnBox(drawable_objects[i]->getBoundingInfo(),
-                drawable_objects[j]->getBoundingInfo())) {
-            drawable_objects[i]->onCollide(drawable_objects[j]);
-            drawable_objects[j]->onCollide(drawable_objects[i]);
-         }
-      }
+   for (int k = 0; k < (int)kart_objects.size(); k++) {
+      drawable_objects.update(kart_objects[k]);
    }
-   */
 
    // only test kart objects with drawable objects
    for (int k = 0; k < (int)kart_objects.size(); k++) {
-      for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
+      KartCollisionFilter filter(kart_objects[k]);
+      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);
+      
+      set<GameDrawableObject *>::iterator it;
+      for (it = collisions.begin(); it != collisions.end(); it++) {
          // don't test collision with self
          if (kart_objects[k] == *it) {
             continue;
          }
 
-         if (ModelManager::boxOnBox(kart_objects[k]->getBoundingInfo(),
-                (*it)->getBoundingInfo())) {
             kart_objects[k]->onCollide(*it);
             // both karts will detect the collision so only call on self if another kart
             if (!dynamic_cast<GameKartObject *>(*it)) {
                (*it)->onCollide(kart_objects[k]);
             }
-         }
+         //}
       }
    }
    
@@ -340,21 +333,26 @@ void draw(float dt, int kartIndex)
 
    ExtractFrustum(); 
 
-   set<GameDrawableObject *>::iterator it;
    
-   // draw objects
+   
+   /*// draw objects
+   Octree::iterator it;
+   
    for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
       if(isBoundInFrustum((*it)->getBoundingInfo())) {
          setPhongMaterial((*it)->getMaterialIndex());
          (*it)->draw(meshShader, g_model_trans);
-      } else { //printf("Not being drawn\n");
-         /*
-         // test frustum on one object.
-         if (dynamic_cast<GamePartWings *>(drawable_objects[i]))
-            printf("obj not drawn: %s\n", drawable_objects[i]->getName());
-         // printf("not being drawn %f %f %f\n",drawable_objects[i]->getPosition().x,drawable_objects[i]->getPosition().y,drawable_objects[i]->getPosition().z);
-         */
       }
+   }*/
+   
+   // draw objects
+   static ViewFrustumFilter filter;
+   set<GameDrawableObject *> inView = drawable_objects.getFilteredSubset(filter);
+   set<GameDrawableObject *>::iterator it;
+   
+   for (it = inView.begin(); it != inView.end(); it++) {
+      setPhongMaterial((*it)->getMaterialIndex());
+      (*it)->draw(meshShader, g_model_trans);
    }
 
    // draw text
@@ -676,7 +674,7 @@ void initObjects(const char *map) {
    }
 
    // set initial materials for objects with unset materials
-   set<GameDrawableObject *>::iterator it;
+   Octree::iterator it;
    for (it = drawable_objects.begin(); it != drawable_objects.end(); it++) {
       // if not set
       if ((*it)->getMaterialIndex() == UNSET_MATERIAL) {
