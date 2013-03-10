@@ -36,9 +36,11 @@ GameBuilding::GameBuilding() : GameSceneryObject("models/building.obj")
 {
    int index = rand() % NUM_MATERIALS;
    
-   for (int i = 0; i < meshStorage.numMeshes; i++) {
-      if (meshStorage.material[i].dColor.x == 1.0f) {
-         meshStorage.material[i] = building_mats[index];
+   for (int LoD = 0; LoD < LOD_COUNT; LoD++) {
+      for (int i = 0; i < meshStorage[LoD].numMeshes; i++) {
+         if (meshStorage[LoD].material[i].dColor.x == 1.0f) {
+            meshStorage[LoD].material[i] = building_mats[index];
+         }
       }
    }
 }

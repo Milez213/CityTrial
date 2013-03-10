@@ -49,8 +49,11 @@ public:
    }
     
 protected:
-   bufferStore meshStorage;
+   static const unsigned short LOD_COUNT = 1;
+   
    virtual void transform(RenderingHelper &modelViewMatrix);
+   
+   bufferStore meshStorage[LOD_COUNT];
    bound boundingInfo;
    
    bool toRemove;

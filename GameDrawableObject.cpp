@@ -12,13 +12,23 @@
 #include "GameDrawableObject.h"
 
 #include "include_glm.h"
-
+#include <cstring>
 
 extern ModelManager *g_model_manager;
 
 GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRemove(false)
 {
-   g_model_manager->getObject(objFile, &meshStorage, &boundingInfo);
+   int fileNameLength = strlen(objFile);
+   char *fileName = (char *)malloc(sizeof(char) * (fileNameLength+3));
+   strcpy(fileName, objFile);
+   
+   g_model_manager->getObject(fileName, &meshStorage[0], &boundingInfo);
+   strcpy(&fileName[fileNameLength], "_1");
+   //g_model_manager->getObject(fileName, &meshStorage[1], &boundingInfo);
+   strcpy(&fileName[fileNameLength], "_2");
+   //g_model_manager->getObject(fileName, &meshStorage[2], &boundingInfo);
+   
+   free(fileName);
 
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
@@ -48,6 +58,8 @@ void GameDrawableObject::transform(RenderingHelper &modelViewMatrix)
 
 void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
+   int LoD = 0;
+   
    modelViewMatrix.pushMatrix();
    meshShader->use();
    
@@ -60,17 +72,17 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    // TODO - add texture buffer
    
    safe_glEnableVertexAttribArray(h_aPos);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
    safe_glEnableVertexAttribArray(h_aNorm);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].normalBuffer);
    safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
-   for (int i = meshStorage.numMeshes - 1; i >= 0; i--) {
-      meshShader->setMaterial(&meshStorage.material[i]);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-      glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+   for (int i = meshStorage[LoD].numMeshes - 1; i >= 0; i--) {
+      meshShader->setMaterial(&meshStorage[LoD].material[i]);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].indexBuffer[i]);
+      glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
    safe_glDisableVertexAttribArray(h_aPos);
