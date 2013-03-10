@@ -138,10 +138,10 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       vec3 oldPos = getPosition();
       vec3 direction = othPos - oldPos;
       direction = normalize(direction);
-      direction *= (other->getRadius() + getRadius()) * 1.1;
+      direction *= (other->getRadius() + getRadius()) * 1.3;
       float oldSpeed = getSpeed() * 0.1f;
       setSpeed(-getSpeed() * 0.25f);
-      setPosition(vec3(othPos.x - direction.x, othPos.y, othPos.z - direction.z));
+      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
    }
    else if (strcmp(other->getName(), "models/squash.obj") == 0) {
        // Collided with cuby thing
