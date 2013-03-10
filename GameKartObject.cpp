@@ -18,7 +18,7 @@ extern int g_num_squashes;
 
 const float GameKartObject::tireTurnAngleTime = 1.0/4;
 
-GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube") {
+GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject(fileName) {
    
    hud = new GameHUD();
     
@@ -50,6 +50,8 @@ GameKartObject::GameKartObject(const char *fileName) : GamePhysicalObject("cube"
    frontScaleDir = 1;
    sideScaleDir = 1;
    backScaleDir = 1;
+   
+   perspective = 45.0f;
    
    actionOn = false;
    points = 0;
@@ -100,7 +102,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
-      
+      float oldSpeed = getSpeed();
       vec3 oldPos = getPosition();
       //float oldSpeed = getSpeed();
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
@@ -108,6 +110,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       
       if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
          if (oldPos.y - getRideHeight() + 1.5 > top) {
+            //printf("%s!!!\n", other->getName());
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             fallSpeed = 0;
             airborn = false;
@@ -117,24 +120,37 @@ void GameKartObject::onCollide(GameDrawableObject *other)
          else  {
             // bounce off
             collide_sound->play();
-            setSpeed(-getSpeed());
-            setPosition(oldPos);
+            setSpeed(-getSpeed() * 0.25f);
+            vec3 othPos = other->getPosition();
+            vec3 oldPos = getPosition();
+            vec3 direction = othPos - oldPos;
+            direction = normalize(direction);
+            direction *= (other->getRadius() + getRadius());
+            float oldSpeed = getSpeed() * 0.1f;
+            setSpeed(-getSpeed() * 0.25f);
+            setPosition(vec3(oldPos.x - direction.x, oldPos.y, oldPos.z - direction.z));
          }
       } 
    }
    else if (dynamic_cast<GameKartObject *>(other)) {
-      printf("collided with kart\n");
+      /*printf("collided with kart\n");*/
+      vec3 othPos = other->getPosition();
       vec3 oldPos = getPosition();
-      setSpeed(-getSpeed());
-      setPosition(oldPos);
+      vec3 direction = othPos - oldPos;
+      direction = normalize(direction);
+      direction *= (other->getRadius() + getRadius()) * 1.3;
+      float oldSpeed = getSpeed() * 0.1f;
+      setSpeed(-getSpeed() * 0.25f);
+      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
    }
-   else if (strcmp(other->getName(), "thingy") == 0) {
+   else if (strcmp(other->getName(), "models/squash.obj") == 0) {
        // Collided with cuby thing
        ding_sound->play();
 
       other->setName("squashed_thingy");
       other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
       points += 10;
+      other->scheduleForRemoval();
    }
    else {
       GamePhysicalObject::onCollide(other);
@@ -471,6 +487,13 @@ void GameKartObject::update(float dt)
    float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
+   perspective += getSpeed() / properties.getTopSpeed() - 0.5f;
+   if (perspective > 90.0f) {
+      perspective = 90.0f;
+   } else if (perspective < 45.0f) {
+      perspective = 45.0f;
+   }
+   
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
    
    if (joystickState[0] < 0.0) {
@@ -746,5 +769,5 @@ else
       backScaleDir = 1;
    }
 
-   printf("%f  %d\n", backScale, backScaleDir);
+   //printf("%f  %d\n", backScale, backScaleDir);
 }
