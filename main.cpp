@@ -624,7 +624,7 @@ void initObjects(const char *map) {
    // 1st kart
    if (g_num_players >= 1) {
       GameKartObject *kart = new GameKartObject("models/ball.obj");
-      kart->setPosition(vec3(10, 200, 5));
+      kart->setPosition(vec3(30, 10.0, 5));
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
@@ -635,7 +635,7 @@ void initObjects(const char *map) {
    }
    if (g_num_players >= 2) {
       GameKartObject *otherKart = new GameKartObject("models/ball.obj");
-      otherKart->setPosition(vec3(-10, 200, 0));
+      otherKart->setPosition(vec3(45, 10.0, 0));
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
@@ -735,10 +735,10 @@ void initObjects(const char *map) {
    }
    
    for (int i = 0; i < 100; i++) {
-      GameDrawableObject *object = new GameDrawableObject("models/ball.obj");
-      object->setName("thingy");
+      GameDrawableObject *object = new GameDrawableObject("models/squash.obj");
+      //object->setName("thingy");
       object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
-      object->setScale(vec3(0.1, 0.5, 0.1));
+      object->setScale(vec3(0.5, 0.5, 0.5));
       drawable_objects.push_back(object);
    }
 
@@ -871,10 +871,14 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       if(menu == true && action == GLFW_RELEASE){
          if(selected == 0)
          {menu = false;
+            glfwSetTime(0.0);
+            g_last_time = glfwGetTime();
           initObjects(mapSelected);
           }
          if(selected == 2){
           menu = false;
+            glfwSetTime(0.0);
+            g_last_time = glfwGetTime();
           initObjects(mapSelected);
          }
          if(selected == 8)

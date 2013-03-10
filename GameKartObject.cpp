@@ -143,13 +143,14 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       setSpeed(-getSpeed() * 0.25f);
       setPosition(vec3(othPos.x - direction.x, othPos.y, othPos.z - direction.z));
    }
-   else if (strcmp(other->getName(), "thingy") == 0) {
+   else if (strcmp(other->getName(), "models/squash.obj") == 0) {
        // Collided with cuby thing
        ding_sound->play();
 
       other->setName("squashed_thingy");
       other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
       points += 10;
+      other->scheduleForRemoval();
    }
    else {
       GamePhysicalObject::onCollide(other);
@@ -760,5 +761,5 @@ else
       backScaleDir = 1;
    }
 
-   printf("%f  %d\n", backScale, backScaleDir);
+   //printf("%f  %d\n", backScale, backScaleDir);
 }
