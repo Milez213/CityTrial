@@ -56,18 +56,6 @@ void Octree::erase(Octree::iterator position) {
    //printf("deleted %s\n", position.mapItr->first->getName());
 }
 
-/*std::set<GameDrawableObject *> Octree::getCollisionsWith(GameDrawableObject *val) {
-   std::set<GameDrawableObject *> rtn;
-   head->getCollisionsFor(&rtn, val);
-   return rtn;
-}
-
-std::set<GameDrawableObject *> Octree::getSubsetInFrustum(bool (*isInFrustum)(bound)) {
-   std::set<GameDrawableObject *> rtn;
-   head->getSubsetInFrustum(&rtn, isInFrustum);
-   return rtn;
-}*/
-
 std::set<GameDrawableObject *> Octree::getFilteredSubset(Filter &filter) {
    std::set<GameDrawableObject *> rtn;
    head->getFilteredSubset(&rtn, filter);
@@ -168,36 +156,6 @@ bound Octree::SubDivision::makeSubBound(bool xPositive, bool yPositive, bool zPo
    
    return rtn;
 }
-
-/*void Octree::SubDivision::getCollisionsFor(std::set<GameDrawableObject *> *rtn, GameDrawableObject *val) {
-   std::set<LeafNode *>::iterator itr;
-   for (itr = leaves.begin(); itr != leaves.end(); itr++) {
-      if (ModelManager::boxOnBox(val->getBoundingInfo(), (*itr)->boundingBox)) {
-         rtn->insert((*itr)->val);
-      }
-   }
-   
-   for (int i = 0; i < 8; i++) {
-      if (subDivisions[i] && ModelManager::boxOnBox(val->getBoundingInfo(), subDivisions[i]->boundingBox)) {
-         subDivisions[i]->getCollisionsFor(rtn, val);
-      }
-   }
-}
-
-void Octree::SubDivision::getSubsetInFrustum(std::set<GameDrawableObject *> *rtn, bool (*isInFrustum)(bound)) {
-   std::set<LeafNode *>::iterator itr;
-   for (itr = leaves.begin(); itr != leaves.end(); itr++) {
-      if ((*isInFrustum)((*itr)->boundingBox)) {
-         rtn->insert((*itr)->val);
-      }
-   }
-   
-   for (int i = 0; i < 8; i++) {
-      if (subDivisions[i] && (*isInFrustum)(subDivisions[i]->boundingBox)) {
-         subDivisions[i]->getSubsetInFrustum(rtn, isInFrustum);
-      }
-   }
-}*/
 
 void Octree::SubDivision::getFilteredSubset(std::set<GameDrawableObject *> *rtn, Octree::Filter &filter) {
    std::set<LeafNode *>::iterator itr;
