@@ -116,7 +116,7 @@ public:
         return m_loops == -1;
     }
 
-    virtual bool setVolume(int v){
+    virtual void setVolume(int v){
        Mix_VolumeMusic(v);
     }
 
