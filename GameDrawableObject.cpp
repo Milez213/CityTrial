@@ -36,16 +36,22 @@ GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRe
 }
 
 
-void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+void GameDrawableObject::transform(RenderingHelper &modelViewMatrix)
 {
-   modelViewMatrix.pushMatrix();
-   meshShader->use();
-   
    modelViewMatrix.translate(getPosition());
    modelViewMatrix.scale(scl.x, scl.y, scl.z);
    modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
+}
+
+
+void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+{
+   modelViewMatrix.pushMatrix();
+   meshShader->use();
+   
+   transform(modelViewMatrix);
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    
@@ -99,7 +105,7 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    modelViewMatrix.popMatrix();*/
 }
 
-void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix, float pitchAngle, float rollAngle)
+/*void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix, float pitchAngle, float rollAngle)
 {
    modelViewMatrix.pushMatrix();
    meshShader->use();
@@ -110,7 +116,7 @@ void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper mo
    modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
    modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
    modelViewMatrix.rotate(pitchAngle,vec3(0.0,0.0,1.0));
-   modelViewMatrix.rotate(-rollAngle,vec3(1.0,0.0,0.0));  
+   modelViewMatrix.rotate(-rollAngle,vec3(1.0,0.0,0.0));
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    
@@ -139,12 +145,12 @@ void GameDrawableObject::drawSpecial(PhongShader *meshShader, RenderingHelper mo
    safe_glDisableVertexAttribArray(h_aNorm);
    
    modelViewMatrix.popMatrix();
-}
+}*/
 
 
 // draw using GameObject's transform info, not a matrix stack.
 // draws in world coordinates, so this doesn't use hiearchical modeling
-void GameDrawableObject::draw(PhongShader *meshShader) {
+/*void GameDrawableObject::draw(PhongShader *meshShader) {
    meshShader->use();
 
    mat4 modelMat = glm::rotate(mat4(1.0f), rot.x, vec3(1.0, 0.0, 0.0));
@@ -181,7 +187,7 @@ void GameDrawableObject::draw(PhongShader *meshShader) {
    safe_glDisableVertexAttribArray(h_aPos);
    safe_glDisableVertexAttribArray(h_aNorm);
    
-}
+}*/
 
 void GameDrawableObject::onCollide(GameDrawableObject *other)
 {

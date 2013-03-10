@@ -161,6 +161,13 @@ GameKartObject::~GameKartObject()
    //stage = STILL;
 }*/
 
+
+void GameKartObject::transform(RenderingHelper &modelViewMatrix) {
+   GamePhysicalObject::transform(modelViewMatrix);
+   modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));
+}
+
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    tireAngle+=(getSpeed()/2.0);
@@ -169,7 +176,8 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
    //rot.z = carPitchAngle;
    //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
-   GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
+   //GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
+   GameDrawableObject::draw(meshShader, modelViewMatrix);
    
 
    modelViewMatrix.pushMatrix();

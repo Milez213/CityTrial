@@ -100,6 +100,8 @@ public:
    void changeKartRollAngle(float dt,float rollAngle);
    void changeKartPitchAngle(float dt,float pitchAngle);
    
+protected:
+   virtual void transform(RenderingHelper &modelViewMatrix);
    
 private:
    PhongShader *meshShader;

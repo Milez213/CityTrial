@@ -27,8 +27,8 @@ public:
    GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
-   virtual void draw(PhongShader *meshShader);
-   virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);   
+   //virtual void draw(PhongShader *meshShader);
+   //virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);
    
    virtual void onCollide(GameDrawableObject *other);
 
@@ -50,6 +50,7 @@ public:
     
 protected:
    bufferStore meshStorage;
+   virtual void transform(RenderingHelper &modelViewMatrix);
    bound boundingInfo;
    
    bool toRemove;
