@@ -23,6 +23,7 @@ uniform int uShowNormals;
 
 varying vec4 vPosition;
 varying vec3 vNormal;
+varying vec2 vTextCoord;
 
 void main() {
     vec3 L;
@@ -33,8 +34,11 @@ void main() {
     vec4 finalColor;
 	float NL;
 
-    // vec3 dColor = texture2D(uTexUnit, 0.3*vPosition.xz).xyz;
-    vec3 dColor = uMat.dColor;
+    vec3 dColor;
+    if (uMat.dColor.r != -1.0)
+      dColor = uMat.dColor;
+    else
+      dColor = texture2D(uTexUnit, vTextCoord).xyz;
     
     // interpolated normal
     N = normalize(vNormal);
