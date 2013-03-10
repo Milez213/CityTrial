@@ -39,7 +39,7 @@ public:
    bool isScheduledForRemoval() { return toRemove; };
    
    float getRadius() { return boundingInfo.radius; };
-   const char* getName() { return meshStorage.name.c_str(); };
+   const char* getName() { return meshStorage[0].name.c_str(); };
    
    void updateBoundingInfo();
    const bound getBoundingInfo();
