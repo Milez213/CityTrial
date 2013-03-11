@@ -269,10 +269,10 @@ void update(double dt)
             continue;
          }
 
-            kart_objects[k]->onCollide(*it);
+            kart_objects[k]->onCollide(*it, dt);
             // both karts will detect the collision so only call on self if another kart
             if (!dynamic_cast<GameKartObject *>(*it)) {
-               (*it)->onCollide(kart_objects[k]);
+               (*it)->onCollide(kart_objects[k], dt);
             }
          //}
       }

@@ -34,7 +34,7 @@ void GameUpgradeObject::update(float dt)
    setRotation(vec3(getRotation().x, yRot, getPosition().z));
 }
 
-void GameUpgradeObject::onCollide(GameDrawableObject *other)
+void GameUpgradeObject::onCollide(GameDrawableObject *other, float dt)
 {
    if (dynamic_cast<GameKartObject *>(other)) {
       playPickupSound();

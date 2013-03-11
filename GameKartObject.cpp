@@ -92,7 +92,7 @@ int GameKartObject::getInput(int request) {
    return -1;
 }
 
-void GameKartObject::onCollide(GameDrawableObject *other)
+void GameKartObject::onCollide(GameDrawableObject *other, float dt)
 {
    //Need some way of telling if PhysicsActor came from upgrade
    
@@ -153,7 +153,7 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       other->scheduleForRemoval();
    }
    else {
-      GamePhysicalObject::onCollide(other);
+      GamePhysicalObject::onCollide(other, dt);
    }
    
    //return true;

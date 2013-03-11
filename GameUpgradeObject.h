@@ -26,7 +26,7 @@ public:
    GameUpgradeObject(const char *objFile);
    
    virtual void update(float dt);
-   virtual void onCollide(GameDrawableObject *other);
+   virtual void onCollide(GameDrawableObject *other, float dt);
    
    virtual void addToKart(GameKartObject *kart) = 0;
 
