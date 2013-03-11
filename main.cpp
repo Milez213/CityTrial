@@ -42,6 +42,7 @@ using  glm::vec4;
 #endif
 
 #include "GameDrawableObject.h"
+#include "GamePointObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
 #include "GameRamp.h"
@@ -132,6 +133,7 @@ bool menu;
 int selected = 0;
 const char *mapSelected;
 int musicVolume = 100;
+int soundVolume = 100;
 
 mat4 g_proj;
 mat4 g_view;
@@ -399,24 +401,24 @@ void gameMenu()
 
     
 
-   sprintf(text, "Kart Part Park");
+   sprintf(text, "Kart part park");
    g_ttf_text_renderer->drawText(text, -0.75, 0.75, 2.0/g_current_width, 2.0/g_current_height); 
 
    if(selected == 0){
-   sprintf(text, "Begin 1P game");
+   sprintf(text, "Begin 1p game");
    g_ttf_text_renderer->drawText(text, -0.75, 0.50, 5.0/g_current_width, 5.0/g_current_height);
    }
    else{
-   sprintf(text, "Begin 1P game");
+   sprintf(text, "Begin 1p game");
    g_ttf_text_renderer->drawText(text, -0.75, 0.50, 2.0/g_current_width, 2.0/g_current_height);   
    }
 
    if(selected == 2){
-   sprintf(text, "Begin 2P game");
+   sprintf(text, "Begin 2p game");
    g_ttf_text_renderer->drawText(text, -0.75, 0.25, 5.0/g_current_width, 5.0/g_current_height);
    }
    else{
-   sprintf(text, "Begin 2P game");
+   sprintf(text, "Begin 2p game");
    g_ttf_text_renderer->drawText(text, -0.75, 0.25, 2.0/g_current_width, 2.0/g_current_height);   
    }
 
@@ -429,11 +431,11 @@ void gameMenu()
    }
 
    if(selected == 6){
-   sprintf(text, "Sound Volume: ");
-   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 5.0/g_current_width, 5.0/g_current_height);
+   sprintf(text, "Sound Volume:%d ", soundVolume);
+   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 4.0/g_current_width, 4.0/g_current_height);
    }
    else{
-   sprintf(text, "Sound Volume: ");
+   sprintf(text, "Sound Volume:%d ", soundVolume);
    g_ttf_text_renderer->drawText(text, -0.75, -0.25, 2.0/g_current_width, 2.0/g_current_height);  
    }
 
@@ -745,7 +747,7 @@ void initObjects(const char *map) {
    }
    
    for (int i = 0; i < 100; i++) {
-      GameDrawableObject *object = new GameDrawableObject("models/squash.obj");
+      GamePointObject *object = new GamePointObject(10);
       //object->setName("thingy");
       object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
 
@@ -796,7 +798,7 @@ void initialize(const char *map)
 #else
 
    g_sound_manager = new SDLSoundManager();
-
+   //g_sound_manager->setVolume(0);
    if (g_settings["play_music"] == 1) {
       printf("Music enabled\n");
       g_music = g_sound_manager->getMusic("music/raptor.ogg");
@@ -807,7 +809,7 @@ void initialize(const char *map)
 
    // initialize with default font
 #ifdef MAIN_USE_TTF
-   g_ttf_text_renderer = new TTFRenderer("fonts/DejaVuSans.ttf");
+   g_ttf_text_renderer = new TTFRenderer("fonts/COMICATE.TTF");
 #else
    g_ttf_text_renderer = new DummyTextRenderer("lolololol");
 #endif
@@ -881,12 +883,16 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       }     
       break;
    case 'A':
-      if(menu == true && selected == 4)
+      if(menu == true){if(selected == 4)
       {if(musicVolume > 0){musicVolume -= 1; g_music->setVolume(musicVolume);}}
+      if(selected == 6){if(soundVolume > 0){soundVolume -=1;}}
+      }
       break;
    case 'D':
-      if(menu == true && selected == 4)
+      if(menu == true){if(selected == 4)
       {if(musicVolume < 101){musicVolume += 1; g_music->setVolume(musicVolume);}}
+      if(selected == 6){if(soundVolume < 101){soundVolume +=1;}}
+      }
       break;   
    case GLFW_KEY_ENTER:
       if(menu == true && action == GLFW_RELEASE){
