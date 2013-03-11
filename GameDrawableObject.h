@@ -30,7 +30,7 @@ public:
    //virtual void draw(PhongShader *meshShader);
    //virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);
    
-   virtual void onCollide(GameDrawableObject *other);
+   virtual void onCollide(GameDrawableObject *other, float dt);
 
    virtual void setScale(vec3 s);
    virtual void setPosition(vec3 p);
