@@ -36,8 +36,10 @@ public:
        return getPosition().y + boundingInfo.dimension.y/2;
    }
 
-    void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
     {
+       int LoD = 0;
+       
        modelViewMatrix.pushMatrix();
        meshShader->use();
        
@@ -54,24 +56,24 @@ public:
        // TODO - add texture buffer
        
        safe_glEnableVertexAttribArray(h_aPos);
-       glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
+       glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].vertexBuffer);
        safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
        safe_glEnableVertexAttribArray(h_aNorm);
-       glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+       glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].normalBuffer);
        safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
        
        // draw leaves
        int i;
-       for (i = 0; i < meshStorage.numMeshes-1; i++) {
+       for (i = 0; i < meshStorage[LoD].numMeshes-1; i++) {
           meshShader->setMaterial(&tree_materials[1]);
-          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-          glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].indexBuffer[i]);
+          glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
        }
        // draw trunk
        meshShader->setMaterial(&tree_materials[0]);
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
-       glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].indexBuffer[i]);
+       glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
        
        safe_glDisableVertexAttribArray(h_aPos);
        safe_glDisableVertexAttribArray(h_aNorm);

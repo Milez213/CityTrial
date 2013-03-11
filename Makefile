@@ -3,7 +3,7 @@ OFILES=main.o MStackHelp.o GLSL_helper.o Shader.o \
 	ModelManager.o GameObject.o GameDrawableObject.o \
 	GameKartObject.o GameUpgradeObject.o GamePhysicalObject.o \
    GameRamp.o GameBuilding.o GameTerrain.o loadMap.o GameHUD.o \
-   LoadTexture.o util.o calcFrustum.o GamePointObject.o
+   LoadTexture.o util.o calcFrustum.o GamePointObject.o Octree.o
 
 
 EDITOR_OFILES=map_editor.o MStackHelp.o GLSL_helper.o Shader.o \
@@ -31,9 +31,11 @@ ifeq ($(UNAME), Linux)
 	else
 		XRANDR=
 	endif
+	IFLAGS += -I./include/SDL_mixer
+	XRANDR=-lXrandr
 
     # uncomment to not compile with sound, and not use any real sound
-	# CFLAGS += -DUSE_DUMMY_SOUND
+	#CFLAGS += -DUSE_DUMMY_SOUND
 	LIB += -lSDL_mixer
 	IFLAGS += -I/usr/include/SDL
 

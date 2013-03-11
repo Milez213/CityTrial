@@ -25,6 +25,8 @@ public:
     virtual void fadeOut(int ms) {
         fprintf(stderr, "Warning: %s: not supported\n", __func__);
     }
+
+    virtual void setVolume(int v) = 0;
     
     // TODO - Callbacks when done playing?
 
@@ -37,7 +39,7 @@ public:
 
 protected:
     int m_loops;
-
+    
 };
 
 

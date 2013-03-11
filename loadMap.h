@@ -4,11 +4,12 @@
 
 
 #include "GameBuilding.h"
+#include "Octree.h"
 
-#include <vector>
+//#include <set>
 
 
-bool loadMap(const char* filename, std::vector<GameDrawableObject* > &map);
+bool loadMap(const char* filename, Octree &map);
 
 #endif
 

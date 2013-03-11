@@ -89,9 +89,9 @@ public:
 	//--------------------------------------------
 	bool getObject(const char *fileName, bufferStore *meshes, bound *boundingInfo);
    
-   bool sphereOnSphere(bound objOne, bound objTwo);
-   bool sphereOnBox(bound objOne, bound objTwo);
-   bool boxOnBox(bound objOne, bound objTwo);
+   static bool sphereOnSphere(bound objOne, bound objTwo);
+   static bool sphereOnBox(bound objOne, bound objTwo);
+   static bool boxOnBox(bound objOne, bound objTwo);
 	
 private:
 	void loadObject(const char* filename);

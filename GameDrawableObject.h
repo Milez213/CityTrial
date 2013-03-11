@@ -27,8 +27,8 @@ public:
    GameDrawableObject(const char *objFile);
    
    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
-   virtual void draw(PhongShader *meshShader);
-   virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);   
+   //virtual void draw(PhongShader *meshShader);
+   //virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);
    
    virtual void onCollide(GameDrawableObject *other);
 
@@ -39,7 +39,7 @@ public:
    bool isScheduledForRemoval() { return toRemove; };
    
    float getRadius() { return boundingInfo.radius; };
-   const char* getName() { return meshStorage.name.c_str(); };
+   const char* getName() { return meshStorage[0].name.c_str(); };
    
    void updateBoundingInfo();
    const bound getBoundingInfo();
@@ -52,7 +52,11 @@ public:
    }
     
 protected:
-   bufferStore meshStorage;
+   static const unsigned short LOD_COUNT = 1;
+   
+   virtual void transform(RenderingHelper &modelViewMatrix);
+   
+   bufferStore meshStorage[LOD_COUNT];
    bound boundingInfo;
    
    bool toRemove;

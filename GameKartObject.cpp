@@ -182,6 +182,13 @@ GameKartObject::~GameKartObject()
    //stage = STILL;
 }*/
 
+
+void GameKartObject::transform(RenderingHelper &modelViewMatrix) {
+   GamePhysicalObject::transform(modelViewMatrix);
+   modelViewMatrix.rotate(carPitchAngle,vec3(0.0,0.0,1.0));
+   modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));
+}
+
 void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
 {
    tireAngle+=(getSpeed()/2.0);
@@ -190,7 +197,8 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
 
    //rot.z = carPitchAngle;
    //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
-   GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
+   //GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
+   GameDrawableObject::draw(meshShader, modelViewMatrix);
    
 
    modelViewMatrix.pushMatrix();
@@ -484,12 +492,26 @@ void GameKartObject::update(float dt)
    float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
-   perspective += getSpeed() / properties.getTopSpeed() - 0.5f;
-   if (perspective > 90.0f) {
-      perspective = 90.0f;
-   } else if (perspective < 45.0f) {
-      perspective = 45.0f;
+   float targetPerspective = 45.0f + getSpeed();
+   //perspective += getSpeed() / properties.getTopSpeed() - 0.5f;
+   if (targetPerspective > 90.0f) {
+      targetPerspective = 90.0f;
+   } else if (targetPerspective < 45.0f) {
+      targetPerspective = 45.0f;
    }
+   
+   if (perspective < targetPerspective) {
+      perspective += 90.0f*dt;
+      if (perspective > targetPerspective) {
+         perspective = targetPerspective;
+      }
+   } else if (perspective > targetPerspective) {
+      perspective -= 90.0*dt;
+      if (perspective < targetPerspective) {
+         perspective = targetPerspective;
+      }
+   }
+   
    
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
    
