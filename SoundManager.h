@@ -39,7 +39,7 @@ public:
 
 protected:
     int m_loops;
-
+    
 };
 
 
