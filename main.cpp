@@ -131,6 +131,7 @@ double g_last_time;
 bool menu;
 int selected = 0;
 const char *mapSelected;
+int musicVolume = 100;
 
 mat4 g_proj;
 mat4 g_view;
@@ -420,10 +421,10 @@ void gameMenu()
    }
 
    if(selected == 4){
-   sprintf(text, "Music Volume: " );
-   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 5.0/g_current_width, 5.0/g_current_height);
+   sprintf(text, "Music Volume:%d", musicVolume );
+   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 4.0/g_current_width, 4.0/g_current_height);
    }else{
-   sprintf(text, "Music Volume: " );
+   sprintf(text, "Music Volume:%d", musicVolume );
    g_ttf_text_renderer->drawText(text, -0.75, 0.0, 2.0/g_current_width, 2.0/g_current_height);   
    }
 
@@ -800,6 +801,7 @@ void initialize(const char *map)
       printf("Music enabled\n");
       g_music = g_sound_manager->getMusic("music/raptor.ogg");
       g_music->play();
+      g_music->setVolume(musicVolume);
    }
 #endif
 
@@ -878,6 +880,14 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
          {selected += 1;}
       }     
       break;
+   case 'A':
+      if(menu == true && selected == 4)
+      {if(musicVolume > 0){musicVolume -= 1; g_music->setVolume(musicVolume);}}
+      break;
+   case 'D':
+      if(menu == true && selected == 4)
+      {if(musicVolume < 101){musicVolume += 1; g_music->setVolume(musicVolume);}}
+      break;   
    case GLFW_KEY_ENTER:
       if(menu == true && action == GLFW_RELEASE){
          if(selected == 0)
