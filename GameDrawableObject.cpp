@@ -55,10 +55,6 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    GLuint h_aNorm = meshShader->getNormLocation();
    GLuint h_aText = meshShader->getTextLocation();
    
-   glActiveTexture(GL_TEXTURE1);
-   glBindTexture(GL_TEXTURE_2D, 0);
-   meshShader->setTexture(0);
-   
    safe_glEnableVertexAttribArray(h_aPos);
    glBindBuffer(GL_ARRAY_BUFFER, meshStorage.vertexBuffer);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -72,6 +68,9 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
    safe_glVertexAttribPointer(h_aText, 2, GL_FLOAT, GL_FALSE, 0, 0);
    
    for (int i = meshStorage.numMeshes - 1; i >= 0; i--) {
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, meshStorage.material[i].textureLocation);
+      meshShader->setTexture(meshStorage.material[i].textureLocation);
       meshShader->setMaterial(&meshStorage.material[i]);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.indexBuffer[i]);
       glDrawElements(GL_TRIANGLES, meshStorage.indexBufferLength[i], GL_UNSIGNED_SHORT, 0);

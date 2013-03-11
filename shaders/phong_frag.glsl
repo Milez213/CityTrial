@@ -69,7 +69,7 @@ void main() {
 			spec = vec3(0.0);
 		}
 
-        finalColor = vec4(clamp(spec + diffuse + uMat.aColor, 0.0, 1.0), 1.0);
+        finalColor = vec4(clamp(spec + diffuse + dColor * 0.2, 0.0, 1.0), 1.0);
 
         gl_FragColor = mix(vec4(0.8, 0.8, 1.0, 1.0), finalColor, fogFactor);
         // gl_FragColor = mix(vec4(1.0), vec4(0.0, 1, 0.0), fogFactor);

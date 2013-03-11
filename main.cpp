@@ -41,6 +41,7 @@ using  glm::vec4;
 #endif
 
 #include "GameDrawableObject.h"
+#include "GamePointObject.h"
 #include "GameKartObject.h"
 #include "GameCamera.h"
 #include "GameRamp.h"
@@ -735,7 +736,7 @@ void initObjects(const char *map) {
    }
    
    for (int i = 0; i < 100; i++) {
-      GameDrawableObject *object = new GameDrawableObject("models/squash.obj");
+      GamePointObject *object = new GamePointObject(10);
       //object->setName("thingy");
       object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
       object->setScale(vec3(0.5, 0.5, 0.5));

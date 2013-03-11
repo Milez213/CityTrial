@@ -3,6 +3,7 @@
 #include "GameKartObject.h"
 #include "GameSceneryObject.h"
 #include "GameUpgradeObject.h"
+#include "GamePointObject.h"
 
 
 #include "Upgrades/GamePartNone.h"
@@ -143,14 +144,18 @@ void GameKartObject::onCollide(GameDrawableObject *other)
       setSpeed(-getSpeed() * 0.25f);
       setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
    }
-   else if (strcmp(other->getName(), "models/squash.obj") == 0) {
+   else if (GamePointObject *point = dynamic_cast<GamePointObject *>(other)) {
        // Collided with cuby thing
        ding_sound->play();
 
-      other->setName("squashed_thingy");
-      other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
-      points += 10;
-      other->scheduleForRemoval();
+      //other->setName("squashed_thingy");
+      //other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
+      point->onCollide(this);
+      if (point->pickUp()) {
+         points += 10;
+         point->scheduleForRemoval();
+      }
+      //other->scheduleForRemoval();
    }
    else {
       GamePhysicalObject::onCollide(other);

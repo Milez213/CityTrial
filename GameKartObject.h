@@ -49,6 +49,8 @@ public:
    virtual float getLift() { return properties.getLift(); } //{return properties.hasWings() ? 10.0/25 : 0;}
    float getRideHeight() { return getScale().y; }
    
+   float getTopSpeed() { return properties.getTopSpeed(); }
+   
    
    void addFrontPart(GamePartUpgrade *part) {frontPart = part; frontPartAdding = 1; frontScale = 0.99; frontScaleChanging = true; }
    void addSidePart(GamePartUpgrade *part) {sidePart = part; sidePartAdding = 1; sideScale = 0.99; sideScaleChanging = true;}
