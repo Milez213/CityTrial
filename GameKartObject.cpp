@@ -487,12 +487,26 @@ void GameKartObject::update(float dt)
    float oldSpeed = getSpeed(), newSpeed;
    float oldDirection = getDirection();
    
-   perspective += getSpeed() / properties.getTopSpeed() - 0.5f;
-   if (perspective > 90.0f) {
-      perspective = 90.0f;
-   } else if (perspective < 45.0f) {
-      perspective = 45.0f;
+   float targetPerspective = 45.0f + getSpeed();
+   //perspective += getSpeed() / properties.getTopSpeed() - 0.5f;
+   if (targetPerspective > 90.0f) {
+      targetPerspective = 90.0f;
+   } else if (targetPerspective < 45.0f) {
+      targetPerspective = 45.0f;
    }
+   
+   if (perspective < targetPerspective) {
+      perspective += 90.0f*dt;
+      if (perspective > targetPerspective) {
+         perspective = targetPerspective;
+      }
+   } else if (perspective > targetPerspective) {
+      perspective -= 90.0*dt;
+      if (perspective < targetPerspective) {
+         perspective = targetPerspective;
+      }
+   }
+   
    
    float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
    
