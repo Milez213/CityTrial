@@ -192,6 +192,7 @@ void setSkyboxProjectionMatrix() {
 void setView(int kartIndex) {
    vec3 kartDir = kart_objects[kartIndex]->getDirectionVector();
    vec3 kartPos = kart_objects[kartIndex]->getPosition();
+   float kartSpd = kart_objects[kartIndex]->getSpeed();
 
    // move camera back and up
    kartDir = vec3(kartDir.x * 6.0, kartDir.y - 2.0, kartDir.z * 6.0);
@@ -330,13 +331,14 @@ void draw(float dt, int kartIndex)
    meshShader->use();
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
-
+   
+   meshShader->setCamPos(g_camera->getPosition());
    // get camera position
-   vec3 kartPos = kart_objects[kartIndex]->getPosition();
+   /*vec3 kartPos = kart_objects[kartIndex]->getPosition();
    vec3 kartDir = normalize(kart_objects[kartIndex]->getDirectionVector());
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
-   meshShader->setCamPos(kartPos - kartDir);
-
+   meshShader->setCamPos(kartPos - kartDir);*/
+   
    ExtractFrustum(); 
 
    
@@ -488,13 +490,15 @@ void drawMultipleViews(double dt) {
          
          if (kartIndex < (int)kart_objects.size()) {
                
-               g_camera->setPosition(glm::vec3(0,0,0));
-               vec3 v = kart_objects[kartIndex]->getDirectionVector();
-   g_camera->setLookAtTarget(glm::vec3(v.x,v.y,v.z)); 
-
-   g_view = g_camera->getViewMat();
-    
             draw(dt, kartIndex);
+            
+            g_camera->setPosition(glm::vec3(0,0,0));
+            vec3 v = kart_objects[kartIndex]->getDirectionVector();
+            g_camera->setLookAtTarget(glm::vec3(v.x,v.y,v.z));
+
+            g_view = g_camera->getViewMat();
+            
+    
 
             if(motionBlur == 1) {
                glAccum(GL_MULT, .9);
