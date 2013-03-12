@@ -292,14 +292,30 @@ void update(double dt)
    }
 }
 
-void drawSkyBox()
+void drawSkyBox(float lightX, float lightZ)
 {
    glDisable(GL_DEPTH_TEST);
    glDepthMask(false);
 
+
+    g_lightInfo.pos = vec3(lightX, 0.0, lightZ);
+   g_lightInfo.color = vec3(0.5f, 0.5f, 0.5f); 
+
+   meshShader->setLight(g_lightInfo);
+   meshShader->setIsLit(1);  
+   
    skyBox->setPosition(glm::vec3(0,0.3,0));
    skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
    skyBox->draw(meshShader, g_model_trans, 1.0f);
+meshShader->setIsLit(0);
+
+   g_lightInfo.pos = vec3(1, 50, 1);
+   g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 
+
+   meshShader->setLight(g_lightInfo);
+
+
+
 
    glDepthMask(true);
    glEnable(GL_DEPTH_TEST);
@@ -308,7 +324,7 @@ void drawSkyBox()
 
 
 
-void draw(float dt, int kartIndex)
+void draw(float dt, int kartIndex, float lightX, float lightZ)
 {
    glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -323,7 +339,7 @@ void draw(float dt, int kartIndex)
    meshShader->setViewMatrix(g_view);
 
   
-   drawSkyBox();
+   drawSkyBox(lightX,lightZ);
 
 
    setProjectionMatrix(kartIndex);
@@ -494,15 +510,15 @@ void drawMultipleViews(double dt) {
          
          if (kartIndex < (int)kart_objects.size()) {
                
-            draw(dt, kartIndex);
+          
             
             g_camera->setPosition(glm::vec3(0,0,0));
-            vec3 v = kart_objects[kartIndex]->getDirectionVector();
-            g_camera->setLookAtTarget(glm::vec3(v.x,v.y,v.z));
+            vec3 v = normalize(kart_objects[kartIndex]->getDirectionVector());
+            g_camera->setLookAtTarget(glm::vec3(v.x,-0.1,v.z));
 
             g_view = g_camera->getViewMat();
             
-    
+      draw(dt, kartIndex,v.x,v.z);
 
             if(motionBlur == 1) {
                glAccum(GL_MULT, .9);
@@ -984,7 +1000,7 @@ int main(int argc, char** argv)
    g_last_time = glfwGetTime();
 
    skyBox = new GameDrawableObject("models/house.obj");
-   skyBox->setPosition(vec3(0.0, 50.0, 0.0));
+   skyBox->setPosition(vec3(0.0, 0.0, 0.0));
    menu = true;
 
    while (glfwGetWindowParam(GLFW_OPENED)) {

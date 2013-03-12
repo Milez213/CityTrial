@@ -25,7 +25,16 @@ varying vec4 vPosition;
 varying vec3 vNormal;
 varying vec2 vTextCoord;
 
+uniform int isLit;
+
 void main() {
+
+
+if (isLit == 1){
+   gl_FragColor = vec4(texture2D(uTexUnit, vTextCoord).xyz,1.0);
+}
+
+else {
     vec3 L;
     vec3 diffuse;
     vec3 spec;
@@ -77,4 +86,5 @@ void main() {
     } else {
         gl_FragColor = vec4(N, 1.0);
     }
+}
 }

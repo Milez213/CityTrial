@@ -35,7 +35,7 @@ ifeq ($(UNAME), Linux)
 	XRANDR=-lXrandr
 
     # uncomment to not compile with sound, and not use any real sound
-	#CFLAGS += -DUSE_DUMMY_SOUND
+	CFLAGS += -DUSE_DUMMY_SOUND
 	LIB += -lSDL_mixer
 	IFLAGS += -I/usr/include/SDL
 
