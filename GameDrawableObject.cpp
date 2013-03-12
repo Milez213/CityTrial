@@ -13,6 +13,7 @@
 
 #include "include_glm.h"
 #include "Octree.h"
+#include "util.h"
 #include <cstring>
 #include <vector>
 
@@ -29,17 +30,25 @@ string appendInt(string &str, int i) {
 
 GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRemove(false)
 {
-   int fileNameLength = strlen(objFile);
-   char *fileName = (char *)malloc(sizeof(char) * (fileNameLength+3));
-   strcpy(fileName, objFile);
+   //int fileNameLength = strlen(objFile);
+   //char *fileName = (char *)malloc(sizeof(char) * (fileNameLength+3));
+   string fileName(objFile), tempName;
+   //strcpy(fileName, objFile);
    
-   g_model_manager->getObject(fileName, &meshStorage[0], &boundingInfo);
-   strcpy(&fileName[fileNameLength], "_1");
+   meshStorage.resize(1);
+   g_model_manager->getObject(fileName.c_str(), &meshStorage[0], &boundingInfo);
+   
+   for (int i = 1; ifstream((tempName = appendInt(fileName, i)).c_str()).good(); i++) {
+      printf("LoD loaded\n");
+      meshStorage.resize(i+1);
+      g_model_manager->getObject(tempName.c_str(), &meshStorage[i], &boundingInfo);
+   }
+   //strcpy(&fileName[fileNameLength], "_1");
    //g_model_manager->getObject(fileName, &meshStorage[1], &boundingInfo);
-   strcpy(&fileName[fileNameLength], "_2");
+   //strcpy(&fileName[fileNameLength], "_2");
    //g_model_manager->getObject(fileName, &meshStorage[2], &boundingInfo);
    
-   free(fileName);
+   //free(fileName);
 
 #ifdef DEBUG_VBO
    printf("VBO Arrived at its Destination: %d\n", (int)indexBufferLength[0]);
