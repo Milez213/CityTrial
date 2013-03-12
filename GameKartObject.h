@@ -43,7 +43,7 @@ public:
 
    virtual void update(float dt);
    
-   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail);
    virtual void onCollide(GameDrawableObject *collide, float dt);
    
    virtual float getLift() { return properties.getLift(); } //{return properties.hasWings() ? 10.0/25 : 0;}

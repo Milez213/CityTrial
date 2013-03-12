@@ -31,13 +31,13 @@ public:
        printf("deleting wings\n");
    }
 
-   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)
    {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.translate(vec3(0.0,0.5,0.0));
       modelViewMatrix.rotate(-10.0,vec3(0.0,0.0,1.0));
       modelViewMatrix.scale(1.0,1.0,1.0);
-      GameDrawableObject::draw(meshShader,modelViewMatrix);
+      GameDrawableObject::draw(meshShader,modelViewMatrix, levelOfDetail);
       modelViewMatrix.popMatrix();
    }
    virtual void addToKart(GameKartObject *kart)

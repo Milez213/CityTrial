@@ -36,9 +36,9 @@ public:
        return getPosition().y + boundingInfo.dimension.y/2;
    }
 
-    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+    virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)
     {
-       int LoD = 0;
+       int LoD = lodIndex(levelOfDetail);
        
        modelViewMatrix.pushMatrix();
        meshShader->use();

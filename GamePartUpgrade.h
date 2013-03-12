@@ -18,7 +18,7 @@ public:
    GamePartUpgrade() : GameUpgradeObject("models/ball.obj") {}
    GamePartUpgrade(const char *file) : GameUpgradeObject(file) {}
    
-   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix) = 0;
+   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail) = 0;
    virtual void cycleStatOn(GameKartProperties *props) = 0;
    virtual void cycleStatOff(GameKartProperties *props) = 0;
 };

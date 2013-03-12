@@ -26,7 +26,7 @@ class GameDrawableObject : public GameObject {
 public:
    GameDrawableObject(const char *objFile);
    
-   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
+   virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail);
    //virtual void draw(PhongShader *meshShader);
    //virtual void drawSpecial(PhongShader *meshShader, RenderingHelper modelViewMatrix,float pitchAngle, float rollAngle);
    

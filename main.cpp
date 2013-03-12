@@ -299,7 +299,7 @@ void drawSkyBox()
 
    skyBox->setPosition(glm::vec3(0,0.3,0));
    skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
-   skyBox->draw(meshShader, g_model_trans);
+   skyBox->draw(meshShader, g_model_trans, 1.0f);
 
    glDepthMask(true);
    glEnable(GL_DEPTH_TEST);
@@ -361,7 +361,10 @@ void draw(float dt, int kartIndex)
    
    for (it = inView.begin(); it != inView.end(); it++) {
       setPhongMaterial((*it)->getMaterialIndex());
-      (*it)->draw(meshShader, g_model_trans);
+      float LoD = 1.0f - glm::distance(g_camera->getPosition(), (*it)->getPosition())/125.0f;
+      if (LoD <= 0.0f) // [1,0)
+         LoD = 0.0001f;
+      (*it)->draw(meshShader, g_model_trans, LoD);
    }
 
    // draw text

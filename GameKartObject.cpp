@@ -189,7 +189,7 @@ void GameKartObject::transform(RenderingHelper &modelViewMatrix) {
    modelViewMatrix.rotate(-carRollAngle,vec3(1.0,0.0,0.0));
 }
 
-void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)
 {
    tireAngle+=(getSpeed()/2.0);
    
@@ -198,7 +198,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    //rot.z = carPitchAngle;
    //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
    //GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
-   GameDrawableObject::draw(meshShader, modelViewMatrix);
+   GameDrawableObject::draw(meshShader, modelViewMatrix, levelOfDetail);
    
 
    modelViewMatrix.pushMatrix();
@@ -245,14 +245,14 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
    modelViewMatrix.scale(5.0,6.0,6.0);
-   wheels[0]->draw(meshShader,modelViewMatrix);
+   wheels[0]->draw(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(-2.2,0.0,2.2));
  modelViewMatrix.rotate(90.0,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
    modelViewMatrix.scale(5.0,6.0,6.0);
-   wheels[1]->draw(meshShader,modelViewMatrix);
+   wheels[1]->draw(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.2,0.0,-2.2));
@@ -260,7 +260,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(tireTurnAngle,vec3(0.0,1.0,0.0));
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));   
    modelViewMatrix.scale(5.0,6.0,6.0);
-   wheels[2]->draw(meshShader,modelViewMatrix);
+   wheels[2]->draw(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(glm::vec3(2.2,0.0,2.2));
@@ -269,7 +269,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.rotate(tireAngle,vec3(1.0,0.0,0.0));
 
    modelViewMatrix.scale(5.0,6.0,6.0);
-   wheels[3]->draw(meshShader,modelViewMatrix);
+   wheels[3]->draw(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
  
 
@@ -277,19 +277,19 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    modelViewMatrix.pushMatrix();
    modelViewMatrix.scale(1.0 * frontScale,1.0*frontScale,1.0*frontScale);
    modelViewMatrix.translate(glm::vec3(2.0,0.0,0.0));
-   frontParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   frontParts.front()->drawOnKart(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
    modelViewMatrix.scale(1.0 * sideScale,1.0*sideScale,1.0*sideScale);
    modelViewMatrix.translate(glm::vec3(0.0,0.0,0.0));
-   sideParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   sideParts.front()->drawOnKart(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
    modelViewMatrix.scale(1.0 * backScale,1.0*backScale,1.0*backScale);
    modelViewMatrix.translate(glm::vec3(-2.0,0.0,0.0));
-   backParts.front()->drawOnKart(meshShader,modelViewMatrix);
+   backParts.front()->drawOnKart(meshShader,modelViewMatrix, levelOfDetail);
    modelViewMatrix.popMatrix();
    
    //draw action effect

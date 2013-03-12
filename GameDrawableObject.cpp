@@ -67,9 +67,10 @@ void GameDrawableObject::transform(RenderingHelper &modelViewMatrix)
 }
 
 
-void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)
 {
-   int LoD = 0;
+   int LoD = lodIndex(levelOfDetail);
+   //printf("levelOfDetail: %f LoD: %d\n",levelOfDetail, LoD);
    
    modelViewMatrix.pushMatrix();
    meshShader->use();
@@ -286,3 +287,10 @@ const bound GameDrawableObject::getBoundingInfo()
    
    return boundingInfo;
 }
+
+int GameDrawableObject::lodIndex(float levelOfDetail)
+{
+   assert(levelOfDetail > 0 && levelOfDetail <= 1);
+   return floor((1-levelOfDetail) * meshStorage.size());
+}
+

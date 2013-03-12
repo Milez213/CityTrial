@@ -21,12 +21,12 @@ public:
       activate_sound = g_sound_manager->getSample("sounds/wings_select.wav");
    }
    
-   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix)
+   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)
    {
       modelViewMatrix.pushMatrix();
       modelViewMatrix.scale(0.5, 1.75 , 1.5);
       modelViewMatrix.translate(glm::vec3(0.0, 0.25, 0.0));
-      GameDrawableObject::draw(meshShader,modelViewMatrix);
+      GameDrawableObject::draw(meshShader,modelViewMatrix, levelOfDetail);
       modelViewMatrix.popMatrix();
    }
    virtual void addToKart(GameKartObject *kart)

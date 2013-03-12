@@ -13,7 +13,7 @@
 
 class GamePartNone : public GamePartUpgrade
 {
-   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
+   virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail) {}
    virtual void addToKart(GameKartObject *kart) { assert(false); }
    virtual void cycleStatOn(GameKartProperties *props) {}
    virtual void cycleStatOff(GameKartProperties *props) {}
