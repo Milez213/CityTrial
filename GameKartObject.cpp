@@ -123,12 +123,13 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
             collide_sound->play();
             vec3 othPos = other->getPosition();
             vec3 oldPos = getPosition();
-            vec3 direction = othPos - oldPos;
+            /*vec3 direction = othPos - oldPos;
             direction = normalize(direction);
             direction *= (other->getRadius() + getRadius());
-            float oldSpeed = getSpeed() * 0.1f;
+            float oldSpeed = getSpeed() * 0.1f;*/
+            vec3 oldVel = getVelocity();
+            setPosition(vec3(oldPos.x - oldVel.x*dt, oldPos.y, oldPos.z - oldVel.z*dt));
             setSpeed(-getSpeed() * 0.25f);
-            setPosition(vec3(oldPos.x - direction.x, oldPos.y, oldPos.z - direction.z));
          }
       } 
    }
