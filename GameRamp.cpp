@@ -28,9 +28,17 @@ float GameRamp::getHeightAt(float x, float z)
 
    // account for rotation of th around y axis
    // rotate x and z
-   rotate2d(x, z, rot.y);
    
    vec3 pos = getPosition();
+   vec3 rot = getRotation();
+   vec3 scl = getScale();
+   
+   x -= pos.x;
+   z -= pos.z;
+   rotate2d(x, z, rot.y);
+   x += pos.x;
+   z += pos.z;
+   
    float minHeight = pos.y - scl.y;
    float incHeight = scl.y*2;
    float minZ = pos.z - scl.z;

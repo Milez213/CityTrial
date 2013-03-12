@@ -230,7 +230,6 @@ void GameDrawableObject::setPosition(vec3 p)
 {
    GameObject::setPosition(p);
    updateBoundingInfo();
-   drawable_objects.update(this);
 }
 
 void GameDrawableObject::updateBoundingInfo()
@@ -247,6 +246,8 @@ void GameDrawableObject::updateBoundingInfo()
    boundingInfo.dimension = s;
    boundingInfo.radius = std::max(std::max(s.x, s.y), s.z);//glm::length(s);//
    boundingInfo.center = p;
+   
+   drawable_objects.update(this);
 
 }
 
