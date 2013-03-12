@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <stdlib.h>
+#include <sstream>
 
 
 // x, z -> new x and z rotated theta around y axis
@@ -26,3 +27,7 @@ float randFloat() {
 }
 
 
+std::string toString(int i)
+{
+   return static_cast<std::ostringstream*>( &(std::ostringstream() << i) )->str();
+}

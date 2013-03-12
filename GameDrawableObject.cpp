@@ -19,6 +19,13 @@ extern Octree drawable_objects;
 
 extern ModelManager *g_model_manager;
 
+
+string appendInt(string &str, int i) {
+   int extPos = str.find('.');
+   
+   return str.substr(0, extPos) + '_' + toString(i) + str.substr(extPos);
+}
+
 GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRemove(false)
 {
    int fileNameLength = strlen(objFile);

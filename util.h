@@ -1,7 +1,7 @@
 #ifndef UTIL_FUNCS_H
 #define UTIL_FUNCS_H
 
-
+#include <string>
 
 
 // x, z -> new x and z rotated theta around y axis
@@ -10,6 +10,8 @@ void rotate2d(float &x, float &z, const float theta);
 
 // -1, 1. doesn't seed
 float randFloat();
+
+std::string toString(int);
 
 
 #endif
