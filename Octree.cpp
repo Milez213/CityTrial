@@ -48,7 +48,7 @@ void Octree::erase(Octree::iterator position) {
    leaf->removeFromParents();
    leafMap.erase(position.mapItr);
    
-   //delete leaf;
+   delete leaf;
    //printf("deleted %s\n", position.mapItr->first->getName());
 }
 
