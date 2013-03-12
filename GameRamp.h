@@ -18,7 +18,8 @@ class GameRamp : public GameSceneryObject {
 public:
    GameRamp();
    
-   float getHeightAt(float x, float z);
+   virtual float getHeightAt(float x, float z);
+   virtual float getBottomAt(float x, float z) { return getHeightAt(x, z); }
 };
 
 #endif /* defined(____GameRamp__) */
