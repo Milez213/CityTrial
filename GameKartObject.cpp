@@ -121,7 +121,6 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          else  {
             // bounce off
             collide_sound->play();
-            setSpeed(-getSpeed() * 0.25f);
             vec3 othPos = other->getPosition();
             vec3 oldPos = getPosition();
             vec3 direction = othPos - oldPos;
