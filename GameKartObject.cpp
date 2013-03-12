@@ -110,7 +110,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
       if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
-         if (oldPos.y - getRideHeight() + 1.5 > top) {
+         if (oldPos.y + 0.5 > top) {
             //printf("%s!!!\n", other->getName());
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             fallSpeed = 0;
