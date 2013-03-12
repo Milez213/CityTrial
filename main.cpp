@@ -255,9 +255,9 @@ void update(double dt)
       (*it)->update(dt);
    }
    
-   for (int k = 0; k < (int)kart_objects.size(); k++) {
+   /*for (int k = 0; k < (int)kart_objects.size(); k++) {
       drawable_objects.update(kart_objects[k]);
-   }
+   }*/
 
    // only test kart objects with drawable objects
    for (int k = 0; k < (int)kart_objects.size(); k++) {

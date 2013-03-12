@@ -30,27 +30,23 @@ void Octree::insert(GameDrawableObject *val) {
 }
 
 void Octree::update(GameDrawableObject *val) {
-   LeafNode *leaf = leafMap[val];
+   wrappedIterator mapItr = leafMap.find(val);
+   
+   if (mapItr == leafMap.end())
+      return;
+   
+   LeafNode *leaf = mapItr->second;
    
    leaf->removeFromParents();
    leaf->boundingBox = val->getBoundingInfo();
    head->add(leaf);
 }
 
-void Octree::erase(GameDrawableObject *val) {
-   LeafNode *leaf = leafMap[val];
-   
-   leaf->removeFromParents();
-   leafMap.erase(leaf->val);
-   
-   delete leaf;
-}
-
 void Octree::erase(Octree::iterator position) {
    LeafNode *leaf = position.mapItr->second;
    
    leaf->removeFromParents();
-   leafMap.erase(leaf->val);
+   leafMap.erase(position.mapItr);
    
    //delete leaf;
    //printf("deleted %s\n", position.mapItr->first->getName());
@@ -61,7 +57,6 @@ std::set<GameDrawableObject *> Octree::getFilteredSubset(Filter &filter) {
    head->getFilteredSubset(&rtn, filter);
    return rtn;
 }
-
 
 
 

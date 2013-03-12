@@ -12,7 +12,10 @@
 #include "GameDrawableObject.h"
 
 #include "include_glm.h"
+#include "Octree.h"
 #include <cstring>
+
+extern Octree drawable_objects;
 
 extern ModelManager *g_model_manager;
 
@@ -227,6 +230,7 @@ void GameDrawableObject::setPosition(vec3 p)
 {
    GameObject::setPosition(p);
    updateBoundingInfo();
+   drawable_objects.update(this);
 }
 
 void GameDrawableObject::updateBoundingInfo()
