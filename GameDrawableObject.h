@@ -52,11 +52,11 @@ public:
    }
     
 protected:
-   static const unsigned short LOD_COUNT = 1;
+   //static const unsigned short LOD_COUNT = 1;
    
    virtual void transform(RenderingHelper &modelViewMatrix);
-   
-   bufferStore meshStorage[LOD_COUNT];
+   int lodIndex(float levelOfDetail);
+   std::vector<bufferStore> meshStorage;
    bound boundingInfo;
    
    bool toRemove;

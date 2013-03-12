@@ -14,6 +14,7 @@
 #include "include_glm.h"
 #include "Octree.h"
 #include <cstring>
+#include <vector>
 
 extern Octree drawable_objects;
 
