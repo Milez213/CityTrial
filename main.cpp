@@ -637,7 +637,8 @@ void initObjects(const char *map) {
    // 1st kart
    if (g_num_players >= 1) {
       GameKartObject *kart = new GameKartObject("models/ball.obj");
-      kart->setPosition(vec3(30, 10.0, 5));
+      kart->setSpawnPos(vec3(30, 10.0, 5));
+      kart->setPosition(kart->getSpawnPos());
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
@@ -649,7 +650,8 @@ void initObjects(const char *map) {
    }
    if (g_num_players >= 2) {
       GameKartObject *otherKart = new GameKartObject("models/ball.obj");
-      otherKart->setPosition(vec3(45, 10.0, 0));
+      otherKart->setSpawnPos(vec3(45, 10.0, 0));
+      otherKart->setPosition(otherKart->getSpawnPos());
       otherKart->setScale(vec3(1.0, 0.75, 1.0));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
@@ -661,7 +663,8 @@ void initObjects(const char *map) {
    }
    if (g_num_players >= 3) {
       GameKartObject *thirdKart = new GameKartObject("models/ball.obj");
-      thirdKart->setPosition(vec3(30, 1, 45));
+      thirdKart->setSpawnPos(vec3(30, 1, 45));
+      thirdKart->setPosition(thirdKart->getSpawnPos());
       thirdKart->setScale(vec3(1.0, 0.75, 1.0));
       thirdKart->setDirection(0);
       thirdKart->resize(g_current_width, g_current_height);
@@ -902,16 +905,16 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
          if(selected == 0)
          {menu = false;
           nPlayers = 1;
+          initObjects(mapSelected);
             glfwSetTime(0.0);
             g_last_time = glfwGetTime();
-          initObjects(mapSelected);
           }
          if(selected == 2){
           menu = false;
           nPlayers = 2;
+          initObjects(mapSelected);
             glfwSetTime(0.0);
             g_last_time = glfwGetTime();
-          initObjects(mapSelected);
          }
          if(selected == 8)
          {shutdown();}

@@ -104,6 +104,9 @@ public:
    void changeKartRollAngle(float dt,float rollAngle);
    void changeKartPitchAngle(float dt,float pitchAngle);
    
+   void setSpawnPos(glm::vec3 pos) { spawnPos = pos; }
+   virtual glm::vec3 getSpawnPos() { return spawnPos; }
+   
 protected:
    virtual void transform(RenderingHelper &modelViewMatrix);
    
@@ -124,6 +127,8 @@ private:
    
    GamePartUpgrade *frontPart, *sidePart, *backPart;
 
+   glm::vec3 spawnPos;
+   
    bool airborn;
    
    bool usingController;//,wings;

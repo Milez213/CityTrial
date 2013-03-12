@@ -38,6 +38,9 @@ public:
    virtual void onCollide(GameDrawableObject *other, float dt);
    
    GamePhysicalObject(const char *objFile) : GameDrawableObject(objFile), direction(0), speed(0), fallSpeed(0) {} //, lift(0) {}
+   
+protected:
+   virtual glm::vec3 getSpawnPos() { return vec3(0, 5, 0); }
 };
 
 

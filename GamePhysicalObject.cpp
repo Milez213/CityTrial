@@ -22,7 +22,7 @@ void GamePhysicalObject::update(float dt)
    fallSpeed -= 2*speed*getLift()*dt;
    
    if (getPosition().y < -10) {
-      setPosition(vec3(0, 5, 0));
+      setPosition(getSpawnPos());
       speed = 0;
       fallSpeed = 0;
    }
