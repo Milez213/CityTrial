@@ -26,6 +26,7 @@ public:
    virtual void update(float dt);
    
    virtual glm::vec3 getVelocity() { return vel; }
+   virtual void setVelocity(glm::vec3 v) { vel = v; }
    
 	
 	virtual glm::vec3 getPosition() { return pos; };

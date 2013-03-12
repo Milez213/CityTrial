@@ -413,7 +413,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       verts[i * 3 + 1] = v.at(i).y;
       verts[i * 3 + 2] = v.at(i).z;
       
-      if (t.size() > i) {
+      if ((int)t.size() > i) {
          texts[i * 2] = t.at(i).x;
          texts[i * 2 + 1] = t.at(i).y;
          printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);

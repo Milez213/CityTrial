@@ -29,23 +29,31 @@ void GamePointObject::onCollide(GameKartObject *other)
 
 void GamePointObject::update(float dt)
 {
+   vec3 rotate = getRotation();
+   vec3 position = getPosition();
+   vec3 velocity = getVelocity();
    time += dt;
    if (state == STAND) {
-      rot.y += 180.0f * dt;
-      if (rot.y > 360.0f)
-         rot.y -= 360.0f;
-      pos.y = sin(time * 5.0) * 0.3 + 1.0;
+      rotate.y += 180.0f * dt;
+      if (rotate.y > 360.0f)
+         rotate.y -= 360.0f;
+      position.y = sin(time * 5.0) * 0.3 + 1.0;
    } else if (state == PICKUP || state == CATCH) {
       if (time > 0.5f)
          state = CATCH;
       vec3 newAim = normalize(aim->getPosition() - getPosition()) * time;
-      vel += newAim;
+      velocity += newAim;
       if (time >= 1.0f)
-         vel = newAim * (aim->getTopSpeed() + 1.0f);
-      if (pos.y < 0.5f) {
-         pos.y = 0.5f;
-         vel.y = fabs(vel.y * 0.5f);
+         velocity = newAim * (aim->getTopSpeed() + 1.0f);
+      if (position.y < 0.5f) {
+         position.y = 0.5f;
+         velocity.y = fabs(velocity.y * 0.5f);
       }
-      GameObject::update(dt);
    }
+   
+   setRotation(rotate);
+   setPosition(position);
+   setVelocity(velocity);
+   
+   GameObject::update(dt);
 }
