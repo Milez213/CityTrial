@@ -652,8 +652,8 @@ void initObjects(const char *map) {
    // hax
    // 1st kart
    if (g_num_players >= 1) {
-      GameKartObject *kart = new GameKartObject("models/house.obj");
-      kart->setSpawnPos(vec3(30, 10.0, 5));
+      GameKartObject *kart = new GameKartObject("models/ball.obj");
+      kart->setSpawnPos(vec3(30, 10.0, 15));
       kart->setPosition(kart->getSpawnPos());
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
