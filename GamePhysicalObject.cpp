@@ -27,6 +27,12 @@ void GamePhysicalObject::update(float dt)
       fallSpeed = 0;
    }
    
+   if (getPosition().y > 100) {
+      vec3 pos = getPosition();
+      setPosition(vec3(pos.x, 100, pos.z));
+      fallSpeed = 0;
+   }
+   
    /*if (getPosition().y < scl.y && fallSpeed > 0) {
       fallSpeed = 0;
    }*/
