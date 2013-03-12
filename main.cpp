@@ -977,7 +977,7 @@ int main(int argc, char** argv)
    glfwSetTime(0.0);
    g_last_time = glfwGetTime();
 
-   skyBox = new GameDrawableObject("models/ball.obj");
+   skyBox = new GameDrawableObject("models/house.obj");
    menu = true;
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
