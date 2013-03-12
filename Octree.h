@@ -85,10 +85,9 @@ public:
    ~Octree();
    void insert(GameDrawableObject *val);
    void update(GameDrawableObject *val);
-   void erase(GameDrawableObject *val);
+   void erase(iterator position);
    iterator begin() { return iterator(leafMap.begin()); }
    iterator end() { return iterator(leafMap.end()); }
-   void erase(iterator position);
    std::set<GameDrawableObject *> getFilteredSubset(Filter &filter);
    //std::set<GameDrawableObject *> getCollisionsWith(GameDrawableObject *val);
    //std::set<GameDrawableObject *> getSubsetInFrustum(bool (*isInFrustum)(bound));
