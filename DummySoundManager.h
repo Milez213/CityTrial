@@ -25,6 +25,8 @@ public:
 
     void resume() { }
 
+    void setVolume(int v){}
+
 };
 
 

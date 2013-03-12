@@ -302,12 +302,12 @@ void drawSkyBox(float lightX, float lightZ)
    g_lightInfo.color = vec3(0.5f, 0.5f, 0.5f); 
 
    meshShader->setLight(g_lightInfo);
-     
-
+   meshShader->setIsLit(1);  
+   
    skyBox->setPosition(glm::vec3(0,0.3,0));
    skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
    skyBox->draw(meshShader, g_model_trans, 1.0f);
-
+meshShader->setIsLit(0);
 
    g_lightInfo.pos = vec3(1, 50, 1);
    g_lightInfo.color = vec3(1.0f, 1.0f, 1.0f); 

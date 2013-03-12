@@ -56,6 +56,8 @@ public:
             h_uMatShine = safe_glGetUniformLocation(m_shaderProg, "uMat.shine");
             h_uShowNormals = safe_glGetUniformLocation(m_shaderProg, "uShowNormals");
             h_uCamPos = safe_glGetUniformLocation(m_shaderProg, "uCamPos");
+            h_uIsLit = safe_glGetUniformLocation(m_shaderProg, "isLit");
+            
         } else {
             fprintf(stderr, "PhongShader(): Couldn't install shaders\n");
             exit(1);
@@ -121,6 +123,10 @@ public:
         safe_glUniformMatrix4fv(h_uProjMatrix, value_ptr(mat));
     }
 
+    void setIsLit(int i){
+    safe_glUniform1i(h_uIsLit, i);
+    }
+
 
 private:
 
@@ -143,6 +149,7 @@ private:
 
     GLint h_uShowNormals;
     GLint h_uCamPos;
+    GLint h_uIsLit;
 
 
 };
