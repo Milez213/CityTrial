@@ -52,6 +52,12 @@ struct bound {
    vec3 center;
    float radius;
    
+   bound() : dimension(vec3(1)), center(vec3(0)), radius(1) {}
+   bound(vec3 dim, vec3 center = vec3(0)) :  dimension(dim), center(center),
+                                             radius(std::max(std::max(dim.x, dim.y), dim.z)) {}
+   bound(float rad, vec3 center = vec3(0)) : dimension(vec3(rad)), center(center),
+                                             radius(rad) {}
+   
    //static bool sphereOnSphere(bound objOne, bound objTwo);
    //static bool sphereOnBox(bound objOne, bound objTwo);
    //static bool boxOnBox(bound objOne, bound objTwo);
