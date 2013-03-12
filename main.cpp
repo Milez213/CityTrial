@@ -297,7 +297,7 @@ void drawSkyBox()
    glDisable(GL_DEPTH_TEST);
    glDepthMask(false);
 
-   skyBox->setPosition(glm::vec3(0,0,0));
+   skyBox->setPosition(glm::vec3(0,0.3,0));
    skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
    skyBox->draw(meshShader, g_model_trans);
 
@@ -978,6 +978,7 @@ int main(int argc, char** argv)
    g_last_time = glfwGetTime();
 
    skyBox = new GameDrawableObject("models/house.obj");
+   skyBox->setPosition(vec3(0.0, 50.0, 0.0));
    menu = true;
 
    while (glfwGetWindowParam(GLFW_OPENED)) {
