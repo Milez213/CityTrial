@@ -18,10 +18,6 @@ class GamePhysicalObject : public GameDrawableObject
 public:
    static const float gravity = 9.81;
    static const float friction = 5;
-   float direction;
-   float speed;
-   float fallSpeed;
-   //float lift;
    
    virtual float getDirection() { return TO_DEGREES(-direction); };
 	virtual void setDirection(float dir) { direction = TO_RADIANS(-dir); };
@@ -41,6 +37,12 @@ public:
    
 protected:
    virtual glm::vec3 getSpawnPos() { return vec3(0, 5, 0); }
+   
+private:
+   float direction;
+   float speed;
+   float fallSpeed;
+   //float lift;   
 };
 
 

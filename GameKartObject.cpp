@@ -103,7 +103,6 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
-      float oldSpeed = getSpeed();
       vec3 oldPos = getPosition();
       //float oldSpeed = getSpeed();
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
@@ -113,7 +112,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          if (oldPos.y + 0.5 > top) {
             //printf("%s!!!\n", other->getName());
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
-            fallSpeed = 0;
+            setFallSpeed(0);
             airborn = false;
             //fallSpeed = (oldPos.y-getRideHeight() - top)*abs(getSpeed());
             //setSpeed(oldSpeed + (oldSpeed > 0 ? fallSpeed : -fallSpeed));
@@ -140,7 +139,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       vec3 direction = othPos - oldPos;
       direction = normalize(direction);
       direction *= (other->getRadius() + getRadius()) * 1.3;
-      float oldSpeed = getSpeed() * 0.1f;
+      //float oldSpeed = getSpeed() * 0.1f;
       setSpeed(-getSpeed() * 0.25f);
       setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
    }
