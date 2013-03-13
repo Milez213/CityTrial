@@ -32,6 +32,8 @@ void main() {
 
 if (isLit == 1){
    gl_FragColor = vec4(texture2D(uTexUnit, vTextCoord).xyz,1.0);
+} else if (uMat.sColor.r == -1.0) {
+   gl_FragColor = vec4(uMat.aColor, 1.0);
 }
 
 else {
@@ -84,7 +86,7 @@ else {
         // gl_FragColor = mix(vec4(1.0), vec4(0.0, 1, 0.0), fogFactor);
 
     } else {
-        gl_FragColor = vec4(N, 1.0);
+       gl_FragColor = vec4(N, 1.0);
     }
 }
 }

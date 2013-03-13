@@ -49,6 +49,12 @@ void GamePointObject::update(float dt)
          position.y = 0.5f;
          velocity.y = fabs(velocity.y * 0.5f);
       }
+      
+      if (time < 1.0f) {
+         setScale(vec3((5.0f-time * 4.0f)/10.0f, (5.0f-time*4.0f)/10.0f, (5.0f-time*4.0f)/10.0f));
+      } else {
+         setScale(vec3(1.0f/10.0f, 1.0f/10.0f, 1.0f/10.0f));
+      }
    }
    
    setRotation(rotate);

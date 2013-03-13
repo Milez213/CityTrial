@@ -43,6 +43,8 @@ public:
    
    void updateBoundingInfo();
    const bound getBoundingInfo();
+   
+   void setShadow(bool s) { hasShadow = s; }
 
    virtual void setMaterialIndex(int i) {
        materialIndex = i;
@@ -60,6 +62,7 @@ protected:
    bound boundingInfo;
    
    bool toRemove;
+   bool hasShadow;
 
    int materialIndex;
 };
