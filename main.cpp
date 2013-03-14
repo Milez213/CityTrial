@@ -126,7 +126,7 @@ int g_num_players = 1;
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
-int motionBlur = 0;
+int motionBlur = 1;
 double g_time;
 double g_last_time;
 bool menu;
@@ -305,7 +305,7 @@ void drawSkyBox(float lightX, float lightZ)
    meshShader->setIsLit(1);  
    
    skyBox->setPosition(glm::vec3(0,0.3,0));
-   skyBox->setScale(glm::vec3(0.5, 0.5, 0.5));
+   skyBox->setScale(glm::vec3(1.0, 1.0, 1.0));
    skyBox->draw(meshShader, g_model_trans, 1.0f);
 meshShader->setIsLit(0);
 
@@ -332,8 +332,8 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 
    // set once for this shader
 
-   //setSkyboxProjectionMatrix();
-      setProjectionMatrix(kartIndex);
+   setSkyboxProjectionMatrix();
+   //   setProjectionMatrix(kartIndex);
    meshShader->use();
    meshShader->setProjMatrix(g_proj); 
    meshShader->setViewMatrix(g_view);
@@ -410,7 +410,7 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 void gameMenu()
 {
    glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
@@ -520,7 +520,7 @@ void drawMultipleViews(double dt) {
             
       draw(dt, kartIndex,v.x,v.z);
 
-            if(motionBlur == 1) {
+            if(motionBlur == 1 && kart_objects[kartIndex]->getSpeed() > 10.0) {
                glAccum(GL_MULT, .9);
                glAccum(GL_ACCUM, 1-.9);
                glAccum(GL_RETURN, 1.0);
@@ -532,8 +532,8 @@ void drawMultipleViews(double dt) {
             g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
          } else {
-            glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT );
             //g_proj = mat4(1.0);
          }
       }
