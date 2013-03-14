@@ -35,14 +35,6 @@ PhongMaterial building_mats[NUM_MATERIALS] = {
 GameBuilding::GameBuilding() : GameSceneryObject("models/building.obj")
 {
    int index = rand() % NUM_MATERIALS;
-   
-   for (unsigned int LoD = 0; LoD < meshStorage.size(); LoD++) {
-      for (int i = 0; i < meshStorage[LoD].numMeshes; i++) {
-         if (meshStorage[LoD].material[i].dColor.x == 1.0f) {
-            meshStorage[LoD].material[i] = building_mats[index];
-         }
-      }
-   }
 }
 
 float GameBuilding::getHeightAt(float x, float z)

@@ -26,7 +26,10 @@ public:
    virtual void onCollide(GameKartObject *other);
    
    int getPoints() { return points; };
+   void setPoints(int p) { points = p; };
    int getState() { return state; };
+   
+   void setBase(vec3 b) { basePosition = b; };
    
    bool pickUp() {
       if (state == CATCH)
@@ -39,6 +42,8 @@ private:
    int state;
    
    float time;
+   
+   vec3 basePosition;
    
    GameKartObject *aim;
 };

@@ -36,7 +36,8 @@ public:
    void drawLose();
    void drawSpeed(float speed);
    void drawEnergy(float maxEnergy, float energy, string name);
-   void drawScore();
+   void drawScore(int score);
+   void drawTimer(float dt, bool rushed);
    
 protected:
    RenderingHelper modelMatrix;
@@ -50,6 +51,9 @@ private:
    void setHUDView();
    
    float currentSpeed;
+   float currentTime;
+   
+   int currentScore;
    
    vec3 playerColor;
 };

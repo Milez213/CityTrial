@@ -33,7 +33,13 @@ public:
    }
    
    float getHeightAt(float x, float z) {
-       return getPosition().y + boundingInfo.dimension.y/2;
+      float dist = glm::distance(getPosition(), vec3(x, getPosition().y, z));
+      
+      if (dist > 0.5) {
+         return getPosition().y - getScale().y + 0.5;
+      }
+      
+      return getPosition().y + getScale().y;// + boundingInfo.dimension.y*2;
    }
 
     virtual void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail)

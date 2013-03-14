@@ -118,7 +118,7 @@ int nPlayers;
 PhongShader *meshShader;
 HUDShader *hudShader;
 //set<GameDrawableObject *> drawable_objects;
-Octree drawable_objects;
+Octree drawable_objects(bound(150));
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
@@ -139,6 +139,10 @@ mat4 g_proj;
 mat4 g_view;
 RenderingHelper g_model_trans;
 
+//Shadow Mapping Texture/Framebuffer
+GLuint fboId;
+GLuint depthTextureId;
+
 GameCamera *g_camera;
 
 GameDrawableObject *skyBox;
@@ -150,7 +154,7 @@ int hasStarted = 0;
 // === game info ===
 
 int g_num_squashes = 0;
-int g_timer = 120;
+float g_timer = 120.0f;
 
 // *** lights ***
 
@@ -186,7 +190,7 @@ void setProjectionMatrix(int kartIndex) {
          (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 void setSkyboxProjectionMatrix() {
-   g_proj = glm::perspective(45.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
+   g_proj = glm::perspective(10.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 
 /* camera controls */
@@ -196,7 +200,7 @@ void setView(int kartIndex) {
    float kartSpd = kart_objects[kartIndex]->getSpeed();
 
    // move camera back and up
-   kartDir = vec3(kartDir.x * 6.0, kartDir.y - 2.0, kartDir.z * 6.0);
+   kartDir = vec3(kartDir.x * 8.0, kartDir.y - 1.5, kartDir.z * 8.0);
 
    g_camera->setLookAtTarget(kart_objects[kartIndex]->getPosition());
    g_camera->setPosition(kartPos - kartDir);
@@ -204,6 +208,54 @@ void setView(int kartIndex) {
    g_view = g_camera->getViewMat();
    
 }
+
+/*void setSunView(int kartIndex) {
+   glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45,g_current_width/g_current_height,10,40000);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(kart_objects[kartIndex]->getPosition().x,
+             kart_objects[kartIndex]->getPosition().y,
+             kart_objects[kartIndex]->getPosition().z,
+             g_lightInfo.position.x,g_lightInfo.position.y,g_lightInfo.position.z,
+             0,1,0);
+}
+
+#define MAP_RESOLUTION 1
+void generateShadowFBO()
+{
+   int shadowMapWidth = g_current_width * MAP_RESOLUTION;
+   int shadowMapHeight = g_current_height * MAP_RESOLUTION;
+	
+   GLenum FBOstatus;
+   
+   glGenTextures(1, &depthTextureId);
+   glBindTexture(GL_TEXTURE_2D, depthTextureId);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   
+   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+   
+   glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+   glBindTexture(GL_TEXTURE_2D, 0);
+   
+   glGenFramebuffersEXT(1, &fboId);
+   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboId);
+   
+   glDrawBuffer(GL_NONE);
+   glReadBuffer(GL_NONE);
+   
+   glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D, depthTextureId, 0);
+   
+   FBOstatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+   if(FBOstatus != GL_FRAMEBUFFER_COMPLETE_EXT)
+      printf("GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n");
+   
+   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+}*/
 
 void getInputState()
 {
@@ -337,26 +389,98 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
    meshShader->use();
    meshShader->setProjMatrix(g_proj); 
    meshShader->setViewMatrix(g_view);
+   meshShader->setCamPos(g_camera->getPosition());
 
   
    drawSkyBox(lightX,lightZ);
-
-
+   
    setProjectionMatrix(kartIndex);
    setView(kartIndex);
-
+   
    meshShader->use();
    meshShader->setProjMatrix(g_proj);
    meshShader->setViewMatrix(g_view);
    
    meshShader->setCamPos(g_camera->getPosition());
+
    // get camera position
    /*vec3 kartPos = kart_objects[kartIndex]->getPosition();
    vec3 kartDir = normalize(kart_objects[kartIndex]->getDirectionVector());
    kartDir = vec3(kartDir.x * 3.0, kartDir.y * 3.0 - 2.0, kartDir.z * 3.0);
    meshShader->setCamPos(kartPos - kartDir);*/
    
-   ExtractFrustum(); 
+   //***Shadow Mapping Start***//
+   /*//First step: Render from the light POV to a FBO, story depth values only
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fboId);	//Rendering offscreen
+	
+	//Using the fixed pipeline to render to the depthbuffer
+	//glUseProgramObjectARB(0);
+	
+	// In the case we render the shadowmap to a higher resolution, the viewport must be modified accordingly.
+	glViewport(0,0,g_current_width * MAP_RESOLUTION,g_current_height * MAP_RESOLUTION);
+	
+	// Clear previous frame values
+	glClear( GL_DEPTH_BUFFER_BIT);
+	
+	//Disable color rendering, we only want to write to the Z-Buffer
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	
+   //Set View from light source
+	setSunView(kartIndex);
+	
+	// Culling switching, rendering only backface, this is done to avoid self-shadowing
+	glCullFace(GL_FRONT);
+   
+   ExtractFrustum();
+   
+   static ViewFrustumFilter sfilter;
+   set<GameDrawableObject *> sinView = drawable_objects.getFilteredSubset(sfilter);
+   set<GameDrawableObject *>::iterator sit;
+	
+   for (sit = sinView.begin(); sit != sinView.end(); sit++) {
+      float LoD = 1.0f - glm::distance(g_camera->getPosition(), (*sit)->getPosition())/125.0f;
+      if (LoD <= 0.0f) // [1,0)
+         LoD = 0.0001f;
+      (*sit)->draw(meshShader, g_model_trans, LoD);
+   }
+	
+	//Save modelview/projection matrice into texture7, also add a biais
+	setTextureMatrix();
+	
+	
+	// Now rendering from the camera POV, using the FBO to generate shadows
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	
+	glViewport(0,0,g_current_width,g_current_height);
+	
+	//Enabling color write (previously disabled for light POV z-buffer rendering)
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+   
+   // Clear previous frame values
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   
+	//Using the shadow shader
+	glUseProgramObjectARB(shadowShaderId);
+	glUniform1iARB(shadowMapUniform,7);
+	glActiveTextureARB(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D,depthTextureId);
+   //***Shadow Mapping End***/
+   
+   setProjectionMatrix(kartIndex);
+   setView(kartIndex);
+   
+   meshShader->use();
+   meshShader->setProjMatrix(g_proj);
+   meshShader->setViewMatrix(g_view);
+   
+   meshShader->setCamPos(g_camera->getPosition());
+   
+   //glClearColor (0.8f, 0.8f, 1.0f, 1.0f);
+   //glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+   
+   ExtractFrustum();
+   
+   glCullFace(GL_BACK);
 
    
    
@@ -376,7 +500,6 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
    set<GameDrawableObject *>::iterator it;
    
    for (it = inView.begin(); it != inView.end(); it++) {
-      setPhongMaterial((*it)->getMaterialIndex());
       float LoD = 1.0f - glm::distance(g_camera->getPosition(), (*it)->getPosition())/125.0f;
       if (LoD <= 0.0f) // [1,0)
          LoD = 0.0001f;
@@ -409,8 +532,13 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 
 void gameMenu()
 {
+<<<<<<< HEAD
    glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
+=======
+   glClearColor (0.2f, 0.2f, 0.7f, 1.0f);
+   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+>>>>>>> 2ebdc24ff0c756cfbc1acb0d805503f939fc3aa8
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
@@ -478,7 +606,7 @@ void gameMenu()
 
 }
 
-void drawHUD (int kartIndex) {
+void drawHUD (int kartIndex, double dt) {
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
@@ -493,7 +621,10 @@ void drawHUD (int kartIndex) {
    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
    //glClear( GL_COLOR_BUFFER_BIT );meshShader->setMaterial(&meshStorage.material[i]);
    
-   kart_objects[kartIndex]->drawHUD();
+   if (g_timer < 20.0f)
+      kart_objects[kartIndex]->drawHUD(dt, true);
+   else
+      kart_objects[kartIndex]->drawHUD(dt, false);
    
    //glDisable(GL_BLEND);
    glDisable(GL_ALPHA_TEST);
@@ -526,11 +657,13 @@ void drawMultipleViews(double dt) {
                glAccum(GL_RETURN, 1.0);
                glFlush();
             }
-            drawHUD(kartIndex);
+            drawHUD(kartIndex, dt);
             char text[100];
             sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
             g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
+            sprintf(text, "%3.2f", g_timer);
+            g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height);
          } else {
             glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT );
@@ -560,13 +693,13 @@ void gameLoop()
    
    char text[100];
    
-   if (g_num_players == 1) {
-      sprintf(text, "%d", g_timer);
-      g_ttf_text_renderer->drawText(text, -0.1, 0.85, 2.0/g_current_width, 2.0/g_current_height);
+   /*if (g_num_players == 1) {
+      sprintf(text, "%3.2f", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height);
    } else {
-      sprintf(text, "%d", g_timer);
+      sprintf(text, "%3.2f", g_timer);
       g_ttf_text_renderer->drawText(text, -0.1, -1.0, 2.0/g_current_width, 2.0/g_current_height);
-   }
+   }*/
    
    glfwSwapBuffers();
 
@@ -577,7 +710,7 @@ void gameLoop()
    }
   
    if(g_timer > 0){
-   g_timer -=time_now - time_then;
+      g_timer -= dt;
    }
 
    if(g_timer == 0 && (int)kart_objects.size() == 2)
@@ -627,6 +760,7 @@ void initObjects(const char *map) {
    //floors
    GameTerrain *floor = new GameTerrain();
    floor->setScale(vec3(100.0, 1.0, 100.0));
+   floor->setShadow(false);
    floor->setPosition(vec3(0, 0.0, 0));
    drawable_objects.insert(floor);
 
@@ -652,8 +786,8 @@ void initObjects(const char *map) {
    // hax
    // 1st kart
    if (g_num_players >= 1) {
-      GameKartObject *kart = new GameKartObject("models/house.obj");
-      kart->setSpawnPos(vec3(30, 10.0, 5));
+      GameKartObject *kart = new GameKartObject("models/kart.obj");
+      kart->setSpawnPos(vec3(30, 10.0, 15));
       kart->setPosition(kart->getSpawnPos());
       kart->setScale(vec3(1.0, 0.75, 1.0));
       kart->setDirection(180);
@@ -768,12 +902,22 @@ void initObjects(const char *map) {
       
    }
    
-   for (int i = 0; i < 100; i++) {
+   for (int i = 0; i < 200; i++) {
       GamePointObject *object = new GamePointObject(10);
       //object->setName("thingy");
-      object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
+      float randNum = randFloat();
+      vec3 pos;
+      if (randNum < 0.5f) {
+         pos = vec3(200*randFloat() - 100.0, 25.0f*randFloat(), 200*randFloat() - 100.0);
+         object->setPoints((int)(pos.y / 10.0f) * 20 + 10);
+         object->setScale(vec3(object->getPoints() / 20.0f, object->getPoints() / 20.0f , object->getPoints() / 20.0f));
+      } else {
+         pos = vec3(200*randFloat() - 100.0, 0.0, 200*randFloat() - 100.0);
+         object->setScale(vec3(0.5, 0.5, 0.5));
+      }
 
-      object->setScale(vec3(0.5, 0.5, 0.5));
+      object->setPosition(pos);
+      object->setBase(pos);
       drawable_objects.insert(object);
    }
 
@@ -1001,6 +1145,7 @@ int main(int argc, char** argv)
 
    skyBox = new GameDrawableObject("models/house.obj");
    skyBox->setPosition(vec3(0.0, 0.0, 0.0));
+   skyBox->setShadow(false);
    menu = true;
 
    while (glfwGetWindowParam(GLFW_OPENED)) {

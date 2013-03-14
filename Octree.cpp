@@ -11,9 +11,9 @@
 Octree::Octree(bound boundingBox, unsigned int maxPerSub) :
       maxPerSub(maxPerSub), minPerSub(maxPerSub/2) {
          
-   boundingBox.center = glm::vec3(0);
-   boundingBox.dimension = glm::vec3(100);
-   boundingBox.radius = 100;
+   //boundingBox.center = glm::vec3(0);
+   //boundingBox.dimension = glm::vec3(100);
+   //boundingBox.radius = 100;
    this->head = new SubDivision(boundingBox);
 }
 

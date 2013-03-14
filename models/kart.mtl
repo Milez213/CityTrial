@@ -1,0 +1,66 @@
+# Blender MTL File: 'kart.blend'
+# Material Count: 6
+newmtl Material
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.384000 0.384000 0.384000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+
+newmtl Material.001
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/modeling-soda-can-img05.bmp
+
+
+newmtl Material.001_modeling-soda-can-img05.jpg.001
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/modeling-soda-can-img05.bmp
+
+
+newmtl Material.002
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/Matchbox-layout.bmp
+
+
+newmtl Material.003
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/Matchbox-layout.bmp
+
+
+newmtl Material.004_NONE
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.256000 0.256000 0.256000
+Ks 0.790698 0.790698 0.790698
+Ni 1.000000
+d 1.000000
+illum 2
+
+

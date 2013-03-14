@@ -17,6 +17,12 @@
 #include <cstring>
 #include <vector>
 
+PhongMaterial shadowMat = {
+   vec3(0.1, 0.1, 0.1), // amb
+   vec3(0.0, 0.0, 0.0), // diff
+   vec3(-1.0, -1.0, -1.0),       // spec
+   20.0 };
+
 extern Octree drawable_objects;
 
 extern ModelManager *g_model_manager;
@@ -61,6 +67,7 @@ GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRe
    setScale(vec3(1.0, 1.0, 1.0));
    
    toRemove = false;
+   hasShadow = true;
    
    materialIndex = -1;
 }
@@ -115,31 +122,51 @@ void GameDrawableObject::draw(PhongShader *meshShader, RenderingHelper modelView
       glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
    }
    
+   
+   modelViewMatrix.popMatrix();
+   
+   if (hasShadow) {
+      modelViewMatrix.pushMatrix();
+      
+      modelViewMatrix.translate(vec3(getPosition().x, 0.01, getPosition().z));
+      modelViewMatrix.scale(scl.x, 0.001, scl.z);
+      modelViewMatrix.rotate(rot.x, vec3(1.0, 0.0, 0.0));
+      modelViewMatrix.rotate(rot.y, vec3(0.0, 1.0, 0.0));
+      modelViewMatrix.rotate(rot.z, vec3(0.0, 0.0, 1.0));
+      
+      meshShader->setModelMatrix(modelViewMatrix.getMatrix());
+      
+      for (int i = meshStorage[LoD].numMeshes - 1; i >= 0; i--) {
+         meshShader->setMaterial(&shadowMat);
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].indexBuffer[i]);
+         glDrawElements(GL_TRIANGLES, meshStorage[LoD].indexBufferLength[i], GL_UNSIGNED_SHORT, 0);
+      }
+      
+      modelViewMatrix.popMatrix();
+   }
+   
+   
    safe_glDisableVertexAttribArray(h_aPos);
    safe_glDisableVertexAttribArray(h_aNorm);
    safe_glDisableVertexAttribArray(h_aText);
    
-   
-   modelViewMatrix.popMatrix();
-   /*modelViewMatrix.pushMatrix();
-   
-   modelViewMatrix.translate(getPosition());
+   /*modelViewMatrix.translate(getPosition());
    modelViewMatrix.scale(scl.x, scl.y, scl.z);
    meshShader->setModelMatrix(modelViewMatrix.getMatrix());
    
    safe_glEnableVertexAttribArray(h_aNorm);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.normalBuffer);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].normalBuffer);
    safe_glVertexAttribPointer(h_aNorm, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
    safe_glEnableVertexAttribArray(h_aPos);
-   glBindBuffer(GL_ARRAY_BUFFER, meshStorage.shadowVBO);
+   glBindBuffer(GL_ARRAY_BUFFER, meshStorage[LoD].shadowVBO);
    safe_glVertexAttribPointer(h_aPos, 3, GL_FLOAT, GL_FALSE, 0, 0);
    
-   for (int i = meshStorage.numMeshes - 1; i >= 0; i--) {
-      meshShader->setMaterial(&meshStorage.material[i]);
-      if (meshStorage.shadowVBO != NULL) {
-         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage.shadowIBO[i]);
-         glDrawElements(GL_TRIANGLES, meshStorage.shadowBufferLength[i], GL_UNSIGNED_SHORT, 0);
+   for (int i = meshStorage[LoD].numMeshes - 1; i >= 0; i--) {
+      meshShader->setMaterial(&meshStorage[LoD].material[i]);
+      if (meshStorage[LoD].shadowVBO != NULL) {
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshStorage[LoD].shadowIBO[i]);
+         glDrawElements(GL_TRIANGLES, meshStorage[LoD].shadowBufferLength[i], GL_UNSIGNED_SHORT, 0);
       }
    }
    

@@ -99,7 +99,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       upgrade->addToKart(this);
-      points += 100;
+      points += 50;
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
@@ -151,7 +151,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       //other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
       point->onCollide(this);
       if (point->pickUp()) {
-         points += 10;
+         points += point->getPoints();
          point->scheduleForRemoval();
       }
       //other->scheduleForRemoval();
@@ -318,11 +318,12 @@ void GameKartObject::setHUDColor(vec3 color)
    hud->setColor(color);
 }
 
-void GameKartObject::drawHUD() {
+void GameKartObject::drawHUD(float dt, bool rushed) {
    hud->prepareShader();
    hud->drawSpeed(getSpeed());
+   hud->drawTimer(dt, rushed);
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
-   hud->drawScore();
+   hud->drawScore(getPoints());
    
    if (winState == 1) {
       hud->drawWin();

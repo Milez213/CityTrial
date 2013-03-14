@@ -549,7 +549,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
                centroidCount += 2;
             }
 
-            /*if (dot(normalize(normals[f[i][j*3]]), l_direction) >= 0) {
+            if (dot(normalize(normals[f[i][j*3]]), l_direction) >= 0) {
                if (dot(normalize(normals[f[i][j*3+1]]), l_direction) >= 0) {
                   for (int l = 0; l < (int)vertInfo.size(); l++) {
                      if (vertInfo[l].x == f[i][j*3])
@@ -639,7 +639,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
                centroid += shadowVerts[v2];
                
                centroidCount +=2;
-            }*/
+            }
          }
       }
       
