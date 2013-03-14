@@ -118,7 +118,7 @@ int nPlayers;
 PhongShader *meshShader;
 HUDShader *hudShader;
 //set<GameDrawableObject *> drawable_objects;
-Octree drawable_objects;
+Octree drawable_objects(bound(150));
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
