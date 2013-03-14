@@ -197,10 +197,7 @@ void GameKartObject::draw(PhongShader *meshShader, RenderingHelper modelViewMatr
    //rot.z = carPitchAngle;
    //modelViewMatrix.rotate(carRollAngle,vec3(1.0,0.0,0.0));
    //GameDrawableObject::drawSpecial(meshShader, modelViewMatrix,carPitchAngle,carRollAngle);
-   modelViewMatrix.pushMatrix();
-   modelViewMatrix.translate(glm::vec3(0.0,0.2,0.0));
    GameDrawableObject::draw(meshShader, modelViewMatrix, levelOfDetail);
-   modelViewMatrix.popMatrix();
 
    modelViewMatrix.pushMatrix();
    modelViewMatrix.translate(getPosition());

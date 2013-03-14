@@ -243,7 +243,7 @@ void ModelManager::loadObject(const char *filename)
          }  else if (line.substr(0,2) == "f ") {
             textures.resize(vertices.size());
             if (materials[materials.size()-1].textureLocation != 0) {
-               printf("Textures for %s\n", store.name.c_str());
+               //printf("Textures for %s\n", store.name.c_str());
                string s = line.substr(2);
                string n;
                int txtCrd = 0;
@@ -290,13 +290,13 @@ void ModelManager::loadObject(const char *filename)
             matlib->seekg (0, ios::beg);
             getMaterial(matlib, line.substr(7), &newMat);
             
-            printf("\nMaterial for %s:\n", store.name.c_str());
+            /*printf("\nMaterial for %s:\n", store.name.c_str());
             printf("   Diffuse: (%0.3f, %0.3f, %0.3f)\n", newMat.dColor.x,
                    newMat.dColor.y, newMat.dColor.z);
             printf("   Specular: (%0.3f, %0.3f, %0.3f)\n", newMat.sColor.x,
                    newMat.sColor.y, newMat.sColor.z);
             printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", newMat.aColor.x,
-                   newMat.aColor.y, newMat.aColor.z);
+                   newMat.aColor.y, newMat.aColor.z);*/
             /*if (getMaterial(matlib, line.substr(7), &newMat) != 1) {
                newMat.aColor = vec3(1.0, 0.0, 0.0);
                newMat.sColor = vec3(0.0, 1.0, 0.0);
@@ -349,7 +349,7 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
    while (getline(*matlib, line)) {
       if (line.substr(0,7) == "newmtl " && !matFound) {
          string found = line.substr(7);
-         printf("Found: %s Attempt: %s\n", found.c_str(), name.c_str());
+         //printf("Found: %s Attempt: %s\n", found.c_str(), name.c_str());
          if (found == name) {
             matFound = true;
             while (getline(*matlib, line)) {
@@ -367,16 +367,16 @@ int ModelManager::getMaterial(ifstream *matlib, string name, PhongMaterial *mat)
                   if(line.substr(0,7) == "map_Kd ") {
                      glGenTextures(1, &mat->textureLocation);
                      glBindTexture(GL_TEXTURE_2D, mat->textureLocation);
-                     printf("textureLocation: %d\n", (int)mat->textureLocation);
+                     //printf("textureLocation: %d\n", (int)mat->textureLocation);
                      
-                     printf("%s\n", line.substr(7).c_str());
+                     //printf("%s\n", line.substr(7).c_str());
                      
                      LoadTexture(line.substr(7).c_str(), mat->textureLocation);
                      
                      //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
                      //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                      
-                     printf("Hello\n");
+                     //printf("Hello\n");
                      mat->dColor.x = -1.0; mat->dColor.y = -1.0; mat->dColor.z = -1.0;
                   } else {
                      mat->textureLocation = 0;
@@ -416,7 +416,7 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
       if ((int)t.size() > i) {
          texts[i * 2] = t.at(i).x;
          texts[i * 2 + 1] = t.at(i).y;
-         printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);
+         //printf("Texture Coordinate %d: (%0.3f, %0.3f)\n", i, texts[i*2], texts[i*2+1]);
       }
       
       meshBound.center.x += verts[i*3];
@@ -737,13 +737,13 @@ int ModelManager::fillBuffer(bufferStore *store, vector<vec3> v, vector<vec2> t,
    for (int i = 0; i < (int)materials.size(); i++) {
       store->material[i] = materials.at(i);
       
-      printf("\nMaterial for %s:\n", store->name.c_str());
+      /*printf("\nMaterial for %s:\n", store->name.c_str());
       printf("   Diffuse: (%0.3f, %0.3f, %0.3f)\n", store->material[i].dColor.x,
              store->material[i].dColor.y, store->material[i].dColor.z);
       printf("   Specular: (%0.3f, %0.3f, %0.3f)\n", store->material[i].sColor.x,
              store->material[i].sColor.y, store->material[i].sColor.z);
       printf("   Ambient: (%0.3f, %0.3f, %0.3f)\n\n", store->material[i].aColor.x,
-             store->material[i].aColor.y, store->material[i].aColor.z);
+             store->material[i].aColor.y, store->material[i].aColor.z);*/
    }
    
    glGenBuffers(1, &store->material[0].textureCoordinates);

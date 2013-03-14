@@ -87,8 +87,8 @@ void GameHUD::drawLose()
    hudShader->draw(string("lose"));
 }
 
-#define TIME_WDT 100.0f
-#define TIME_HGT 100.0f
+#define TIME_WDT 70.0f
+#define TIME_HGT 70.0f
 #define GROW 20.0f
 void GameHUD::drawTimer(float dt, bool rushed)
 {

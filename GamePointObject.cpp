@@ -8,18 +8,24 @@
 
 #include "GamePointObject.h"
 
-#define NUM_MATERIALS 3
+#define NUM_MATERIALS 6
 
 float point_diff[NUM_MATERIALS * 3] = {
    0.0, 1.0, 0.0,
    1.0, 0.0, 0.0,
-   0.0, 0.0, 1.0
+   0.0, 0.0, 1.0,
+   1.0, 1.0, 0.0,
+   1.0, 0.0, 1.0,
+   0.0, 1.0, 1.0
 };
 
 float point_spec[NUM_MATERIALS * 3] = {
    0.0, 1.0, 0.0,
    1.0, 0.0, 0.0,
-   0.0, 0.0, 1.0
+   0.0, 0.0, 1.0,
+   1.0, 1.0, 0.0,
+   1.0, 0.0, 1.0,
+   0.0, 1.0, 1.0
 };
 
 GamePointObject::GamePointObject(int pointValue) : GameDrawableObject("models/squash.obj") {

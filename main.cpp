@@ -200,7 +200,7 @@ void setView(int kartIndex) {
    float kartSpd = kart_objects[kartIndex]->getSpeed();
 
    // move camera back and up
-   kartDir = vec3(kartDir.x * 8.0, kartDir.y - 1.5, kartDir.z * 8.0);
+   kartDir = vec3(kartDir.x * 8.0, kartDir.y - 2.5, kartDir.z * 8.0);
 
    g_camera->setLookAtTarget(kart_objects[kartIndex]->getPosition());
    g_camera->setPosition(kartPos - kartDir);
@@ -783,9 +783,9 @@ void initObjects(const char *map) {
    // 1st kart
    if (g_num_players >= 1) {
       GameKartObject *kart = new GameKartObject("models/kart.obj");
-      kart->setSpawnPos(vec3(30, 10.0, 15));
+      kart->setSpawnPos(vec3(30, 5.0, 15));
       kart->setPosition(kart->getSpawnPos());
-      kart->setScale(vec3(0.70, 0.75, 0.70));
+      kart->setScale(vec3(0.70, 0.70, 0.70));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
@@ -795,10 +795,10 @@ void initObjects(const char *map) {
       kart_objects.push_back(kart);
    }
    if (g_num_players >= 2) {
-      GameKartObject *otherKart = new GameKartObject("models/ball.obj");
-      otherKart->setSpawnPos(vec3(45, 10.0, 0));
+      GameKartObject *otherKart = new GameKartObject("models/kart.obj");
+      otherKart->setSpawnPos(vec3(45, 5.0, 0));
       otherKart->setPosition(otherKart->getSpawnPos());
-      otherKart->setScale(vec3(1.0, 0.75, 1.0));
+      otherKart->setScale(vec3(0.70, 0.70, 0.70));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
@@ -963,7 +963,7 @@ void initialize(const char *map)
    //g_sound_manager->setVolume(0);
    if (g_settings["play_music"] == 1) {
       printf("Music enabled\n");
-      g_music = g_sound_manager->getMusic("music/raptor.ogg");
+      g_music = g_sound_manager->getMusic("music/get_it_together.ogg");
       g_music->play();
       g_music->setVolume(musicVolume);
    }
