@@ -96,6 +96,7 @@ void GameHUD::drawTimer(float dt)
    if (currentTime > 1.0f)
       currentTime -= 1.0f;
    
+   
    float posX = hudWidth / 2.0f - TIME_WDT / 2.0f;
    float posY = 0;
    
@@ -220,8 +221,10 @@ void GameHUD::drawScore(int score)
       currentScore++;
    
    float sclWdt = (score - currentScore) * 3.0;
-   if (sclWdt > 25.0f)
+   if (sclWdt > 25.0f) {
       sclWdt = 25.0f;
+      currentScore = score - 25.0f / 3.0f;
+   }
    
    float sclHgt = (sclWdt * (PT_HGT/PT_WDT)) * 3.0;
    

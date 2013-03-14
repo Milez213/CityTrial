@@ -99,7 +99,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
    
    if (GameUpgradeObject *upgrade =  dynamic_cast<GameUpgradeObject *>(other)) {
       upgrade->addToKart(this);
-      points += 100;
+      points += 50;
 
    }
    else if (GameSceneryObject *scenery =  dynamic_cast<GameSceneryObject *>(other)) {
