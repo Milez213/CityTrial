@@ -894,12 +894,21 @@ void initObjects(const char *map) {
       
    }
    
-   for (int i = 0; i < 100; i++) {
+   for (int i = 0; i < 200; i++) {
       GamePointObject *object = new GamePointObject(10);
       //object->setName("thingy");
-      object->setPosition(vec3(200*randFloat() - 100.0, 1.0, 200*randFloat() - 100.0));
+      float randNum = randFloat();
+      vec3 pos;
+      if (randNum < 0.5f) {
+         pos = vec3(200*randFloat() - 100.0, 25.0f*randFloat(), 200*randFloat() - 100.0);
+         object->setScale(vec3(pos.y/12.5f + 0.5f, pos.y/12.5f + 0.5f, pos.y/12.5f + 0.5f));
+      } else {
+         pos = vec3(200*randFloat() - 100.0, 0.0, 200*randFloat() - 100.0);
+         object->setScale(vec3(0.5, 0.5, 0.5));
+      }
 
-      object->setScale(vec3(0.5, 0.5, 0.5));
+      object->setPosition(pos);
+      object->setBase(pos);
       drawable_objects.insert(object);
    }
 

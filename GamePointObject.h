@@ -28,6 +28,8 @@ public:
    int getPoints() { return points; };
    int getState() { return state; };
    
+   void setBase(vec3 b) { basePosition = b; };
+   
    bool pickUp() {
       if (state == CATCH)
          return true;
@@ -39,6 +41,8 @@ private:
    int state;
    
    float time;
+   
+   vec3 basePosition;
    
    GameKartObject *aim;
 };
