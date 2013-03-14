@@ -37,7 +37,7 @@ public:
    void drawSpeed(float speed);
    void drawEnergy(float maxEnergy, float energy, string name);
    void drawScore(int score);
-   void drawTimer(float dt);
+   void drawTimer(float dt, bool rushed);
    
 protected:
    RenderingHelper modelMatrix;

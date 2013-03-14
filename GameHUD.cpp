@@ -89,20 +89,23 @@ void GameHUD::drawLose()
 
 #define TIME_WDT 100.0f
 #define TIME_HGT 100.0f
-void GameHUD::drawTimer(float dt)
+#define GROW 20.0f
+void GameHUD::drawTimer(float dt, bool rushed)
 {
    currentTime += dt;
    
    if (currentTime > 1.0f)
       currentTime -= 1.0f;
    
-   
-   float posX = hudWidth / 2.0f - TIME_WDT / 2.0f;
-   float posY = 0;
+   float scl = GROW * currentTime;
+   if (!rushed)
+      scl = 0;
+   float posX = hudWidth / 2.0f - (TIME_WDT + scl) / 2.0f;
+   float posY = -(scl) / 2.0f;
    
    modelMatrix.loadIdentity();
    modelMatrix.translate(vec3(posX, posY, 0.0));
-   modelMatrix.scale(TIME_WDT, TIME_HGT, 1.0);
+   modelMatrix.scale(TIME_WDT + scl, TIME_HGT + scl, 1.0);
    
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    

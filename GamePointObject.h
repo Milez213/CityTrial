@@ -26,6 +26,7 @@ public:
    virtual void onCollide(GameKartObject *other);
    
    int getPoints() { return points; };
+   void setPoints(int p) { points = p; };
    int getState() { return state; };
    
    void setBase(vec3 b) { basePosition = b; };

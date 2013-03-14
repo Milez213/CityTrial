@@ -87,7 +87,7 @@ public:
    
    void resize(float width, float height) { hud->setScreen(width, height); };
    void setHUDColor(vec3 color);
-   void drawHUD(float dt);
+   void drawHUD(float dt, bool rushed);
    
    int getPoints() { return points; };
    float getEnergy() { return properties.getEnergy(); }

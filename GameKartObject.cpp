@@ -151,7 +151,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       //other->setScale(vec3(other->getScale().x, 0.02, other->getScale().z));
       point->onCollide(this);
       if (point->pickUp()) {
-         points += 10;
+         points += point->getPoints();
          point->scheduleForRemoval();
       }
       //other->scheduleForRemoval();
@@ -318,10 +318,10 @@ void GameKartObject::setHUDColor(vec3 color)
    hud->setColor(color);
 }
 
-void GameKartObject::drawHUD(float dt) {
+void GameKartObject::drawHUD(float dt, bool rushed) {
    hud->prepareShader();
    hud->drawSpeed(getSpeed());
-   hud->drawTimer(dt);
+   hud->drawTimer(dt, rushed);
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
    hud->drawScore(getPoints());
    

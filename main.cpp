@@ -616,7 +616,10 @@ void drawHUD (int kartIndex, double dt) {
    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
    //glClear( GL_COLOR_BUFFER_BIT );meshShader->setMaterial(&meshStorage.material[i]);
    
-   kart_objects[kartIndex]->drawHUD(dt);
+   if (g_timer < 20.0f)
+      kart_objects[kartIndex]->drawHUD(dt, true);
+   else
+      kart_objects[kartIndex]->drawHUD(dt, false);
    
    //glDisable(GL_BLEND);
    glDisable(GL_ALPHA_TEST);
@@ -778,7 +781,7 @@ void initObjects(const char *map) {
    // hax
    // 1st kart
    if (g_num_players >= 1) {
-      GameKartObject *kart = new GameKartObject("models/ball.obj");
+      GameKartObject *kart = new GameKartObject("models/kart.obj");
       kart->setSpawnPos(vec3(30, 10.0, 15));
       kart->setPosition(kart->getSpawnPos());
       kart->setScale(vec3(1.0, 0.75, 1.0));
@@ -901,7 +904,8 @@ void initObjects(const char *map) {
       vec3 pos;
       if (randNum < 0.5f) {
          pos = vec3(200*randFloat() - 100.0, 25.0f*randFloat(), 200*randFloat() - 100.0);
-         object->setScale(vec3(pos.y/12.5f + 0.5f, pos.y/12.5f + 0.5f, pos.y/12.5f + 0.5f));
+         object->setPoints((int)(pos.y / 10.0f) * 20 + 10);
+         object->setScale(vec3(object->getPoints() / 20.0f, object->getPoints() / 20.0f , object->getPoints() / 20.0f));
       } else {
          pos = vec3(200*randFloat() - 100.0, 0.0, 200*randFloat() - 100.0);
          object->setScale(vec3(0.5, 0.5, 0.5));
