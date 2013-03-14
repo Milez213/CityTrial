@@ -126,7 +126,7 @@ int g_num_players = 1;
 // GLFW Window
 int g_win_height, g_win_width;
 int g_current_height, g_current_width;
-int motionBlur = 1;
+int motionBlur = 0;
 double g_time;
 double g_last_time;
 bool menu;
@@ -190,7 +190,7 @@ void setProjectionMatrix(int kartIndex) {
          (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 void setSkyboxProjectionMatrix() {
-   g_proj = glm::perspective(10.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
+   g_proj = glm::perspective(30.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 
 /* camera controls */
@@ -785,7 +785,7 @@ void initObjects(const char *map) {
       GameKartObject *kart = new GameKartObject("models/kart.obj");
       kart->setSpawnPos(vec3(30, 10.0, 15));
       kart->setPosition(kart->getSpawnPos());
-      kart->setScale(vec3(1.0, 0.75, 1.0));
+      kart->setScale(vec3(0.70, 0.75, 0.70));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
