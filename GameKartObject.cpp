@@ -318,11 +318,12 @@ void GameKartObject::setHUDColor(vec3 color)
    hud->setColor(color);
 }
 
-void GameKartObject::drawHUD() {
+void GameKartObject::drawHUD(float dt) {
    hud->prepareShader();
    hud->drawSpeed(getSpeed());
+   hud->drawTimer(dt);
    hud->drawEnergy(getMaxEnergy(), getEnergy(), activeUpgrades.front()->getName());
-   hud->drawScore();
+   hud->drawScore(getPoints());
    
    if (winState == 1) {
       hud->drawWin();

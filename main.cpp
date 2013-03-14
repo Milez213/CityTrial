@@ -154,7 +154,7 @@ int hasStarted = 0;
 // === game info ===
 
 int g_num_squashes = 0;
-int g_timer = 120;
+float g_timer = 120.0f;
 
 // *** lights ***
 
@@ -532,7 +532,7 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 
 void gameMenu()
 {
-   glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+   glClearColor (0.2f, 0.2f, 0.7f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
@@ -601,7 +601,7 @@ void gameMenu()
 
 }
 
-void drawHUD (int kartIndex) {
+void drawHUD (int kartIndex, double dt) {
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
@@ -616,7 +616,7 @@ void drawHUD (int kartIndex) {
    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
    //glClear( GL_COLOR_BUFFER_BIT );meshShader->setMaterial(&meshStorage.material[i]);
    
-   kart_objects[kartIndex]->drawHUD();
+   kart_objects[kartIndex]->drawHUD(dt);
    
    //glDisable(GL_BLEND);
    glDisable(GL_ALPHA_TEST);
@@ -649,11 +649,13 @@ void drawMultipleViews(double dt) {
                glAccum(GL_RETURN, 1.0);
                glFlush();
             }
-            drawHUD(kartIndex);
+            drawHUD(kartIndex, dt);
             char text[100];
             sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
             g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
             kartIndex++;
+            sprintf(text, "%3.2f", g_timer);
+            g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height);
          } else {
             glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -683,13 +685,13 @@ void gameLoop()
    
    char text[100];
    
-   if (g_num_players == 1) {
-      sprintf(text, "%d", g_timer);
-      g_ttf_text_renderer->drawText(text, -0.1, 0.85, 2.0/g_current_width, 2.0/g_current_height);
+   /*if (g_num_players == 1) {
+      sprintf(text, "%3.2f", g_timer);
+      g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height);
    } else {
-      sprintf(text, "%d", g_timer);
+      sprintf(text, "%3.2f", g_timer);
       g_ttf_text_renderer->drawText(text, -0.1, -1.0, 2.0/g_current_width, 2.0/g_current_height);
-   }
+   }*/
    
    glfwSwapBuffers();
 
@@ -700,7 +702,7 @@ void gameLoop()
    }
   
    if(g_timer > 0){
-   g_timer -=time_now - time_then;
+      g_timer -= dt;
    }
 
    if(g_timer == 0 && (int)kart_objects.size() == 2)

@@ -19,6 +19,8 @@ GameHUD::GameHUD()
    setHUDView();
    
    currentSpeed = 0.0;
+   currentScore = 0;
+   currentTime = 0.0;
    
    playerColor = vec3(1.0, 0.5, 0.5);
    
@@ -83,6 +85,41 @@ void GameHUD::drawLose()
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    
    hudShader->draw(string("lose"));
+}
+
+#define TIME_WDT 100.0f
+#define TIME_HGT 100.0f
+void GameHUD::drawTimer(float dt)
+{
+   currentTime += dt;
+   
+   if (currentTime > 1.0f)
+      currentTime -= 1.0f;
+   
+   float posX = hudWidth / 2.0f - TIME_WDT / 2.0f;
+   float posY = 0;
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(posX, posY, 0.0));
+   modelMatrix.scale(TIME_WDT, TIME_HGT, 1.0);
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->useTextureColor();
+   
+   hudShader->draw(string("timer"));
+   
+   modelMatrix.loadIdentity();
+   modelMatrix.translate(vec3(posX + TIME_WDT / 2.0f, posY + TIME_HGT / 2.0f, 0.0));
+   modelMatrix.scale(TIME_WDT, TIME_HGT, 1.0);
+   modelMatrix.rotate(360.0 * currentTime, vec3(0.0, 0.0, 1.0));
+   modelMatrix.translate(vec3(-0.5, -0.5, 0.0));
+   
+   hudShader->setModelMatrix(modelMatrix.getMatrix());
+   
+   hudShader->draw(string("tneedle"));
+   
+   hudShader->deactivate();
 }
 
 #define SPD 150.0
@@ -177,12 +214,20 @@ void GameHUD::drawEnergy(float maxEnergy, float energy, string name)
 
 #define PT_HGT 100.0
 #define PT_WDT 175.0
-void GameHUD::drawScore()
+void GameHUD::drawScore(int score)
 {
+   if (currentScore < score)
+      currentScore++;
+   
+   float sclWdt = (score - currentScore) * 3.0;
+   if (sclWdt > 25.0f)
+      sclWdt = 25.0f;
+   
+   float sclHgt = (sclWdt * (PT_HGT/PT_WDT)) * 3.0;
    
    modelMatrix.loadIdentity();
-   modelMatrix.translate(vec3(hudWidth - PT_WDT, 0.0, 0.0));
-   modelMatrix.scale(PT_WDT, PT_HGT, 1.0);
+   modelMatrix.translate(vec3(hudWidth - PT_WDT - sclWdt + 2.0, 0.0, 0.0));
+   modelMatrix.scale(PT_WDT + sclWdt, PT_HGT + sclHgt, 1.0);
    
    hudShader->setModelMatrix(modelMatrix.getMatrix());
    
