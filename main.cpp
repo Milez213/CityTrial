@@ -532,13 +532,9 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 
 void gameMenu()
 {
-<<<<<<< HEAD
-   glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
-=======
+
    glClearColor (0.2f, 0.2f, 0.7f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
->>>>>>> 2ebdc24ff0c756cfbc1acb0d805503f939fc3aa8
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
