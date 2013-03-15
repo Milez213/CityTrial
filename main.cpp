@@ -134,6 +134,16 @@ int selected = 0;
 const char *mapSelected;
 int musicVolume = 100;
 int soundVolume = 100;
+double menuScale = 1.0;
+int menuScaleDir = 1;
+double menuX = 1.0;
+
+double rCol = 0.5;
+double gCol = 0.0;
+double bCol = 0.0;
+int rDir = 1;
+int gDir = 0;
+int bDir = 0;
 
 mat4 g_proj;
 mat4 g_view;
@@ -464,7 +474,7 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 	glUniform1iARB(shadowMapUniform,7);
 	glActiveTextureARB(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D,depthTextureId);
-   //***Shadow Mapping End***/
+   /***Shadow Mapping End***/
    
    setProjectionMatrix(kartIndex);
    setView(kartIndex);
@@ -530,8 +540,12 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
    
 }
 
-void gameMenu()
+
+
+void gameMenu(double dt)
 {
+
+
 
    glClearColor (0.2f, 0.2f, 0.7f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -545,50 +559,50 @@ void gameMenu()
     
 
    sprintf(text, "Kart part park");
-   g_ttf_text_renderer->drawText(text, -0.75, 0.75, 2.0/g_current_width, 2.0/g_current_height); 
+   g_ttf_text_renderer->drawText(text, menuX, 0.75, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(rCol,gCol,bCol)); 
 
    if(selected == 0){
    sprintf(text, "Begin 1p game");
-   g_ttf_text_renderer->drawText(text, -0.75, 0.50, 5.0/g_current_width, 5.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, menuX, 0.50, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Begin 1p game");
-   g_ttf_text_renderer->drawText(text, -0.75, 0.50, 2.0/g_current_width, 2.0/g_current_height);   
+   g_ttf_text_renderer->drawText(text, menuX, 0.50, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 2){
    sprintf(text, "Begin 2p game");
-   g_ttf_text_renderer->drawText(text, -0.75, 0.25, 5.0/g_current_width, 5.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, menuX, 0.25, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Begin 2p game");
-   g_ttf_text_renderer->drawText(text, -0.75, 0.25, 2.0/g_current_width, 2.0/g_current_height);   
+   g_ttf_text_renderer->drawText(text, menuX, 0.25, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 4){
    sprintf(text, "Music Volume:%d", musicVolume );
-   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 4.0/g_current_width, 4.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, menuX, 0.0, (menuScale * 4.0)/g_current_width, (menuScale * 4.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }else{
    sprintf(text, "Music Volume:%d", musicVolume );
-   g_ttf_text_renderer->drawText(text, -0.75, 0.0, 2.0/g_current_width, 2.0/g_current_height);   
+   g_ttf_text_renderer->drawText(text, menuX, 0.0, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 6){
    sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 4.0/g_current_width, 4.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, (menuScale * 4.0)/g_current_width, (menuScale * 4.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, -0.75, -0.25, 2.0/g_current_width, 2.0/g_current_height);  
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));  
    }
 
    if(selected == 8){
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, -0.75, -0.50, 5.0/g_current_width, 5.0/g_current_height);
+   g_ttf_text_renderer->drawText(text, menuX, -0.50, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, -0.75, -0.50, 2.0/g_current_width, 2.0/g_current_height);   
+   g_ttf_text_renderer->drawText(text, menuX, -0.50, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
    }
    
     
@@ -600,6 +614,101 @@ void gameMenu()
    glDisable(GL_ALPHA_TEST);
    glEnable(GL_DEPTH_TEST);
 
+}
+
+void colorChange(double dt)
+{
+   if(rDir == 0)
+   {
+      rCol = 0;
+   }
+   if(gDir == 0)
+   {
+      gCol = 0;
+   }
+   if(bDir == 0)
+   {
+      bCol = 0;
+   }
+   
+   if(rDir == -1 && rCol > 0.0)
+   {
+      rCol -= dt * 1;
+   }
+
+   if(bDir == -1 && bCol > 0.0)
+   {
+      bCol -= dt * 1;
+   }
+
+   if(gDir == -1 && gCol > 0.0)
+   {
+      gCol -= dt * 1;
+   }   
+
+   if(rDir == 1 && rCol < 1.0)
+   {
+      rCol += dt * 1;
+      if(rCol >= 1.0)
+      {rDir = -1;
+       gDir = 1;}
+   }
+
+   if(gDir == 1 && gCol < 1.0)
+   {
+      gCol += dt * 1;
+      if(gCol >= 1.0)
+      {gDir = -1;
+       bDir = 1;}
+   }
+
+   if(bDir == 1 && bCol < 1.0)
+   {
+      bCol += dt * 1;
+      if(bCol >= 1.0)
+      {bDir = -1;
+       rDir = 1;}
+   }
+}
+
+void menuLoop()
+{
+   double dt;
+   int time_then = 0;
+   int time_now = 0;
+   g_time = glfwGetTime();
+   dt = g_time - g_last_time;
+
+   if(menuScaleDir == -1)
+   {
+      menuScale = menuScale - (0.4 * dt);
+      if(menuScale < 0.5)
+      {
+         menuScaleDir = 1;
+      }
+   }
+   else{
+   if(menuScaleDir == 1)
+   {
+      menuScale = menuScale + (0.4 * dt);
+      if(menuScale > 1.0)
+      {
+         menuScaleDir = -1;
+      }
+   }
+   
+   }
+
+   if(menuX > -0.8)
+   {
+   menuX = menuX - (1 * dt);
+   }
+
+   colorChange(dt);
+   
+
+   gameMenu(dt);
+   g_last_time = g_time; 
 }
 
 void drawHUD (int kartIndex, double dt) {
@@ -656,10 +765,10 @@ void drawMultipleViews(double dt) {
             drawHUD(kartIndex, dt);
             char text[100];
             sprintf(text, "%d", kart_objects[kartIndex]->getPoints());
-            g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+            g_ttf_text_renderer->drawText(text, 0.65, 0.8, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));
             kartIndex++;
             sprintf(text, "%3.2f", g_timer);
-            g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height);
+            g_ttf_text_renderer->drawText(text, -0.12, 0.8, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));
          } else {
             glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT );
@@ -709,7 +818,7 @@ void gameLoop()
       g_timer -= dt;
    }
 
-   if(g_timer == 0 && (int)kart_objects.size() == 2)
+   if(g_timer <= 0 && (int)kart_objects.size() == 2)
    {
       if (kart_objects[0]->getPoints() > kart_objects[1]->getPoints())
       {   kart_objects[0]->win();
@@ -798,7 +907,7 @@ void initObjects(const char *map) {
       GameKartObject *otherKart = new GameKartObject("models/ball.obj");
       otherKart->setSpawnPos(vec3(45, 10.0, 0));
       otherKart->setPosition(otherKart->getSpawnPos());
-      otherKart->setScale(vec3(1.0, 0.75, 1.0));
+      otherKart->setScale(vec3(0.7, 0.75, 0.7));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
@@ -1148,7 +1257,7 @@ int main(int argc, char** argv)
       if(menu == false)
       gameLoop();
       else
-      gameMenu();
+      menuLoop();
    }
 
    glfwTerminate();

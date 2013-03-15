@@ -75,7 +75,7 @@ public:
      * TODO - use sy, sx    
      */
     virtual void drawText(const char *text, float x, float y,
-                          float sx, float sy) {
+                          float sx, float sy,glm::vec3 color) {
 
         const char *p;
         FT_GlyphSlot g = face->glyph;
@@ -112,6 +112,7 @@ public:
 
         // use shader
         fontShader->use();
+        fontShader->setColor(color);
 
         /* Set up the VBO for our vertex data */
         glEnableVertexAttribArray(attribute_coord);
