@@ -17,7 +17,7 @@ public:
     virtual void init(const char *fontname) = 0;
     
     virtual void drawText(const char *text, float x, float y,
-                          float sx, float sy) = 0;
+                          float sx, float sy, glm::vec3 color) = 0;
 
 
 };
