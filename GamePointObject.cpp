@@ -55,6 +55,8 @@ void GamePointObject::onCollide(GameKartObject *other)
       pos = other->getPosition() + movement * other->getRadius() * 3.0f;
       vel = movement * 20.0f;
       vel.y = 5.0f;
+      vel.x *= 2.0f;
+      vel.z *= 1.5f;
       time = 0.0;
    }
 }
