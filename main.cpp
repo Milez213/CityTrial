@@ -767,7 +767,6 @@ void menuLoop()
 
    gameMenu(dt);
    g_last_time = g_time;
-   glfwSwapBuffers();
  
 }
 
