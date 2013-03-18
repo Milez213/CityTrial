@@ -55,6 +55,7 @@ GLvoid LoadTexture(const char* image_file, int texID) {
     0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage->data);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); /*  cheap scaling when image bigger than texture */    
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); /*  cheap scaling when image smalled than texture*/
+ 
   
 }
 

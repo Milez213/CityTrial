@@ -122,6 +122,8 @@ Octree drawable_objects(bound(150));
 vector<GameKartObject *> kart_objects;
 
 int g_num_players = 1;
+float texture_angle = 0.0;
+float texture_angle2 = 0.0;
 
 // GLFW Window
 int g_win_height, g_win_width;
@@ -200,7 +202,7 @@ void setProjectionMatrix(int kartIndex) {
          (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 void setSkyboxProjectionMatrix() {
-   g_proj = glm::perspective(30.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
+   g_proj = glm::perspective(45.0f, (float)g_current_width/g_current_height, 0.1f, 250.f);
 }
 
 /* camera controls */
@@ -366,8 +368,9 @@ void drawSkyBox(float lightX, float lightZ)
    meshShader->setLight(g_lightInfo);
    meshShader->setIsLit(1);  
    
-   skyBox->setPosition(glm::vec3(0,0.3,0));
+   skyBox->setPosition(glm::vec3(0,0.5,0));
    skyBox->setScale(glm::vec3(1.0, 1.0, 1.0));
+   //skyBox->setRotation(glm::vec3(0.0,0.0,90.0));
    skyBox->draw(meshShader, g_model_trans, 1.0f);
 meshShader->setIsLit(0);
 
@@ -542,16 +545,71 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 
 
 
+void gameMenuBG(double dt)
+{
+
+  glm::mat4 bg_proj = glm::ortho(0.0f, (float)g_current_width, (float)g_current_height, 0.0f, -1.0f, 1.0f);
+   glm::mat4 bg_view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 1.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
+
+   hudShader->makeActive();
+   hudShader->use();
+   hudShader->setViewMatrix(bg_view);
+   hudShader->setProjectionMatrix(bg_proj);
+
+    texture_angle += 20 * dt;
+    texture_angle2 += 300 * dt;  
+
+   g_model_trans.pushMatrix();
+   g_model_trans.translate(glm::vec3(g_current_width/2.0,g_current_height/2.0,0.0));
+   g_model_trans.rotate(texture_angle,glm::vec3(0.0,0.0,1.0));
+   g_model_trans.pushMatrix();
+   g_model_trans.translate(vec3(-g_current_width/2.0, -g_current_height/2.0, 0.0));
+   g_model_trans.scale(g_current_width, g_current_height, 1.0);
+
+
+
+
+
+   
+   hudShader->setModelMatrix(g_model_trans.getMatrix());
+   
+
+ 
+   hudShader->draw(string("timer"));
+   g_model_trans.popMatrix();
+   g_model_trans.rotate(texture_angle2,glm::vec3(0.0,0.0,1.0));
+   g_model_trans.pushMatrix();
+   g_model_trans.translate(vec3(-g_current_width/2.0, -g_current_height/2.0, 0.0));
+   g_model_trans.scale(g_current_width, g_current_height, 1.0); 
+   hudShader->setModelMatrix(g_model_trans.getMatrix());
+   hudShader->draw(string("tneedle"));
+   g_model_trans.translate(vec3(0.5,0.5,0.0));
+   hudShader->setModelMatrix(g_model_trans.getMatrix());
+   hudShader->draw(string("turningEnergy"));
+   g_model_trans.translate(vec3(-1.0,-1.0,0.0));
+   hudShader->setModelMatrix(g_model_trans.getMatrix());
+   hudShader->draw(string("boostEnergy"));
+   g_model_trans.translate(vec3(0.5,0.5,0.0));
+   hudShader->setModelMatrix(g_model_trans.getMatrix());
+   hudShader->draw(string("jetpackEnergy"));   
+
+   g_model_trans.popMatrix();
+   g_model_trans.popMatrix();
+
+}
+
 void gameMenu(double dt)
 {
 
 
 
-   glClearColor (0.2f, 0.2f, 0.7f, 1.0f);
+   glClearColor ((float)rCol, (float)bCol, (float)gCol, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    glDisable(GL_DEPTH_TEST);
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
+
+   gameMenuBG(dt);
 
 
    char text[100];
@@ -708,7 +766,9 @@ void menuLoop()
    
 
    gameMenu(dt);
-   g_last_time = g_time; 
+   g_last_time = g_time;
+   glfwSwapBuffers();
+ 
 }
 
 void drawHUD (int kartIndex, double dt) {
@@ -851,7 +911,7 @@ void initObjects(const char *map) {
    // TODO - test for return values (but we usually know if they work or not)
    g_camera = new GameCamera();
    
-   hudShader = new HUDShader();
+
    meshShader = new PhongShader();
    // Light 
    g_lightInfo.pos = vec3(1, 50, 1);
@@ -1093,6 +1153,8 @@ void initialize(const char *map)
    srand(0xdeadf00d);
 
    mapSelected = map;
+
+   hudShader = new HUDShader();
    //initObjects(map);
 }
 
