@@ -136,7 +136,7 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
    else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
       //printf("before: %f, %f\n", getSpeed(), getDirection());
       setDirection(otherKart->preCollisionDir);
-      setSpeed(otherKart->preCollisionSpd * 0.75);
+      setSpeed(otherKart->preCollisionSpd);
       //printf("after: %f, %f\n", getSpeed(), getDirection());
       
       //printf("%f ", vecAngle(getDirectionVector(), otherKart->getDirectionVector()));
@@ -145,12 +145,12 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       if (absAngleDif(preCollisionDir, getDirection()) > 90) {
          setDirection(getDirection()+180);
          setSpeed(-getSpeed());
-         printf("flip: %f\n", getDirection());
+         //printf("flip: %f\n", getDirection());
       }
       
       vec3 oldPos = getPosition();
       vec3 oldVel = getVelocity();
-      setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
+      //setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
       
       //printf("%f %f %f\n", oldVel.x, oldVel.y, oldVel.z);
       /*vec3 othPos = other->getPosition();
