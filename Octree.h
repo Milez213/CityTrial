@@ -24,7 +24,7 @@ public:
       virtual bool operator() (bound subDivision) = 0;
    };
    
-private:
+protected:
    struct LeafNode;
    
    struct SubDivision {

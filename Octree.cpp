@@ -72,7 +72,10 @@ Octree::SubDivision::~SubDivision() {
 
 void Octree::SubDivision::add(LeafNode *leaf) {
    
-   if (leaf->boundingBox.dimension.x > boundingBox.dimension.x/2) {
+   if (leaves.size() < 8 ||
+       leaf->boundingBox.dimension.x > boundingBox.dimension.x/2 ||
+       leaf->boundingBox.dimension.y > boundingBox.dimension.y/2 ||
+       leaf->boundingBox.dimension.z > boundingBox.dimension.z/2) {
       leaves.insert(leaf);
       leaf->parents.insert(this);
    }
