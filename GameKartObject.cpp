@@ -487,7 +487,7 @@ void GameKartObject::cyclePartList(list<GamePartUpgrade *> &list)
    list.pop_front();
    list.front()->cycleStatOn(&properties);
    if (dynamic_cast<GamePartNone *>(list.front())) {
-       deactivate_part_sound->play();
+       //deactivate_part_sound->play();
    }
 }
 void GameKartObject::addActive(GameActiveUpgrade *active)
@@ -504,7 +504,7 @@ void GameKartObject::addActive(GameActiveUpgrade *active)
 void GameKartObject::cycleActives()
 {
 
-
+   
    if (actionOn) {
       activeUpgrades.front()->activeEnd(this);
       actionOn = false;
