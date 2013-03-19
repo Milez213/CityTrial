@@ -60,16 +60,16 @@ bool loadMap(const char* filename, Octree &map) {
         fscanf(file, "%s %d\n", name, &matnum);
 
         read3f(p, file);
-        printf("read p:\n");
-        fprint3f(p, stdout);
+        //printf("read p:\n");
+        //fprint3f(p, stdout);
 
         read3f(s, file);
-        printf("read s:\n");
-        fprint3f(s, stdout);
+        //printf("read s:\n");
+        //fprint3f(s, stdout);
 
         read3f(r, file);
-        printf("read r:\n");
-        fprint3f(r, stdout);
+        //printf("read r:\n");
+        //fprint3f(r, stdout);
 
         // TODO - put this info in a std::map
         if (strcmp(name, "building") == 0) {

@@ -45,7 +45,7 @@ GameDrawableObject::GameDrawableObject(const char *objFile) : GameObject(), toRe
    g_model_manager->getObject(fileName.c_str(), &meshStorage[0], &boundingInfo);
    
    for (int i = 1; ifstream((tempName = appendInt(fileName, i)).c_str()).good(); i++) {
-      printf("LoD loaded\n");
+      //printf("LoD loaded\n");
       meshStorage.resize(i+1);
       g_model_manager->getObject(tempName.c_str(), &meshStorage[i], &boundingInfo);
    }
@@ -326,7 +326,7 @@ const bound GameDrawableObject::getBoundingInfo()
 
 int GameDrawableObject::lodIndex(float levelOfDetail)
 {
-   assert(levelOfDetail > 0 && levelOfDetail <= 1);
+   //assert(levelOfDetail > 0 && levelOfDetail <= 1);
    return floor((1-levelOfDetail) * meshStorage.size());
 }
 

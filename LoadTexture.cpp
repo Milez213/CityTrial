@@ -16,7 +16,7 @@ GLvoid LoadTextureAlpha(const char* image_file, int texID) {
     printf("Error allocating space for image");
     exit(1);
   }
-  cout << "trying to load " << image_file << endl;
+  //cout << "trying to load " << image_file << endl;
   if (!ImageLoad32bpp(image_file, TextureImage)) {
     exit(1);
   }  
@@ -42,7 +42,7 @@ GLvoid LoadTexture(const char* image_file, int texID) {
     printf("Error allocating space for image");
     exit(1);
   }
-  cout << "trying to load " << image_file << endl;
+  //cout << "trying to load " << image_file << endl;
   if (!ImageLoad(image_file, TextureImage)) {
     exit(1);
   }  

@@ -358,7 +358,7 @@ void update(double dt)
    for (it = drawable_objects.begin();
          it != drawable_objects.end();) {
       if ((*it)->isScheduledForRemoval()) {
-         printf("erasing: %s\n", (*it)->getName());
+         //printf("erasing: %s\n", (*it)->getName());
          // it now points to the next obj
          /*it =*/ drawable_objects.erase(it++);
       } else {
