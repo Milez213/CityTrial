@@ -56,17 +56,17 @@ public:
    
    virtual void partUpdate(GameKartObject *kart, float dt) {
       if (kart->isAirborn()) {
-         float speedDampedTurnAngle = 2 * kart->properties.getTurnSpeed() * (1 - std::min(1.0f, abs(kart->getSpeed())/kart->properties.getTurnSpeed()));
+         float speedDampedTurnAngle = kart->properties.getTurnSpeed()/2 * std::max(0.0f, kart->getSpeed())/kart->properties.getTurnSpeed();
          
          if (kart->getJoystickState(0) < 0.0) {
             //kart->changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
-            kart->changeKartRollAngle(dt,-speedDampedTurnAngle);
+            kart->changeKartRollAngle(dt, -1, speedDampedTurnAngle);
          } else if(kart->getJoystickState(0) > 0.0) {
             //kart->changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
-            kart->changeKartRollAngle(dt,speedDampedTurnAngle);
+            kart->changeKartRollAngle(dt, 1, speedDampedTurnAngle);
          } else if (kart->getJoystickState(0) == 0.0){
             //kart->changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
-            kart->changeKartRollAngle(dt,0);
+            kart->changeKartRollAngle(dt, 0, speedDampedTurnAngle);
          }
          
          float directionMult = dt*kart->getKartRollAngle() * kart->getSpeed()/M_PI;

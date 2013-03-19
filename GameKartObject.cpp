@@ -426,12 +426,12 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
 {
    float targetAngle = mult*speedDampedTurnAngle;
    if (tireTurnAngle < targetAngle) {
-      tireTurnAngle += dt * (1 + abs(speedDampedTurnAngle))/tireTurnAngleTime;
+      tireTurnAngle += dt * (1 + speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle > targetAngle)
          tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
-      tireTurnAngle -= dt * (1 + abs(speedDampedTurnAngle))/tireTurnAngleTime;
+      tireTurnAngle -= dt * (1 + speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
@@ -457,18 +457,18 @@ void GameKartObject::changeKartPitchAngle(float dt, float pitchAngle)
 
 
 
-void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
+void GameKartObject::changeKartRollAngle(float dt, float mult, float speedDampedRollAngle)
 {
-   float targetAngle = rollAngle;
+   float targetAngle = mult*speedDampedRollAngle;
    if(carRollAngle < targetAngle)
    {
-      carRollAngle += dt * 25.0;
+      carRollAngle += dt * (1 + speedDampedRollAngle)/tireTurnAngleTime;;
       if (carRollAngle > targetAngle)
          carRollAngle = targetAngle;
    }
    else if (carRollAngle > targetAngle)
    {
-      carRollAngle -= dt * 25.0;
+      carRollAngle -= dt * (1 + speedDampedRollAngle)/tireTurnAngleTime;;
       if (carRollAngle < targetAngle)
          carRollAngle = targetAngle;
    }
@@ -752,6 +752,10 @@ else
           changeKartRollAngle(dt,-25.0);
        else
           changeKartRollAngle(dt,0.0);*/
+      
+      if (joystickState[0] == 0.0) {
+         changeKartRollAngle(dt, 0, properties.getTurnSpeed());
+      }
 
        // flying_sound->resume();
        if (!playedFlyingSound) {

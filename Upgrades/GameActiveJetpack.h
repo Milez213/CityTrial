@@ -40,14 +40,14 @@ public:
          
          if(kart->getJoystickState(0) > 0.0) {
             kart->setVelocity(kart->GameObject::getVelocity() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()+90));
-            kart->changeKartRollAngle(dt,25.0);
+            kart->changeKartRollAngle(dt, 5, 5.0);
          }
          else if (kart->getJoystickState(0) < 0.0) {
             kart->setVelocity(kart->GameObject::getVelocity() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()-90));
-            kart->changeKartRollAngle(dt,-25.0);
+            kart->changeKartRollAngle(dt, -5, 5.0);
          }
          else {
-            kart->changeKartRollAngle(dt,0.0);
+            kart->changeKartRollAngle(dt, 0, 5.0);
          }
          
          kart->changeKartPitchAngle(dt, kart->getFallSpeed());

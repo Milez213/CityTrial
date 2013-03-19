@@ -101,7 +101,7 @@ public:
     
    //void stop();
    //void done();
-   void changeKartRollAngle(float dt,float rollAngle);
+   void changeKartRollAngle(float dt,float mult, float speedDampedRollAngle);
    float getKartRollAngle() { return carRollAngle; }
    void changeKartPitchAngle(float dt,float pitchAngle);
    
