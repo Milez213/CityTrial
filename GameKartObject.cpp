@@ -109,6 +109,8 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
+      setVelocity(vec3(0));
+      
       if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
          if (oldPos.y + 20 * dt > top) {
             //float angle = vecAngle(scenery->getTopVectorAt(oldPos.x, oldPos.z), vec3(0, 1, 0));

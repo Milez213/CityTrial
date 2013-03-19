@@ -29,6 +29,7 @@ public:
    
    virtual glm::vec3 getDirectionVector() { return glm::vec3(cos(direction), 0, sin(direction)); };
    virtual glm::vec3 getVelocity();
+   virtual void setVelocity(glm::vec3 vel) { this->vel = vel; };
    
    virtual void update(float dt);
    virtual void onCollide(GameDrawableObject *other, float dt);

@@ -13,6 +13,7 @@ glm::vec3 GamePhysicalObject::getVelocity()
 {
    vec3 vel = getSpeed() * getDirectionVector();
    vel.y = -fallSpeed;
+   vel += this->vel;
    return vel;
 }
 
@@ -32,6 +33,17 @@ void GamePhysicalObject::update(float dt)
       setPosition(vec3(pos.x, 100, pos.z));
       fallSpeed = 0;
    }
+   
+   vec3 signs(sign(vel.x), sign(vel.y), sign(vel.z));
+   vel.x -= signs.x * friction * dt;
+   if (vel.x * signs.x < 0)
+      vel.x = 0;
+   vel.y -= signs.y* friction * dt;
+   if (vel.y * signs.y < 0)
+      vel.y = 0;
+   vel.z -= signs.z* friction * dt;
+   if (vel.z * signs.z < 0)
+      vel.z = 0;
    
    /*if (getPosition().y < scl.y && fallSpeed > 0) {
       fallSpeed = 0;
