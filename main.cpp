@@ -139,6 +139,7 @@ int soundVolume = 100;
 double menuScale = 1.0;
 int menuScaleDir = 1;
 double menuX = 1.0;
+bool drawOctree = false;
 
 double rCol = 0.5;
 double gCol = 0.0;
@@ -505,7 +506,8 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
    
    glCullFace(GL_BACK);
 
-   
+   if (drawOctree)
+      drawable_objects.draw(meshShader, g_model_trans);
    
    /*// draw objects
    Octree::iterator it;
@@ -1240,7 +1242,12 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       {if(musicVolume < 101){musicVolume += 1; g_music->setVolume(musicVolume);}}
       if(selected == 6){if(soundVolume < 101){soundVolume +=1;}}
       }
-      break;   
+      break;
+   case 'O':
+      if (menu == false) {
+         drawOctree = !drawOctree;
+      }
+      break;
    case GLFW_KEY_ENTER:
       if(menu == true && action == GLFW_RELEASE){
          if(selected == 0)

@@ -58,7 +58,18 @@ std::set<GameDrawableObject *> Octree::getFilteredSubset(Filter &filter) {
    return rtn;
 }
 
+void Octree::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix) {
+   if (!SubDivision::drawableCube)
+      SubDivision::drawableCube = new GameDrawableObject("models/house.obj");
+   
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   head->draw(meshShader, modelViewMatrix);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
+
+
+GameDrawableObject *Octree::SubDivision::drawableCube = NULL;
 
 Octree::SubDivision::SubDivision(bound boundingBox) :
       boundingBox(boundingBox), subDivisions() {
@@ -73,9 +84,9 @@ Octree::SubDivision::~SubDivision() {
 void Octree::SubDivision::add(LeafNode *leaf) {
    
    if (leaves.size() < 8 ||
-       leaf->boundingBox.dimension.x > boundingBox.dimension.x/2 ||
+       leaf->boundingBox.dimension.x > boundingBox.dimension.z/2 ||
        leaf->boundingBox.dimension.y > boundingBox.dimension.y/2 ||
-       leaf->boundingBox.dimension.z > boundingBox.dimension.z/2) {
+       leaf->boundingBox.dimension.z > boundingBox.dimension.x/2) {
       leaves.insert(leaf);
       leaf->parents.insert(this);
    }
@@ -170,6 +181,16 @@ void Octree::SubDivision::getFilteredSubset(std::set<GameDrawableObject *> *rtn,
    }
 }
 
+void Octree::SubDivision::draw(PhongShader *meshShader, RenderingHelper modelViewMatrix) {
+   drawableCube->GameObject::setPosition(boundingBox.center);
+   drawableCube->GameObject::setScale(boundingBox.dimension);
+   drawableCube->draw(meshShader, modelViewMatrix, 1);
+   
+   for (int i = 0; i < 8;  i++) {
+      if (subDivisions[i])
+         subDivisions[i]->draw(meshShader, modelViewMatrix);
+   }
+}
 
 
 
