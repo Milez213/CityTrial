@@ -55,6 +55,8 @@ void GamePointObject::onCollide(GameKartObject *other)
       pos = other->getPosition() + movement * other->getRadius() * 3.0f;
       vel = movement * 20.0f;
       vel.y = 5.0f;
+      vel.x *= 2.0f;
+      vel.z *= 1.5f;
       time = 0.0;
    }
 }
@@ -83,9 +85,9 @@ void GamePointObject::update(float dt)
       }
       
       if (time < 1.0f) {
-         setScale(vec3((5.0f-time * 4.0f)/10.0f, (5.0f-time*4.0f)/10.0f, (5.0f-time*4.0f)/10.0f));
+         setScale(vec3((5.0f-time * 2.0f)/10.0f, (5.0f-time*2.0f)/10.0f, (5.0f-time*2.0f)/10.0f));
       } else {
-         setScale(vec3(1.0f/10.0f, 1.0f/10.0f, 1.0f/10.0f));
+         setScale(vec3(3.0f/10.0f, 3.0f/10.0f, 3.0f/10.0f));
       }
    }
    

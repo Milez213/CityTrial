@@ -373,8 +373,8 @@ void drawSkyBox(float lightX, float lightZ)
    meshShader->setLight(g_lightInfo);
    meshShader->setIsLit(1);  
    
-   skyBox->setPosition(glm::vec3(0,0.5,0));
-   skyBox->setScale(glm::vec3(1.0, 1.0, 1.0));
+   skyBox->setPosition(glm::vec3(0,9,0));
+   skyBox->setScale(glm::vec3(10.0, 10.0, 10.0));
    //skyBox->setRotation(glm::vec3(0.0,0.0,90.0));
    skyBox->draw(meshShader, g_model_trans, 1.0f);
 meshShader->setIsLit(0);
@@ -553,7 +553,7 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
 void gameMenuBG(double dt)
 {
 
-  glm::mat4 bg_proj = glm::ortho(0.0f, (float)g_current_width, (float)g_current_height, 0.0f, -1.0f, 1.0f);
+  glm::mat4 bg_proj = glm::ortho(0.0f, (float)g_win_width, (float)g_win_height, 0.0f, -1.0f, 1.0f);
    glm::mat4 bg_view = glm::lookAt( glm::vec3( 0.0f, 0.0f, 1.0f ),glm::vec3( 0.0f, 0.0f, 0.0f ),glm::vec3( 0.0f, 1.0f, 0.0f ) );
 
    hudShader->makeActive();
@@ -565,11 +565,11 @@ void gameMenuBG(double dt)
     texture_angle2 += 300 * dt;  
 
    g_model_trans.pushMatrix();
-   g_model_trans.translate(glm::vec3(g_current_width/2.0,g_current_height/2.0,0.0));
+   g_model_trans.translate(glm::vec3(g_win_width/2.0,g_win_height/2.0,0.0));
    g_model_trans.rotate(texture_angle,glm::vec3(0.0,0.0,1.0));
    g_model_trans.pushMatrix();
-   g_model_trans.translate(vec3(-g_current_width/2.0, -g_current_height/2.0, 0.0));
-   g_model_trans.scale(g_current_width, g_current_height, 1.0);
+   g_model_trans.translate(vec3(-g_win_width/2.0, -g_win_height/2.0, 0.0));
+   g_model_trans.scale(g_win_width, g_win_height, 1.0);
 
 
 
@@ -584,8 +584,8 @@ void gameMenuBG(double dt)
    g_model_trans.popMatrix();
    g_model_trans.rotate(texture_angle2,glm::vec3(0.0,0.0,1.0));
    g_model_trans.pushMatrix();
-   g_model_trans.translate(vec3(-g_current_width/2.0, -g_current_height/2.0, 0.0));
-   g_model_trans.scale(g_current_width, g_current_height, 1.0); 
+   g_model_trans.translate(vec3(-g_win_width/2.0, -g_win_height/2.0, 0.0));
+   g_model_trans.scale(g_win_width, g_win_height, 1.0); 
    hudShader->setModelMatrix(g_model_trans.getMatrix());
    hudShader->draw(string("tneedle"));
    g_model_trans.translate(vec3(0.5,0.5,0.0));
@@ -614,6 +614,8 @@ void gameMenu(double dt)
    glAlphaFunc(GL_GREATER,0.1f);
    glEnable(GL_ALPHA_TEST);
 
+
+
    gameMenuBG(dt);
 
 
@@ -622,50 +624,50 @@ void gameMenu(double dt)
     
 
    sprintf(text, "Kart part park");
-   g_ttf_text_renderer->drawText(text, menuX, 0.75, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(rCol,gCol,bCol)); 
+   g_ttf_text_renderer->drawText(text, menuX, 0.75, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(rCol,gCol,bCol)); 
 
    if(selected == 0){
    sprintf(text, "Begin 1p game");
-   g_ttf_text_renderer->drawText(text, menuX, 0.50, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, 0.50, (menuScale * 5.0)/g_win_width, (menuScale * 5.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Begin 1p game");
-   g_ttf_text_renderer->drawText(text, menuX, 0.50, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
+   g_ttf_text_renderer->drawText(text, menuX, 0.50, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 2){
    sprintf(text, "Begin 2p game");
-   g_ttf_text_renderer->drawText(text, menuX, 0.25, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, 0.25, (menuScale * 5.0)/g_win_width, (menuScale * 5.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Begin 2p game");
-   g_ttf_text_renderer->drawText(text, menuX, 0.25, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
+   g_ttf_text_renderer->drawText(text, menuX, 0.25, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 4){
    sprintf(text, "Music Volume:%d", musicVolume );
-   g_ttf_text_renderer->drawText(text, menuX, 0.0, (menuScale * 4.0)/g_current_width, (menuScale * 4.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, 0.0, (menuScale * 4.0)/g_win_width, (menuScale * 4.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }else{
    sprintf(text, "Music Volume:%d", musicVolume );
-   g_ttf_text_renderer->drawText(text, menuX, 0.0, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
+   g_ttf_text_renderer->drawText(text, menuX, 0.0, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
    }
 
    if(selected == 6){
    sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, menuX, -0.25, (menuScale * 4.0)/g_current_width, (menuScale * 4.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, (menuScale * 4.0)/g_win_width, (menuScale * 4.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, menuX, -0.25, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));  
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));  
    }
 
    if(selected == 8){
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, menuX, -0.50, (menuScale * 5.0)/g_current_width, (menuScale * 5.0)/g_current_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, -0.50, (menuScale * 5.0)/g_win_width, (menuScale * 5.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, menuX, -0.50, 2.0/g_current_width, 2.0/g_current_height, glm::vec3(1.0,1.0,1.0));   
+   g_ttf_text_renderer->drawText(text, menuX, -0.50, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
    }
    
     
@@ -736,6 +738,8 @@ void colorChange(double dt)
 
 void menuLoop()
 {
+   glViewport(0, 0, g_win_width, g_win_height );
+         glScissor(0, 0, g_win_width, g_win_height );
    double dt;
    int time_then = 0;
    int time_now = 0;
@@ -772,6 +776,7 @@ void menuLoop()
 
    gameMenu(dt);
    g_last_time = g_time;
+
  
 }
 
@@ -1175,8 +1180,8 @@ void shutdown() {
 void reshape(int width, int height)
 {
    g_win_width = width;
-   g_win_height = height;
-   
+   g_win_height = height;  
+
    if (g_num_players == 1) {
       g_current_height = g_win_height;
       g_current_width = g_win_width;
