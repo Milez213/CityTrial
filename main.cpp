@@ -660,21 +660,12 @@ void gameMenu(double dt)
    }
 
    if(selected == 6){
-   sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, menuX, -0.25, (menuScale * 4.0)/g_win_width, (menuScale * 4.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
-   }
-   else{
-   sprintf(text, "Sound Volume:%d ", soundVolume);
-   g_ttf_text_renderer->drawText(text, menuX, -0.25, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));  
-   }
-
-   if(selected == 8){
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, menuX, -0.50, (menuScale * 5.0)/g_win_width, (menuScale * 5.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, (menuScale * 5.0)/g_win_width, (menuScale * 5.0)/g_win_height, glm::vec3(rCol * 0.5,gCol * 0.5,bCol * 0.5));
    }
    else{
    sprintf(text, "Quit Game");
-   g_ttf_text_renderer->drawText(text, menuX, -0.50, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
+   g_ttf_text_renderer->drawText(text, menuX, -0.25, 2.0/g_win_width, 2.0/g_win_height, glm::vec3(1.0,1.0,1.0));   
    }
    
     
@@ -1227,20 +1218,18 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       break;
    case 'S':
       if(menu == true){
-         if(selected < 8)
+         if(selected < 6)
          {selected += 1;}
       }     
       break;
    case 'A':
       if(menu == true){if(selected == 4)
       {if(musicVolume > 0){musicVolume -= 1; g_music->setVolume(musicVolume);}}
-      if(selected == 6){if(soundVolume > 0){soundVolume -=1;}}
       }
       break;
    case 'D':
       if(menu == true){if(selected == 4)
       {if(musicVolume < 101){musicVolume += 1; g_music->setVolume(musicVolume);}}
-      if(selected == 6){if(soundVolume < 101){soundVolume +=1;}}
       }
       break;
    case 'O':
@@ -1264,7 +1253,7 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
             glfwSetTime(0.0);
             g_last_time = glfwGetTime();
          }
-         if(selected == 8)
+         if(selected == 6)
          {shutdown();}
       
       }
