@@ -325,16 +325,21 @@ void update(double dt)
 
    // only test kart objects with drawable objects
    
+   vector<set<GameDrawableObject *> > collisions;
+   
    for (unsigned int k = 0; k < kart_objects.size(); k++) {
       kart_objects[k]->setPreCollision();
+      
+      KartCollisionFilter filter(kart_objects[k]);
+      collisions.push_back(drawable_objects.getFilteredSubset(filter));
    }
    
    for (int k = 0; k < (int)kart_objects.size(); k++) {
-      KartCollisionFilter filter(kart_objects[k]);
-      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);
+      /*KartCollisionFilter filter(kart_objects[k]);
+      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);*/
       
       set<GameDrawableObject *>::iterator it;
-      for (it = collisions.begin(); it != collisions.end(); it++) {
+      for (it = collisions[k].begin(); it != collisions[k].end(); it++) {
          // don't test collision with self
          if (kart_objects[k] == *it) {
             continue;

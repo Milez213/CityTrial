@@ -148,9 +148,8 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          //printf("flip: %f\n", getDirection());
       }
       
-      vec3 oldPos = getPosition();
-      vec3 oldVel = getVelocity();
-      //setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
+      vec3 oldPos = getPosition(), oldVel = getVelocity();
+      setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
       
       //printf("%f %f %f\n", oldVel.x, oldVel.y, oldVel.z);
       /*vec3 othPos = other->getPosition();
