@@ -134,6 +134,8 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       } 
    }
    else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+      collide_sound->play();
+      
       //printf("before: %f, %f\n", getSpeed(), getDirection());
       setDirection(otherKart->preCollisionDir);
       setSpeed(otherKart->preCollisionSpd);
