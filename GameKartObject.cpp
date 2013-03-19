@@ -424,12 +424,12 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
 {
    float targetAngle = mult*speedDampedTurnAngle;
    if (tireTurnAngle < targetAngle) {
-      tireTurnAngle += dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
+      tireTurnAngle += dt * (1 + abs(speedDampedTurnAngle))/tireTurnAngleTime;
       if (tireTurnAngle > targetAngle)
          tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
-      tireTurnAngle -= dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
+      tireTurnAngle -= dt * (1 + abs(speedDampedTurnAngle))/tireTurnAngleTime;
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
