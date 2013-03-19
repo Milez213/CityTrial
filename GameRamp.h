@@ -19,7 +19,8 @@ public:
    GameRamp();
    
    virtual float getHeightAt(float x, float z);
-   virtual float getBottomAt(float x, float z) { return getHeightAt(x, z); }
+   virtual float getBottomAt(float x, float z) { return getHeightAt(x, z) - getScale().y/5; }
+   virtual glm::vec3 getTopVectorAt(float x, float z);
 };
 
 #endif /* defined(____GameRamp__) */

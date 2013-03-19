@@ -110,8 +110,11 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
       if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
-         if (oldPos.y + 0.5 > top) {
+         if (oldPos.y + 20 * dt > top) {
+            //float angle = vecAngle(scenery->getTopVectorAt(oldPos.x, oldPos.z), vec3(0, 1, 0));
+
             //printf("%s!!!\n", other->getName());
+            //carPitchAngle = angle;
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             setFallSpeed(0);
             airborn = false;
@@ -121,15 +124,35 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          else  {
             // bounce off
             collide_sound->play();
-            vec3 othPos = other->getPosition();
+            /*vec3 othPos = other->getPosition();
             vec3 oldPos = getPosition();
-            /*vec3 direction = othPos - oldPos;
+            vec3 direction = othPos - oldPos;
             direction = normalize(direction);
             direction *= (other->getRadius() + getRadius());
             float oldSpeed = getSpeed() * 0.1f;*/
-            vec3 oldVel = getVelocity();
+            
+            
+            //printf("before: %f, %f\n", getSpeed(), getDirection());
+            vec3 oldVec = getDirectionVector();
+            //printf("test: %f, %f\n", getDirection(), glm::degrees(glm::atan(-oldVec.z, oldVec.x)));
+            vec3 sideNorm = scenery->getSideVectorAt(oldPos.x, oldPos.z);
+            vec3 reflect = glm::reflect(oldVec, sideNorm);
+            //printf("%f %f | %f %f -> %f %f\n", oldVec.x, oldVec.z, sideNorm.x, sideNorm.z, reflect.x, reflect.z);
+            setSpeed(-getSpeed()*0.75);
+            setDirection(glm::degrees(glm::atan(-reflect.z, reflect.x)));
+            //printf("after: %f, %f\n", getSpeed(), getDirection());
+            
+            if (absAngleDif(preCollisionDir, getDirection()) > 90) {
+               setDirection(getDirection()+180);
+               setSpeed(-getSpeed());
+               //printf("flip: %f %f\n", getSpeed(), getDirection());
+            }
+            
+            //vec3 oldPos = getPosition(), oldVel = sideNorm * (1+abs(preCollisionSpd));
+            //vec3 oldVel(preCollisionSpd*cos(radians(preCollisionDir)), 0, preCollisionSpd*sin(radians(preCollisionDir)));
+            vec3 oldVel = -getVelocity();
             setPosition(vec3(oldPos.x - oldVel.x*dt, oldPos.y, oldPos.z - oldVel.z*dt));
-            setSpeed(-getSpeed() * 0.25f);
+            //setSpeed(-getSpeed() * 0.25f);
          }
       } 
    }
