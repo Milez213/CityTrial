@@ -53,6 +53,26 @@ public:
        props->setLift(props->getLift()+lift);
    }
    virtual void cycleStatOff(GameKartProperties *props) { props->setLift(props->getLift()-lift); }
+   
+   virtual void partUpdate(GameKartObject *kart, float dt) {
+      if (kart->isAirborn()) {
+         float speedDampedTurnAngle = kart->properties.getTurnSpeed()/2 * std::max(0.0f, kart->getSpeed())/kart->properties.getTurnSpeed();
+         
+         if (kart->getJoystickState(0) < 0.0) {
+            //kart->changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
+            kart->changeKartRollAngle(dt, -1, speedDampedTurnAngle);
+         } else if(kart->getJoystickState(0) > 0.0) {
+            //kart->changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
+            kart->changeKartRollAngle(dt, 1, speedDampedTurnAngle);
+         } else if (kart->getJoystickState(0) == 0.0){
+            //kart->changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
+            kart->changeKartRollAngle(dt, 0, speedDampedTurnAngle);
+         }
+         
+         float directionMult = dt*kart->getKartRollAngle() * kart->getSpeed()/M_PI;
+         kart->setDirection(kart->getDirection()+directionMult);
+      }
+   }
 
    virtual void playPickupSound() {
        // overwrite default generic_pickup.ogg in GameUpgradeObject

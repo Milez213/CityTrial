@@ -10,6 +10,7 @@
 #include "Upgrades/GameActiveNone.h"
 
 #include <cmath>
+#include "util.h"
 
 #include <iostream>
 using namespace std;
@@ -108,9 +109,14 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       float top = scenery->getHeightAt(oldPos.x, oldPos.z);
       float bottom = scenery->getBottomAt(oldPos.x, oldPos.z);
       
+      setVelocity(vec3(0));
+      
       if (oldPos.y - getRideHeight() < top and oldPos.y + getRideHeight() > bottom) {//and oldPos.y + 1 >= newHeight) {
-         if (oldPos.y + 0.5 > top) {
+         if (oldPos.y + 20 * dt > top) {
+            //float angle = vecAngle(scenery->getTopVectorAt(oldPos.x, oldPos.z), vec3(0, 1, 0));
+
             //printf("%s!!!\n", other->getName());
+            //carPitchAngle = angle;
             setPosition(vec3(oldPos.x, top+getRideHeight(), oldPos.z));
             setFallSpeed(0);
             airborn = false;
@@ -120,28 +126,73 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          else  {
             // bounce off
             collide_sound->play();
-            vec3 othPos = other->getPosition();
+            /*vec3 othPos = other->getPosition();
             vec3 oldPos = getPosition();
-            /*vec3 direction = othPos - oldPos;
+            vec3 direction = othPos - oldPos;
             direction = normalize(direction);
             direction *= (other->getRadius() + getRadius());
             float oldSpeed = getSpeed() * 0.1f;*/
-            vec3 oldVel = getVelocity();
+            
+            
+            //printf("before: %f, %f\n", getSpeed(), getDirection());
+            vec3 oldVec = getDirectionVector();
+            //printf("test: %f, %f\n", getDirection(), glm::degrees(glm::atan(-oldVec.z, oldVec.x)));
+            vec3 sideNorm = scenery->getSideVectorAt(oldPos.x, oldPos.z);
+            vec3 reflect = glm::reflect(oldVec, sideNorm);
+            //printf("%f %f | %f %f -> %f %f\n", oldVec.x, oldVec.z, sideNorm.x, sideNorm.z, reflect.x, reflect.z);
+            setSpeed(-getSpeed()*0.75);
+            setDirection(glm::degrees(glm::atan(-reflect.z, reflect.x)));
+            //printf("after: %f, %f\n", getSpeed(), getDirection());
+            
+            if (absAngleDif(preCollisionDir, getDirection()) > 90) {
+               setDirection(getDirection()+180);
+               setSpeed(-getSpeed());
+               //printf("flip: %f %f\n", getSpeed(), getDirection());
+            }
+            
+            //vec3 oldPos = getPosition(), oldVel = sideNorm * (1+abs(preCollisionSpd));
+            //vec3 oldVel(preCollisionSpd*cos(radians(preCollisionDir)), 0, preCollisionSpd*sin(radians(preCollisionDir)));
+            vec3 oldVel = -getVelocity();
             setPosition(vec3(oldPos.x - oldVel.x*dt, oldPos.y, oldPos.z - oldVel.z*dt));
-            setSpeed(-getSpeed() * 0.25f);
+            //setSpeed(-getSpeed() * 0.25f);
          }
       } 
    }
-   else if (dynamic_cast<GameKartObject *>(other)) {
-      /*printf("collided with kart\n");*/
-      vec3 othPos = other->getPosition();
+   else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+      collide_sound->play();
+      
+      //printf("before: %f, %f\n", getSpeed(), getDirection());
+      vec3 preCollisionVel(preCollisionSpd*cos(radians(preCollisionDir)), 0, preCollisionSpd*sin(radians(preCollisionDir)));
+      vec3 othCollisionVel(otherKart->preCollisionSpd*cos(radians(otherKart->preCollisionDir)), 0, otherKart->preCollisionSpd*sin(radians(otherKart->preCollisionDir)));
+      vec3 resCollisionVel(((othCollisionVel - preCollisionVel)*0.75f + preCollisionVel + othCollisionVel)*0.5f);
+      
+      setDirection(degrees(atan(resCollisionVel.z, resCollisionVel.x)));
+      setSpeed(length(resCollisionVel));
+      /*setDirection(otherKart->preCollisionDir);
+      setSpeed(otherKart->preCollisionSpd);*/
+      //printf("after: %f, %f\n", getSpeed(), getDirection());
+      
+      //printf("%f ", vecAngle(getDirectionVector(), otherKart->getDirectionVector()));
+      //printf("%f\n", absAngleDif(preCollisionDir, otherKart->preCollisionDir));
+      
+      if (absAngleDif(preCollisionDir, getDirection()) > 90) {
+         setDirection(getDirection()+180);
+         setSpeed(-getSpeed());
+         //printf("flip: %f\n", getDirection());
+      }
+      
+      vec3 oldPos = getPosition(), oldVel = getVelocity();
+      setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
+      
+      //printf("%f %f %f\n", oldVel.x, oldVel.y, oldVel.z);
+      /*vec3 othPos = other->getPosition();
       vec3 oldPos = getPosition();
       vec3 direction = othPos - oldPos;
       direction = normalize(direction);
       direction *= (other->getRadius() + getRadius()) * 1.3;
       //float oldSpeed = getSpeed() * 0.1f;
       setSpeed(-getSpeed() * 0.25f);
-      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
+      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));*/
    }
    else if (GamePointObject *point = dynamic_cast<GamePointObject *>(other)) {
        // Collided with cuby thing
@@ -375,12 +426,12 @@ void GameKartObject::changeTireTurnAngle(float dt, float mult, float speedDamped
 {
    float targetAngle = mult*speedDampedTurnAngle;
    if (tireTurnAngle < targetAngle) {
-      tireTurnAngle += dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
+      tireTurnAngle += dt * (1 + speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle > targetAngle)
          tireTurnAngle = targetAngle;
    }
    else if (tireTurnAngle > targetAngle) {
-      tireTurnAngle -= dt * abs(speedDampedTurnAngle)/tireTurnAngleTime;
+      tireTurnAngle -= dt * (1 + speedDampedTurnAngle)/tireTurnAngleTime;
       if (tireTurnAngle < targetAngle)
          tireTurnAngle = targetAngle;
    }
@@ -406,18 +457,18 @@ void GameKartObject::changeKartPitchAngle(float dt, float pitchAngle)
 
 
 
-void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
+void GameKartObject::changeKartRollAngle(float dt, float mult, float speedDampedRollAngle)
 {
-   float targetAngle = rollAngle;
+   float targetAngle = mult*speedDampedRollAngle;
    if(carRollAngle < targetAngle)
    {
-      carRollAngle += dt * 10.0;
+      carRollAngle += dt * (1 + speedDampedRollAngle)/tireTurnAngleTime;;
       if (carRollAngle > targetAngle)
          carRollAngle = targetAngle;
    }
    else if (carRollAngle > targetAngle)
    {
-      carRollAngle -= dt * 10.0;
+      carRollAngle -= dt * (1 + speedDampedRollAngle)/tireTurnAngleTime;;
       if (carRollAngle < targetAngle)
          carRollAngle = targetAngle;
    }
@@ -511,24 +562,30 @@ void GameKartObject::update(float dt)
       }
    }
    
+   frontParts.front()->partUpdate(this, dt);
+   sideParts.front()->partUpdate(this, dt);
+   backParts.front()->partUpdate(this, dt);
    
-   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
-   
-   if (joystickState[0] < 0.0) {
-      changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,-25.0);
-   } else if(joystickState[0] > 0.0) {
-      changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,25.0);
-   } else if (joystickState[0] == 0.0){
-      changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,0);
+   if (!isAirborn()) {
+      float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
+      
+      
+      if (joystickState[0] < 0.0) {
+         changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,-25.0);
+      } else if(joystickState[0] > 0.0) {
+         changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,25.0);
+      } else if (joystickState[0] == 0.0){
+         changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,0);
+      }
+      
+      float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
+      setDirection(oldDirection+directionMult);
    }
-
-   float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
-   setDirection(oldDirection+directionMult); 
-   setRotation(vec3(0, getDirection(), 0 ));
    
+   setRotation(vec3(0, getDirection(), 0 ));
    
      
 
@@ -689,12 +746,16 @@ else
        else*/
           changeKartPitchAngle(dt,-getFallSpeed());
       
-       if(joystickState[0] > 0.0)
+       /*if(joystickState[0] > 0.0)
           changeKartRollAngle(dt,25.0);
        else if(joystickState[0] < 0.0)
           changeKartRollAngle(dt,-25.0);
        else
-          changeKartRollAngle(dt,0.0);
+          changeKartRollAngle(dt,0.0);*/
+      
+      if (joystickState[0] == 0.0) {
+         changeKartRollAngle(dt, 0, properties.getTurnSpeed());
+      }
 
        // flying_sound->resume();
        if (!playedFlyingSound) {

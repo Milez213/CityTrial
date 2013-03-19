@@ -24,10 +24,12 @@ public:
       virtual bool operator() (bound subDivision) = 0;
    };
    
-private:
+protected:
    struct LeafNode;
    
    struct SubDivision {
+      static GameDrawableObject *drawableCube;
+      
       bound boundingBox;
       SubDivision *subDivisions[8];
       std::set<LeafNode *> leaves;
@@ -40,6 +42,7 @@ private:
       //void getCollisionsFor(std::set<GameDrawableObject *> *rtn, GameDrawableObject *val);
       //void getSubsetInFrustum(std::set<GameDrawableObject *> *rtn, bool (*isInFrustum)(bound));
       void getFilteredSubset(std::set<GameDrawableObject *> *rtn, Filter &filter);
+      void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
       
    private:
       void divide();
@@ -89,6 +92,7 @@ public:
    iterator begin() { return iterator(leafMap.begin()); }
    iterator end() { return iterator(leafMap.end()); }
    std::set<GameDrawableObject *> getFilteredSubset(Filter &filter);
+   void draw(PhongShader *meshShader, RenderingHelper modelViewMatrix);
    //std::set<GameDrawableObject *> getCollisionsWith(GameDrawableObject *val);
    //std::set<GameDrawableObject *> getSubsetInFrustum(bool (*isInFrustum)(bound));
 };

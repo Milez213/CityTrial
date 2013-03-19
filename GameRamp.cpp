@@ -47,3 +47,11 @@ float GameRamp::getHeightAt(float x, float z)
    
    return minHeight + zMod*incHeight;
 }
+
+glm::vec3 GameRamp::getTopVectorAt(float x, float z) {
+   vec3 scl(getScale()), rot(getRotation());
+   
+   float h = length(vec2(scl.x, scl.z));
+   
+   return normalize(vec3(h*cos(rot.y), scl.y, h*sin(rot.y)));
+}

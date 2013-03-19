@@ -139,6 +139,7 @@ int soundVolume = 100;
 double menuScale = 1.0;
 int menuScaleDir = 1;
 double menuX = 1.0;
+bool drawOctree = false;
 
 double rCol = 0.5;
 double gCol = 0.0;
@@ -324,12 +325,22 @@ void update(double dt)
    }*/
 
    // only test kart objects with drawable objects
-   for (int k = 0; k < (int)kart_objects.size(); k++) {
+   
+   vector<set<GameDrawableObject *> > collisions;
+   
+   for (unsigned int k = 0; k < kart_objects.size(); k++) {
+      kart_objects[k]->setPreCollision();
+      
       KartCollisionFilter filter(kart_objects[k]);
-      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);
+      collisions.push_back(drawable_objects.getFilteredSubset(filter));
+   }
+   
+   for (int k = 0; k < (int)kart_objects.size(); k++) {
+      /*KartCollisionFilter filter(kart_objects[k]);
+      set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);*/
       
       set<GameDrawableObject *>::iterator it;
-      for (it = collisions.begin(); it != collisions.end(); it++) {
+      for (it = collisions[k].begin(); it != collisions[k].end(); it++) {
          // don't test collision with self
          if (kart_objects[k] == *it) {
             continue;
@@ -495,7 +506,8 @@ void draw(float dt, int kartIndex, float lightX, float lightZ)
    
    glCullFace(GL_BACK);
 
-   
+   if (drawOctree)
+      drawable_objects.draw(meshShader, g_model_trans);
    
    /*// draw objects
    Octree::iterator it;
@@ -958,7 +970,7 @@ void initObjects(const char *map) {
       GameKartObject *kart = new GameKartObject("models/kart.obj");
       kart->setSpawnPos(vec3(30, 5.0, 15));
       kart->setPosition(kart->getSpawnPos());
-      kart->setScale(vec3(0.70, 0.70, 0.70));
+      kart->setScale(vec3(0.75, 0.75, 0.75));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
@@ -971,7 +983,7 @@ void initObjects(const char *map) {
       GameKartObject *otherKart = new GameKartObject("models/kart.obj");
       otherKart->setSpawnPos(vec3(45, 5.0, 0));
       otherKart->setPosition(otherKart->getSpawnPos());
-      otherKart->setScale(vec3(0.70, 0.70, 0.70));
+      otherKart->setScale(vec3(0.75, 0.75, 0.75));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);
@@ -1230,7 +1242,12 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
       {if(musicVolume < 101){musicVolume += 1; g_music->setVolume(musicVolume);}}
       if(selected == 6){if(soundVolume < 101){soundVolume +=1;}}
       }
-      break;   
+      break;
+   case 'O':
+      if (menu == false) {
+         drawOctree = !drawOctree;
+      }
+      break;
    case GLFW_KEY_ENTER:
       if(menu == true && action == GLFW_RELEASE){
          if(selected == 0)

@@ -26,7 +26,7 @@ public:
    virtual void drawEffect(PhongShader *meshShader, RenderingHelper modelViewMatrix) {}
    
    glm::vec3 getVecFromDir(float dir) { dir = TO_RADIANS(-dir); return glm::vec3(cos(dir), 0, sin(dir)); }
-   static const float STRAFE_SPEED = 10.0;
+   static const float STRAFE_SPEED = 15.0;
    
    virtual bool activeStart(GameKartObject *kart) {
        printf("jetpack_fly start\n");
@@ -39,24 +39,24 @@ public:
          kart->setFallSpeed(kart->getFallSpeed()-30*dt);
          
          if(kart->getJoystickState(0) > 0.0) {
-            kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()+90));
-            kart->changeKartRollAngle(dt,25.0);
+            kart->setVelocity(kart->GameObject::getVelocity() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()+90));
+            kart->changeKartRollAngle(dt, 5, 5.0);
          }
          else if (kart->getJoystickState(0) < 0.0) {
-            kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()-90));
-            kart->changeKartRollAngle(dt,-25.0);
+            kart->setVelocity(kart->GameObject::getVelocity() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()-90));
+            kart->changeKartRollAngle(dt, -5, 5.0);
          }
          else {
-            kart->changeKartRollAngle(dt,0.0);
+            kart->changeKartRollAngle(dt, 0, 5.0);
          }
          
          kart->changeKartPitchAngle(dt, kart->getFallSpeed());
          if(kart->getJoystickState(3) > 0.0) {
-            kart->setPosition(kart->getPosition() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
+            kart->setVelocity(kart->GameObject::getVelocity() + dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
             kart->changeKartPitchAngle(dt,-10.0);
          }
          else if (kart->getJoystickState(3) < 0.0) {
-            kart->setPosition(kart->getPosition() - dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
+            kart->setVelocity(kart->GameObject::getVelocity() - dt*STRAFE_SPEED*getVecFromDir(kart->getDirection()));
             kart->changeKartPitchAngle(dt,10.0);
          }
          else {

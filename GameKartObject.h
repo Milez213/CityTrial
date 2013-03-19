@@ -101,11 +101,13 @@ public:
     
    //void stop();
    //void done();
-   void changeKartRollAngle(float dt,float rollAngle);
+   void changeKartRollAngle(float dt,float mult, float speedDampedRollAngle);
+   float getKartRollAngle() { return carRollAngle; }
    void changeKartPitchAngle(float dt,float pitchAngle);
    
    void setSpawnPos(glm::vec3 pos) { spawnPos = pos; }
    virtual glm::vec3 getSpawnPos() { return spawnPos; }
+   void setPreCollision() { preCollisionDir = getDirection(); preCollisionSpd = getSpeed(); }
    
 protected:
    virtual void transform(RenderingHelper &modelViewMatrix);
@@ -161,6 +163,8 @@ private:
    void addPartToList(list<GamePartUpgrade *> &list, GamePartUpgrade *part);
    void cyclePartList(list<GamePartUpgrade *> &list);
    void changePartScale(int part,int dir, float dt);
+   
+   float preCollisionDir, preCollisionSpd;
 };
 
 #endif
