@@ -160,8 +160,14 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
       collide_sound->play();
       
       //printf("before: %f, %f\n", getSpeed(), getDirection());
-      setDirection(otherKart->preCollisionDir);
-      setSpeed(otherKart->preCollisionSpd);
+      vec3 preCollisionVel(preCollisionSpd*cos(radians(preCollisionDir)), 0, preCollisionSpd*sin(radians(preCollisionDir)));
+      vec3 othCollisionVel(otherKart->preCollisionSpd*cos(radians(otherKart->preCollisionDir)), 0, otherKart->preCollisionSpd*sin(radians(otherKart->preCollisionDir)));
+      vec3 resCollisionVel(((othCollisionVel - preCollisionVel)*0.75f + preCollisionVel + othCollisionVel)*0.5f);
+      
+      setDirection(degrees(atan(resCollisionVel.z, resCollisionVel.x)));
+      setSpeed(length(resCollisionVel));
+      /*setDirection(otherKart->preCollisionDir);
+      setSpeed(otherKart->preCollisionSpd);*/
       //printf("after: %f, %f\n", getSpeed(), getDirection());
       
       //printf("%f ", vecAngle(getDirectionVector(), otherKart->getDirectionVector()));
