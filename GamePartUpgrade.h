@@ -21,6 +21,7 @@ public:
    virtual void drawOnKart(PhongShader *meshShader, RenderingHelper modelViewMatrix, float levelOfDetail) = 0;
    virtual void cycleStatOn(GameKartProperties *props) = 0;
    virtual void cycleStatOff(GameKartProperties *props) = 0;
+   virtual void partUpdate(GameKartObject *kart, float dt) {}
 };
 
 #endif /* defined(____GamePartUpgrade__) */

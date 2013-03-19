@@ -102,6 +102,7 @@ public:
    //void stop();
    //void done();
    void changeKartRollAngle(float dt,float rollAngle);
+   float getKartRollAngle() { return carRollAngle; }
    void changeKartPitchAngle(float dt,float pitchAngle);
    
    void setSpawnPos(glm::vec3 pos) { spawnPos = pos; }

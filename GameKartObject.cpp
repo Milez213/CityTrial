@@ -462,13 +462,13 @@ void GameKartObject::changeKartRollAngle(float dt, float rollAngle)
    float targetAngle = rollAngle;
    if(carRollAngle < targetAngle)
    {
-      carRollAngle += dt * 10.0;
+      carRollAngle += dt * 25.0;
       if (carRollAngle > targetAngle)
          carRollAngle = targetAngle;
    }
    else if (carRollAngle > targetAngle)
    {
-      carRollAngle -= dt * 10.0;
+      carRollAngle -= dt * 25.0;
       if (carRollAngle < targetAngle)
          carRollAngle = targetAngle;
    }
@@ -562,24 +562,30 @@ void GameKartObject::update(float dt)
       }
    }
    
+   frontParts.front()->partUpdate(this, dt);
+   sideParts.front()->partUpdate(this, dt);
+   backParts.front()->partUpdate(this, dt);
    
-   float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
-   
-   if (joystickState[0] < 0.0) {
-      changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,-25.0);
-   } else if(joystickState[0] > 0.0) {
-      changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,25.0);
-   } else if (joystickState[0] == 0.0){
-      changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
-      //changeKartRollAngle(dt,0);
+   if (!isAirborn()) {
+      float speedDampedTurnAngle = properties.getTurnSpeed() * (1 - std::min(1.0f, abs(getSpeed())/properties.getTurnSpeed()));
+      
+      
+      if (joystickState[0] < 0.0) {
+         changeTireTurnAngle(dt, -1, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,-25.0);
+      } else if(joystickState[0] > 0.0) {
+         changeTireTurnAngle(dt, 1, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,25.0);
+      } else if (joystickState[0] == 0.0){
+         changeTireTurnAngle(dt, 0, speedDampedTurnAngle);
+         //changeKartRollAngle(dt,0);
+      }
+      
+      float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
+      setDirection(oldDirection+directionMult);
    }
-
-   float directionMult = dt*tireTurnAngle * getSpeed()/M_PI;
-   setDirection(oldDirection+directionMult); 
-   setRotation(vec3(0, getDirection(), 0 ));
    
+   setRotation(vec3(0, getDirection(), 0 ));
    
      
 
@@ -740,12 +746,12 @@ else
        else*/
           changeKartPitchAngle(dt,-getFallSpeed());
       
-       if(joystickState[0] > 0.0)
+       /*if(joystickState[0] > 0.0)
           changeKartRollAngle(dt,25.0);
        else if(joystickState[0] < 0.0)
           changeKartRollAngle(dt,-25.0);
        else
-          changeKartRollAngle(dt,0.0);
+          changeKartRollAngle(dt,0.0);*/
 
        // flying_sound->resume();
        if (!playedFlyingSound) {
