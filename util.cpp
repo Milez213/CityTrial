@@ -27,6 +27,15 @@ float randFloat() {
 }
 
 
+float vecAngle(glm::vec3 v1, glm::vec3 v2) {
+   return glm::degrees(glm::acos(glm::dot(v1, v2) / (glm::length(v1) * glm::length(v2))));
+}
+
+float absAngleDif(float a1, float a2) {
+   return glm::degrees(glm::acos(glm::cos(glm::radians(a1-a2))));
+}
+
+
 std::string toString(int i)
 {
    return static_cast<std::ostringstream*>( &(std::ostringstream() << i) )->str();

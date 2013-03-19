@@ -324,6 +324,11 @@ void update(double dt)
    }*/
 
    // only test kart objects with drawable objects
+   
+   for (unsigned int k = 0; k < kart_objects.size(); k++) {
+      kart_objects[k]->setPreCollision();
+   }
+   
    for (int k = 0; k < (int)kart_objects.size(); k++) {
       KartCollisionFilter filter(kart_objects[k]);
       set<GameDrawableObject *> collisions = drawable_objects.getFilteredSubset(filter);
@@ -953,7 +958,7 @@ void initObjects(const char *map) {
       GameKartObject *kart = new GameKartObject("models/kart.obj");
       kart->setSpawnPos(vec3(30, 5.0, 15));
       kart->setPosition(kart->getSpawnPos());
-      kart->setScale(vec3(0.70, 0.70, 0.70));
+      kart->setScale(vec3(0.75, 0.75, 0.75));
       kart->setDirection(180);
       kart->setInputMap('W', 'S', 'A', 'D', ' ', '1', '2', '3', '4');
       kart->resize(g_current_width, g_current_height);
@@ -966,7 +971,7 @@ void initObjects(const char *map) {
       GameKartObject *otherKart = new GameKartObject("models/kart.obj");
       otherKart->setSpawnPos(vec3(45, 5.0, 0));
       otherKart->setPosition(otherKart->getSpawnPos());
-      otherKart->setScale(vec3(0.70, 0.70, 0.70));
+      otherKart->setScale(vec3(0.75, 0.75, 0.75));
       otherKart->setDirection(0);
       otherKart->setInputMap(GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_ENTER, '7', '8', '9', '0');
       otherKart->resize(g_current_width, g_current_height);

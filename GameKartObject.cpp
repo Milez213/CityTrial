@@ -10,6 +10,7 @@
 #include "Upgrades/GameActiveNone.h"
 
 #include <cmath>
+#include "util.h"
 
 #include <iostream>
 using namespace std;
@@ -132,16 +133,34 @@ void GameKartObject::onCollide(GameDrawableObject *other, float dt)
          }
       } 
    }
-   else if (dynamic_cast<GameKartObject *>(other)) {
-      /*printf("collided with kart\n");*/
-      vec3 othPos = other->getPosition();
+   else if (GameKartObject *otherKart = dynamic_cast<GameKartObject *>(other)) {
+      //printf("before: %f, %f\n", getSpeed(), getDirection());
+      setDirection(otherKart->preCollisionDir);
+      setSpeed(otherKart->preCollisionSpd * 0.75);
+      //printf("after: %f, %f\n", getSpeed(), getDirection());
+      
+      //printf("%f ", vecAngle(getDirectionVector(), otherKart->getDirectionVector()));
+      //printf("%f\n", absAngleDif(preCollisionDir, otherKart->preCollisionDir));
+      
+      if (absAngleDif(preCollisionDir, getDirection()) > 90) {
+         setDirection(getDirection()+180);
+         setSpeed(-getSpeed());
+         printf("flip: %f\n", getDirection());
+      }
+      
+      vec3 oldPos = getPosition();
+      vec3 oldVel = getVelocity();
+      setPosition(vec3(oldPos.x + oldVel.x*dt, oldPos.y, oldPos.z + oldVel.z*dt));
+      
+      //printf("%f %f %f\n", oldVel.x, oldVel.y, oldVel.z);
+      /*vec3 othPos = other->getPosition();
       vec3 oldPos = getPosition();
       vec3 direction = othPos - oldPos;
       direction = normalize(direction);
       direction *= (other->getRadius() + getRadius()) * 1.3;
       //float oldSpeed = getSpeed() * 0.1f;
       setSpeed(-getSpeed() * 0.25f);
-      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));
+      setPosition(vec3(othPos.x - direction.x, othPos.y - direction.y, othPos.z - direction.z));*/
    }
    else if (GamePointObject *point = dynamic_cast<GamePointObject *>(other)) {
        // Collided with cuby thing
