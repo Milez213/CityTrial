@@ -1244,14 +1244,17 @@ void GLFWCALL keyboard_callback_key(int key, int action) {
           nPlayers = 1;
           initObjects(mapSelected);
             glfwSetTime(0.0);
-            g_last_time = glfwGetTime();
+            g_last_time = 0.0;
+            g_time = 0.0;
+            
           }
          if(selected == 2){
           menu = false;
           nPlayers = 2;
           initObjects(mapSelected);
             glfwSetTime(0.0);
-            g_last_time = glfwGetTime();
+            g_last_time = 0.0;
+            g_time = 0.0;
          }
          if(selected == 6)
          {shutdown();}
